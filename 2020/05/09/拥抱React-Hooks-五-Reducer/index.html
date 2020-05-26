@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="hooks," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Redux 基础我们都知道，像 React 框架，本地 state 是交给用户自己打理的，它们分散在组件树中，并随着数据的流动而相互影响。随着应用的复杂性提升，state 也会越来越复杂。很容易就陷入 state难管理，逻辑难追踪，应用难维护的境地。 Redux 的出现就是为了解决以上的问题。目标是让 state 可维护，可预测，可持续。Redux 原理很简单，它就是 Javascript + 设">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱React-Hooks (五) - useReducer">
+<meta property="og:url" content="http://www.mala520.life/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks-%E4%BA%94-Reducer/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="Redux 基础我们都知道，像 React 框架，本地 state 是交给用户自己打理的，它们分散在组件树中，并随着数据的流动而相互影响。随着应用的复杂性提升，state 也会越来越复杂。很容易就陷入 state难管理，逻辑难追踪，应用难维护的境地。 Redux 的出现就是为了解决以上的问题。目标是让 state 可维护，可预测，可持续。Redux 原理很简单，它就是 Javascript + 设">
+<meta property="og:image" content="http://www.mala520.life/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks-%E4%BA%94-Reducer/redux+react.jpg">
+<meta property="article:published_time" content="2020-05-09T02:15:10.000Z">
+<meta property="article:modified_time" content="2020-05-12T06:28:29.942Z">
+<meta property="article:author" content="光光～">
+<meta property="article:tag" content="hooks">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks-%E4%BA%94-Reducer/redux+react.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/05/09/拥抱React-Hooks-五-Reducer/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>拥抱React-Hooks (五) - useReducer | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks-%E4%BA%94-Reducer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拥抱React-Hooks (五) - useReducer</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-09T10:15:10+08:00">
+                2020-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Redux-基础"><a href="#Redux-基础" class="headerlink" title="Redux 基础"></a>Redux 基础</h1><p>我们都知道，像 <code>React</code> 框架，本地 <code>state</code> 是交给用户自己打理的，它们分散在组件树中，并随着数据的流动而相互影响。随着应用的复杂性提升，<code>state</code> 也会越来越复杂。很容易就陷入 <code>state</code>难管理，逻辑难追踪，应用难维护的境地。</p>
+<p><code>Redux</code> 的出现就是为了解决以上的问题。目标是让 <code>state</code> 可维护，可预测，可持续。<br><code>Redux</code> 原理很简单，它就是 Javascript + 设计模式（思想）。其设计模式也非常简单，可总结为：</p>
+<p>三原则</p>
+<ul>
+<li>单一数据源 - <code>store</code></li>
+<li><code>state</code> 只读，只能通过 <code>action</code> 修改</li>
+<li>使用纯函数执行 <code>state</code> 修改，需要编写 <code>reducers</code></li>
+</ul>
+<p>对应三要素：</p>
+<ul>
+<li><code>Store</code> 数据集中存储的容器。</li>
+<li><code>Action</code> 含有<code>type</code>属性的一个对象，修改数据的唯一途径，它会运送数据到 <code>Store</code>。</li>
+<li><code>Reducer</code> 一个纯函数，接受当前 <code>State</code> 和 <code>Action</code> 作为参数，返回一个新的 <code>State</code>。</li>
+</ul>
+<p>Store 三方法：</p>
+<ul>
+<li>store.getState(): 获取当前 <code>state</code></li>
+<li>store.dispatch(action): <code>View</code> 发出 <code>Action</code> 的唯一方法。</li>
+<li>store.subscribe(func): 订阅方法，当 <code>state</code> 改变，会触发 <code>func</code> 重新执行。</li>
+</ul>
+<p>在<code>React</code>中应用<code>Redux</code>的大致流程图：</p>
+<img src="/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks-%E4%BA%94-Reducer/redux+react.jpg" class="" title="react + redux">
+
+<p>在 <code>React</code> 中使用 <code>Redux</code> 的代码示例：</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom&quot;;
+import { createStore } from &quot;redux&quot;;
+
+// 创建reducer纯函数计算state
+const reducer = (state = 0, action) =&gt; {
+  switch (action.type) {
+    case &quot;INCREMENT&quot;:
+      return state + 1;
+    case &quot;DECREMENT&quot;:
+      return state - 1;
+    default:
+      return state;
+  }
+};
+// 使用 createStore 方法创建 store，参数为 reducer
+// 多个reducer的情况下 应该有一个reducer工厂方法
+const store = createStore(reducer);
+
+const rootElement = document.getElementById(&quot;root&quot;);
+const render = () =&gt; {
+  // 使用 getState 方法 获取state
+  const count = store.getState();
+  // 使用 dispatch 方法 发送 Action 触发state修改
+  const INCREMENT = () =&gt; {
+    store.dispatch({ type: &quot;INCREMENT&quot; });
+  };
+  const DECREMENT = () =&gt; {
+    store.dispatch({ type: &quot;INCREMENT&quot; });
+  };
+  ReactDOM.render(
+    &lt;React.StrictMode&gt;
+      &lt;div&gt;
+        &lt;h1&gt;{count}&lt;/h1&gt;
+        &lt;button onClick={INCREMENT}&gt;+&lt;/button&gt;
+        &lt;button onClick={DECREMENT}&gt;-&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;/React.StrictMode&gt;,
+    rootElement
+  );
+};
+render();
+// 通过 subscribe 方法 关联 store 和 App 组件
+// 当 state 改变 触发组件重新渲染
+store.subscribe(render);
+</code></pre>
+<hr>
+<h1 id="UseReducer-Hook"><a href="#UseReducer-Hook" class="headerlink" title="UseReducer Hook"></a>UseReducer Hook</h1><p><code>useReducer hook</code> 用于 <code>React</code> 函数组件中管理<strong>复杂的</strong> <code>state</code> 。它把一个<code>reducer</code>方法，和初始<code>state</code>作为输入，包含当前<code>state</code>，和一个<code>dispatch</code>方法的解构数组作为输出。</p>
+<p><code>API</code>（ 对照 <code>useState</code> ）：</p>
+<pre><code class="language-js">// useReducer hook API
+const [current, dispatch] = useReducer(reducer, initState);
+
+// useState hook API
+const [current, setFunc] = useReducer(initState);
+</code></pre>
+<ul>
+<li><code>reducer</code> 用于改变 <code>state</code> 的 <code>reducer</code> 函数，同 <code>Redux</code>。</li>
+<li><code>initState</code>  初始<code>state</code>。</li>
+<li><code>current</code> 当前<code>state</code>。</li>
+<li><code>dispatch</code> 负责传递一个 <code>action</code> 给 <code>reducer</code> 函数，以此改变当前 <code>state</code>。</li>
+</ul>
+<p>和 <code>useState</code> 相比，<code>useReducer</code> 多一个<code>reducer</code> 函数。<code>reducer</code> 函数通过 <code>dispatch</code> 传递的 <code>action</code>执行不同的<code>state</code>修改操作。</p>
+<p>和<code>redux</code>相比，用户无需关心 <code>store</code> 对象。另外 <code>state</code>改变，组件会自动触发重新渲染。</p>
+<p>来看一个使用 <code>useReducer</code> 的简单例子：</p>
+<pre><code class="language-jsx">const initialState = {count: 0};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case &#39;increment&#39;:
+      return {count: state.count + 1};
+    case &#39;decrement&#39;:
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    &lt;&gt;
+      Count: {state.count}
+      &lt;button onClick={() =&gt; dispatch({type: &#39;decrement&#39;})}&gt;-&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({type: &#39;increment&#39;})}&gt;+&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+<p>上述示例中的 <code>state</code> 很简单，其实使用 <code>useState</code> 就可以。那么，我们什么时候该使用 <code>useReducer</code> 呢？</p>
+<hr>
+<h1 id="useReducer-适用场景"><a href="#useReducer-适用场景" class="headerlink" title="useReducer 适用场景"></a>useReducer 适用场景</h1><p>我们先来看看和 <code>state</code> 管理相关的三大 <code>Hooks</code> 定位：</p>
+<ul>
+<li><code>useState</code>: 简单 <code>State</code></li>
+<li><code>useReducer</code>: 复杂 <code>State</code></li>
+<li><code>useContext</code>: 全局 <code>State</code></li>
+</ul>
+<p>适用于<code>useReducer</code> 的复杂 <code>state</code> 的场景主要有:</p>
+<ul>
+<li><code>state</code> 逻辑较复杂且包含多个子值（大的对象，数组）。</li>
+<li><code>state</code> 更新依赖于之前的 <code>state</code>。</li>
+<li><code>state</code> 组件树深层更新。使用<code>useReducer</code>可以向子组件传递 <code>dispatch</code> 而不是回调函数，这样可以优化性能。</li>
+</ul>
+<p>相对于 <code>useState</code>， <code>useReducer</code>只是略复杂。所以当 <code>state</code> 有一定复杂度，便可以大胆使用 <code>useReducer</code>。我们更多的不是纠结要不要使用 <code>useReducer</code>，而是怎么用好 <code>useReducer</code>。</p>
+<p>比如上面的代码示例中，<code>reducer</code> 函数可以优化一下，使其可持续发展：</p>
+<pre><code class="language-jsx">...
+// 用好`useReducer`的关键 - reducer 函数
+function reducer(state, action) {
+  switch (action.type) {
+    case &#39;increment&#39;:
+      return {...state, { count: state.count + 1} }; // 看这里
+    case &#39;decrement&#39;:
+      return {...state, { count: state.count - 1} }; // 看这里
+    default:
+      throw new Error();
+  }
+}
+...
+</code></pre>
+<p>这样改写的原因是，随着组件复杂度提升，<code>state</code> 对象会扩展其他属性，而不仅有 <code>count</code>。</p>
+<hr>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html" target="_blank" rel="noopener">Redux 入门教程（一）</a><br><a href="https://cn.redux.js.org" target="_blank" rel="noopener">Redux 中文网</a><br><a href="https://www.robinwieruch.de/javascript-reducer" target="_blank" rel="noopener">What is a Reducer in JavaScript/React/Redux?</a><br><a href="https://www.robinwieruch.de/react-usereducer-hook" target="_blank" rel="noopener">How to useReducer in React</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hooks/" rel="tag"># hooks</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/16/React-%E7%B1%BB%E7%BB%84%E4%BB%B6%E7%AE%80%E7%95%A5%E8%AF%AD%E6%B3%95/" rel="next" title="React 类组件简略语法">
+                <i class="fa fa-chevron-left"></i> React 类组件简略语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/13/Nodejs%E5%B7%A5%E5%85%B7-Commander/" rel="prev" title="(Nodejs 开发 cli 工具) - Commander">
+                (Nodejs 开发 cli 工具) - Commander <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Redux-基础"><span class="nav-number">1.</span> <span class="nav-text">Redux 基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseReducer-Hook"><span class="nav-number">2.</span> <span class="nav-text">UseReducer Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useReducer-适用场景"><span class="nav-number">3.</span> <span class="nav-text">useReducer 适用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

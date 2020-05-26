@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Exifjs," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="很多公司业务中，会存在上传资料图片，以供审核的需求。那我们用H5如何实现，并达到好的效果呢 技术点 html media capture FileReader || ULR.createObjectURL() canvas EXIF &amp; orientation  调用相机html media capture &lt;input type&#x3D;&#39;file&#39; accept&#x3D;&amp;#39">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H5拍照上传处理">
+<meta property="og:url" content="http://www.mala520.life/2019/05/28/H5%E6%8B%8D%E7%85%A7%E4%B8%8A%E4%BC%A0%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="很多公司业务中，会存在上传资料图片，以供审核的需求。那我们用H5如何实现，并达到好的效果呢 技术点 html media capture FileReader || ULR.createObjectURL() canvas EXIF &amp; orientation  调用相机html media capture &lt;input type&#x3D;&#39;file&#39; accept&#x3D;&amp;#39">
+<meta property="og:image" content="http://www.mala520.life/2019/05/28/H5%E6%8B%8D%E7%85%A7%E4%B8%8A%E4%BC%A0%E5%A4%84%E7%90%86/exif.png">
+<meta property="article:published_time" content="2019-05-28T07:42:37.000Z">
+<meta property="article:modified_time" content="2020-04-13T06:49:54.232Z">
+<meta property="article:author" content="光光～">
+<meta property="article:tag" content="Exifjs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2019/05/28/H5%E6%8B%8D%E7%85%A7%E4%B8%8A%E4%BC%A0%E5%A4%84%E7%90%86/exif.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2019/05/28/H5拍照上传处理/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>H5拍照上传处理 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/05/28/H5%E6%8B%8D%E7%85%A7%E4%B8%8A%E4%BC%A0%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">H5拍照上传处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-28T15:42:37+08:00">
+                2019-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>很多公司业务中，会存在上传资料图片，以供审核的需求。那我们用H5如何实现，并达到好的效果呢</p>
+<h2 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h2><ul>
+<li>html media capture</li>
+<li>FileReader || ULR.createObjectURL()</li>
+<li>canvas</li>
+<li>EXIF &amp; orientation</li>
+</ul>
+<h3 id="调用相机"><a href="#调用相机" class="headerlink" title="调用相机"></a>调用相机</h3><p><a href="https://www.w3.org/TR/html-media-capture/" target="_blank" rel="noopener">html media capture</a></p>
+<pre><code class="language-html">&lt;input type=&#39;file&#39; accept=&#39;image/*&#39; capture=&quot;camera&quot;/&gt;</code></pre>
+<h3 id="获取图片信息"><a href="#获取图片信息" class="headerlink" title="获取图片信息"></a>获取图片信息</h3><p>以下两种方式皆可：</p>
+<ul>
+<li><strong>new FileReader().readAsDataURL(file)</strong> 异步/data:base64</li>
+<li><strong>ULR.createObjectURL(file)</strong> 同步/内存url</li>
+</ul>
+<h3 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h3><ul>
+<li>限制最大宽度，对宽高做处理</li>
+<li>等比例压缩</li>
+</ul>
+<pre><code class="language-javascript">  const canvas = document.createElement(&#39;canvas&#39;);
+  const ctx = canvas.getContext(&#39;2d&#39;);
+  canvas.width = Math.min(image.naturalWidth, option.maxWidth)
+  // 高度通过宽度压缩比处理，保证等比例压缩
+  const ratio = canvas.width / image.naturalWidth
+  canvas.height = image.naturalHeight * ratio
+  ...
+  // 二次压缩（比如90%）
+  canvas.toDataURL(fileType, 0.9); // fileType: image/jpeg</code></pre>
+<h3 id="旋转处理"><a href="#旋转处理" class="headerlink" title="旋转处理"></a>旋转处理</h3><p>手机相机（基本上都是Iphone）拍照，你会发现有时候照片会自动旋转，有时候并不是我们期望的显示效果。<br>不过手机拍照获取的图片，有<strong>EXIF</strong>（Exchangeable image file format），会默认设置一个<strong>orientation</strong> tag（jpeg格式才有）。<strong>orientation</strong>标示了图片旋转信息。</p>
+<img src="/2019/05/28/H5%E6%8B%8D%E7%85%A7%E4%B8%8A%E4%BC%A0%E5%A4%84%E7%90%86/exif.png" class="" title="orientation图示">
+<p>首先，我们可以用<a href="https://github.com/exif-js/exif-js" target="_blank" rel="noopener">Exifjs</a>获取orientation。<strong>Exif.js</strong>提供了js读取图像的原始数据的功能扩展（拍照方向、相机设备型号、拍摄时间、ISO感光度、GPS地理位置等数据）.</p>
+<pre><code class="language-javascript">import EXIF from &#39;exif-js&#39;;
+...
+
+EXIF.getData(file, function () {
+  const orientation = EXIF.getTag(this, &#39;Orientation&#39;);
+  console.log(`orientation: ${orientation}`);
+});</code></pre>
+<p>然后，我们用canvas对图片做一些旋转处理即可( 亲测只存在1，3，6，8四种情况):</p>
+<pre><code class="language-javascript">  // 判断图片方向，重置 canvas 大小，确定旋转角度，iphone 默认的是 home 键在右方的横屏拍摄方式
+  switch (orientation) {
+      // 1 不需要旋转
+      case 1: {
+          ctx.drawImage(img, 0, 0, width, height);
+          ctx.clearRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          break;
+      }
+      // iphone 横屏拍摄，此时 home 键在左侧 旋转180度
+      case 3: {
+          ctx.clearRect(0, 0, width, height);
+          ctx.translate(0, 0);
+          ctx.rotate(Math.PI);
+          ctx.drawImage(img, -width, -height, width, height);
+          break;
+      }
+      // iphone 竖屏拍摄，此时 home 键在下方(正常拿手机的方向) 旋转90度
+      case 6: {
+          ctx.clearRect(0, 0, width, height);
+          ctx.translate(0, 0);
+          ctx.rotate(90 * Math.PI / 180);
+          ctx.drawImage(img, 0, -height, width, height);
+          break;
+      }
+      // iphone 竖屏拍摄，此时 home 键在上方 旋转270度
+      case 8: {
+          ctx.clearRect(0, 0, width, height);
+          ctx.translate(0, 0);
+          ctx.rotate(-90 * Math.PI / 180);
+          ctx.drawImage(img, -width, 0, width, height);
+          break;
+      }
+      default: {
+          ctx.clearRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          break;
+      }
+  }
+</code></pre>
+<p>最后，我们上传处理完的图片。</p>
+<hr>
+<p><a href="https://juejin.im/post/5bd705abf265da0a8d36dbdc#heading-5" target="_blank" rel="noopener">参考资料</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Exifjs/" rel="tag"># Exifjs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/25/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="vue学习笔记">
+                <i class="fa fa-chevron-left"></i> vue学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/13/%E5%85%B3%E4%BA%8Esuper-props/" rel="prev" title="关于React中的super(props)">
+                关于React中的super(props) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点"><span class="nav-number">1.</span> <span class="nav-text">技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调用相机"><span class="nav-number">1.1.</span> <span class="nav-text">调用相机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取图片信息"><span class="nav-number">1.2.</span> <span class="nav-text">获取图片信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩"><span class="nav-number">1.3.</span> <span class="nav-text">压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转处理"><span class="nav-number">1.4.</span> <span class="nav-text">旋转处理</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

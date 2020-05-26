@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="公司IOS APP兼容性问题大家第一反应是，用h5audio元素就好了，何须自己实现。原因只有一个：audio元素出问题了，在公司IOS APP中出现了兼容性问题： &lt;audio preload&#x3D;&quot;auto&quot; id&#x3D;&quot;videoPlay&quot;&gt;   &lt;source src&#x3D;{declarationUrl}&#x2F;&gt; &lt;&#x2F;audio&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="底层API实现Audio元素">
+<meta property="og:url" content="http://www.mala520.life/2018/03/27/%E5%BA%95%E5%B1%82API%E5%AE%9E%E7%8E%B0Audio%E5%8A%9F%E8%83%BD/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="公司IOS APP兼容性问题大家第一反应是，用h5audio元素就好了，何须自己实现。原因只有一个：audio元素出问题了，在公司IOS APP中出现了兼容性问题： &lt;audio preload&#x3D;&quot;auto&quot; id&#x3D;&quot;videoPlay&quot;&gt;   &lt;source src&#x3D;{declarationUrl}&#x2F;&gt; &lt;&#x2F;audio&gt;">
+<meta property="article:published_time" content="2018-03-27T09:43:01.000Z">
+<meta property="article:modified_time" content="2020-05-20T07:55:59.415Z">
+<meta property="article:author" content="光光～">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2018/03/27/底层API实现Audio功能/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>底层API实现Audio元素 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2018/03/27/%E5%BA%95%E5%B1%82API%E5%AE%9E%E7%8E%B0Audio%E5%8A%9F%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">底层API实现Audio元素</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T17:43:01+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="公司IOS-APP兼容性问题"><a href="#公司IOS-APP兼容性问题" class="headerlink" title="公司IOS APP兼容性问题"></a>公司IOS APP兼容性问题</h2><p>大家第一反应是，用h5<strong>audio元素</strong>就好了，何须自己实现。原因只有一个：<strong>audio元素</strong>出问题了，在公司IOS APP中出现了兼容性问题：</p>
+<pre><code class="language-html">&lt;audio preload=&quot;auto&quot; id=&quot;videoPlay&quot;&gt;
+  &lt;source src={declarationUrl}/&gt;
+&lt;/audio&gt;</code></pre>
+<ul>
+<li>列表页 &gt; 详情页 详情页有个人宣言的短音频，点击播放。功能很简单。</li>
+<li>到不同的详情页播放，时间久了（无规律）。就会出现播放不了的情况。</li>
+<li>卸载重装APP正常，用久了再次出现。</li>
+<li>尝试抓包，看上去是缓存了错误的音频（长度为0）。ios排查不出问题，坚称缓存机制没有问题。</li>
+<li>压力之下，实在没办法，在小组架构的指导下，才知道还有底层API。</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>排查下来，大概率还是<audio>自有的缓存策略和我们的IOS APP水土不服。决定自己实现一个<audio>，不采用缓存策略，音频完全下载以后调用底层API实现播放。<br>组件代码：</p>
+<pre><code class="language-jsx">class AudioBuffer {
+
+  constructor(props) {
+    this.url = props.url || &#39;&#39;;  // 音频url
+    this.playBtn = props.playBtn;  // 播放/暂停 按钮
+    this.stopBtn = props.stopBtn;  // 停止 按钮
+    this.callback = props.callback; // 回调函数 param：play|pause|stop
+    this.sourceNode = null; // BufferSource对象节点
+    this.startedAt = 0;  // 播放时间点
+    this.pausedAt = 0;  // 暂停时间点
+    this.playing = false;  // 播放中
+    [&#39;play&#39;, &#39;pause&#39;, &#39;stop&#39;, &#39;update&#39;, &#39;getCurrentTime&#39;, &#39;getDuration&#39;, &#39;init&#39;, &#39;bind&#39;].forEach(method =&gt; {
+      this[method] = this[method].bind(this);
+    });
+    this.init();
+  }
+  // 播放
+  play() {
+    let offset = this.pausedAt;
+    // 如果已经播放完成，重新播放
+    if (offset &gt;= this.getDuration()) {
+      offset = 0;
+    }
+    this.sourceNode = this.context.createBufferSource();
+    this.sourceNode.connect(this.context.destination);
+    this.sourceNode.buffer = this.buffer;
+    this.sourceNode.start(0, offset);
+    this.startedAt = this.context.currentTime - offset;
+    this.pausedAt = 0;
+    this.playing = true;
+    if (typeof (this.callback) === &#39;function&#39;) {
+      // console.log(&#39;------------callback: play&#39;);
+      this.callback(&#39;play&#39;, this);
+    }
+    this.update();
+  }
+
+  update() {
+    window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+    if (this.getCurrentTime() &lt; this.getDuration()) {
+      window.requestAnimationFrame(this.update);
+    } else {
+      this.stop();
+      if (typeof (this.callback) === &#39;function&#39;) {
+        // console.log(&#39;------------callback: stop&#39;);
+        this.callback(&#39;stop&#39;, this);
+      }
+    }
+  }
+  // 暂停
+  pause() {
+    const elapsed = this.context.currentTime - this.startedAt;
+    this.stop();
+    this.pausedAt = elapsed;
+    if (typeof (this.callback) === &#39;function&#39;) {
+       // console.log(&#39;------------callback: pause&#39;);
+      this.callback(&#39;pause&#39;, this);
+    }
+  }
+  // 停止
+  stop() {
+    if (this.sourceNode) {
+      this.sourceNode.disconnect();
+      this.sourceNode.stop(0);
+      this.sourceNode = null;
+    }
+    this.pausedAt = 0;
+    this.startedAt = 0;
+    this.playing = false;
+    if (typeof (this.callback) === &#39;function&#39;) {
+       // console.log(&#39;------------callback: stop&#39;);
+      this.callback(&#39;stop&#39;, this);
+    }
+  }
+  // 已播放时间
+  getCurrentTime() {
+    if (this.pausedAt) {
+      return this.pausedAt;
+    }
+    if (this.startedAt) {
+      return this.context.currentTime - this.startedAt;
+    }
+    return 0;
+  }
+  // 总时长
+  getDuration() {
+    return this.buffer.duration;
+  }
+  // 事件绑定
+  bind(buffer) {
+    this.buffer = buffer;
+    if (this.stopBtn) {
+      this.stopBtn.addEventListener(&#39;click&#39;, () =&gt; {
+        this.stop();
+      });
+    }
+    this.playBtn.addEventListener(&#39;click&#39;, () =&gt; {
+      if (this.playing) {
+        this.pause();
+      } else {
+        this.play();
+      }
+    });
+
+    // function update() {
+    //   window.requestAnimationFrame(update);
+    // //   info.innerHTML = sound.getCurrentTime().toFixed(1) + &#39;/&#39; + sound.getDuration().toFixed(1);
+    // }
+    // update();
+  }
+
+  init() {
+    window._audioContext = window._audioContext || new (window.AudioContext || window.webkitAudioContext)();
+    this.context = window._audioContext;
+    const request = new XMLHttpRequest();
+    request.open(&#39;GET&#39;, this.url, true);
+    request.responseType = &#39;arraybuffer&#39;;
+    request.addEventListener(&#39;load&#39;, () =&gt; {
+      this.context.decodeAudioData(
+        request.response,
+        (buffer) =&gt; {
+          this.bind(buffer);
+        },
+        () =&gt; {
+        });
+    });
+    request.send();
+  }
+}
+
+export default AudioBuffer;
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-jsx">  componentDidMount() {
+    const audio = this.refs.videoPlay
+    const url = audio.getAttribute(&#39;data-url&#39;)
+    if(audio &amp;&amp; url ){  
+        this.audio = new AudioBuffer({&#39;url&#39;:url,&#39;playBtn&#39;:this.refs.videoPlay})
+      }
+    } 
+  }</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/17/%E8%8B%B1%E8%AF%AD%E4%B8%93%E4%B8%9A%E8%AF%8D%E6%B1%87/" rel="next" title="英语专业词汇">
+                <i class="fa fa-chevron-left"></i> 英语专业词汇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/07/React%E7%A2%8E%E7%89%87/" rel="prev" title="React碎片">
+                React碎片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#公司IOS-APP兼容性问题"><span class="nav-number">1.</span> <span class="nav-text">公司IOS APP兼容性问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

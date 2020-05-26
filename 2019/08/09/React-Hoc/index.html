@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="高阶函数如果一个函数 接受一个或多个函数作为参数或者返回一个函数 就可称之为 高阶函数。 &#x2F;&#x2F; ES5  function isSearched(searchTerm) {    return function(item) {      return item.title.toLowerCase().includes(searchTerm.toLowerCase());    }  }   &#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React 高阶组件（HOC）">
+<meta property="og:url" content="http://www.mala520.life/2019/08/09/React-Hoc/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="高阶函数如果一个函数 接受一个或多个函数作为参数或者返回一个函数 就可称之为 高阶函数。 &#x2F;&#x2F; ES5  function isSearched(searchTerm) {    return function(item) {      return item.title.toLowerCase().includes(searchTerm.toLowerCase());    }  }   &#x2F;&#x2F;">
+<meta property="article:published_time" content="2019-08-09T03:28:34.000Z">
+<meta property="article:modified_time" content="2020-05-06T10:19:37.658Z">
+<meta property="article:author" content="光光～">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2019/08/09/React-Hoc/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>React 高阶组件（HOC） | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/08/09/React-Hoc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React 高阶组件（HOC）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-09T11:28:34+08:00">
+                2019-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h1><p>如果一个函数 接受一个或多个函数作为参数或者返回一个函数 就可称之为 高阶函数。</p>
+<pre><code class="language-jsx">// ES5 
+function isSearched(searchTerm) { 
+  return function(item) { 
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase()); 
+  } 
+} 
+
+// ES6 
+const isSearched = searchTerm =&gt; item =&gt; 
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());</code></pre>
+<h1 id="React-HOC"><a href="#React-HOC" class="headerlink" title="React HOC"></a>React HOC</h1><p>在实际项目中，组件总是趋于复杂，会包含很多逻辑。当发现在很多组件都需要处理相同逻辑的时候，就应该想办法抽象复用。在React中，具有复用功能的方式主要有：</p>
+<ul>
+<li>公共组件库</li>
+<li>公共方法库</li>
+<li>类组件：<code>HOC</code> / <code>Render Props</code></li>
+<li>函数组件：<code>Hooks</code></li>
+</ul>
+<p>当你没法把组件中的重复逻辑抽象成公共组件或者公共方法的情况下，在类组件中，就可以考虑引入<code>HOC</code>。<a href="/2020/04/23/React-Render-Props/index.html">Render Props看这里</a>。</p>
+<p>和高阶函数类似，<code>React HOC</code>就是把组件（也可增加一些可选参数）作为输入，然后输出一个新的组件，新组件内部处理一些通用逻辑，并使用输入的组件进行渲染。你可以将其视为参数化容器组件。</p>
+<blockquote>
+<p>我们知道，在React中函数组件本质上就是一个函数。所以高阶函数组件就是一个<code>HOC</code>。</p>
+</blockquote>
+<h1 id="高阶组件应用"><a href="#高阶组件应用" class="headerlink" title="高阶组件应用"></a>高阶组件应用</h1><p>首先，我们先创建<code>HOC</code>容器：</p>
+<pre><code class="language-jsx">// 无状态函数组件
+function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; &lt;WrappedComponent {...props} /&gt;;
+}
+// or
+// 类组件
+function HigherOrderComponent(WrappedComponent) {
+    return class extends React.Component {
+        render() {
+            return &lt;WrappedComponent {...this.props} /&gt;;
+        }
+    };
+}
+// 类组件特有的通过继承的方式使用
+// 也叫 反向继承（Inheritance Inversion）
+function HigherOrderComponent(WrappedComponent) {
+    return class extends WrappedComponent {
+        render() {
+            return super.render();
+        }
+    };
+}</code></pre>
+<blockquote>
+<p>通过继承输入组件形式实现的<code>HOC</code>又称为 <strong>反向继承（Inheritance Inversion）</strong></p>
+</blockquote>
+<p>以上<code>HOC</code>只是一个容器，和直接使用 <code>WrappedComponent</code> 组件无二。那么，我们可以在<code>HOC</code>中做点什么来达到共享复用的目的呢？主要通过以下三种方式：</p>
+<ul>
+<li>操作参数（props / state）</li>
+<li>条件渲染</li>
+<li>组件包装</li>
+</ul>
+<h2 id="操作参数"><a href="#操作参数" class="headerlink" title="操作参数"></a>操作参数</h2><p>我们可以通过<code>HOC</code>对一个通用组件的 <code>props</code> 做一些操作达到复用的目的，而不用去修改这个通用组件。</p>
+<p>举个简单的例子，一个列表展示组件，在新需求中的某些场景只希望展示列表中 <code>status === &#39;1&#39;</code> 的数据，那我们可以封装一个<code>HOC</code>在这些场景使用，其他场景直接使用。</p>
+<pre><code class="language-jsx">
+function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; {
+      let newProps =  props || []
+      if (newProps.length &gt; 0){
+        newProps = newProps.filter((item) =&gt; item.status === &#39;1&#39;)
+      }
+      return &lt;WrappedComponent {...newProps} /&gt;
+    };
+}</code></pre>
+<p>当然，你也可以通过修改这个通用组件来适配新场景。但是一直通过修改通用组件来适配所有场景，一方面存在兼容风险，另一方面适配逻辑太多，组件会变得臃肿，很难维护。</p>
+<p>在举一个常见的应用：很多页面初始化的时候，都需要通过一个接口获取一些初始化数据。我们也可以通过<code>HOC</code>封装，统一获取，然后作为扩展参数传递给页面组件。</p>
+<pre><code class="language-jsx"> function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; {
+      const fetchData = async () =&gt; {
+        const result = await axios(
+          &#39;https://hn.algolia.com/api/v1/search?query=redux&#39;,
+        );
+        return result.data;
+      };
+      const newProps = fetchData();
+      return &lt;WrappedComponent {...props} {...newProps} /&gt;
+    };
+}</code></pre>
+<h2 id="条件渲染"><a href="#条件渲染" class="headerlink" title="条件渲染"></a>条件渲染</h2><p>在实际<code>React</code>项目中，大多采用前端渲染模式。组件的渲染依赖<code>Ajax</code>请求的数据。所以，我们经常会看到（我自己也写过）如下代码：</p>
+<pre><code class="language-javascript">class BadComp extends React.Component {
+    state = {
+      isDateReady: false,
+      dataA: null,
+      dataB: null,
+    }
+    //...
+    render() {
+      if (!isDateReady) return false
+      const { isDateReady, hasDataA, hasDataB }= this.state
+      return (
+        &lt;&gt;
+          { dataA &amp;&amp; &lt;A {...dataA}/&gt; }
+          { dataB &amp;&amp; &lt;B {...dataB}/&gt; }
+        &lt;/&gt;
+      );
+    }
+};
+</code></pre>
+<p>上述代码并不是一无是处，至少是严谨的，规避了无数据或者数据异常导致页面奔溃的情况。但是上述组件有两个问题：</p>
+<ul>
+<li>通过 <code>isDateReady</code> 阻断页面渲染，接口返回慢的话，白屏时间会很长。</li>
+<li>页面充斥着太多类似 <code>{ dataB &amp;&amp; &lt;B {...dataB}/&gt; }</code> 这种逻辑，不优雅，影响可读性。</li>
+</ul>
+<p>解决上述问题，我们一般是通过增加 <code>loading</code> 和 <code>占位</code> 来优化。在页面主接口返回数据之前，增加 <code>loading</code> 效果。需要数据才能渲染的组件模块可以先显示 <code>占位框</code>（<code>css</code>），取得数据以后再重新渲染。很明显，这个解决方案比较通用，最好做成可复用的。这个时候，我们就可以通过<code>HOC</code>的条件渲染来实现：</p>
+<p>页面loading效果的高阶组件，通过 <strong>反向继承 + 条件渲染</strong> 实现：</p>
+<pre><code class="language-jsx">
+const withLoadingComponent = (WrappedComponent) =&gt; {
+  return (props) =&gt;  {
+    render() {
+        if(this.state.isLoading) {
+          return &lt;Loading /&gt;;
+        } else {
+          return super.render();
+        }
+    }
+  };
+}
+</code></pre>
+<p>组件占位效果的<code>HOC</code>。额外的 <code>options</code> 参数可以决定占位组件 <code>Placeholder</code> 的高度等信息。</p>
+<pre><code class="language-jsx">const withPlaceholderComponent = (WrappedComponent, options) =&gt; {
+  return (props) =&gt;  {
+    return props ? &lt;WrappedComponent {...props}&gt; : &lt;Placeholder {...options}&gt;
+  };
+}</code></pre>
+<h2 id="组件包装"><a href="#组件包装" class="headerlink" title="组件包装"></a>组件包装</h2><p>如果你总是和相同的元素包裹使用一个通用组件，那么你可以通过抽象一个<code>HOC</code>来复用。比如下面的<code>HOC</code>在组件外面包裹一层背景色为 <code>#fafafa</code> 的 <code>div</code> 元素：</p>
+<pre><code class="language-jsx">const withOtherComponent = (WrappedComponent) =&gt; {
+  return (props) =&gt;  {
+    return (
+      &lt;div style={{ backgroundColor: '#fafafa' }}&gt;
+          &lt;WrappedComponent {...this.props} {...newProps} /&gt;
+      &lt;/div&gt;
+    )
+  };
+}</code></pre>
+<p>这里只是举了一个简答的例子，实际项目中，也可以通过其他组件来包裹，或是组合使用。</p>
+<h1 id="recompose-库"><a href="#recompose-库" class="headerlink" title="recompose 库"></a>recompose 库</h1><p>复杂场景下，会存在多个<code>HOC</code>层层嵌套的情况：</p>
+<pre><code class="language-jsx">const TodoListWithConditionalRendering = withLoadingIndicator(
+  withTodosNull(
+    withTodosEmpty(TodoList)
+  )
+);</code></pre>
+<p>可以使用 <code>recompose</code> 库优化写法：</p>
+<pre><code class="language-jsx">import { compose } from &#39;recompose&#39;;
+const withTodosNull = (Component) =&gt; (props) =&gt;
+  ...
+const withTodosEmpty = (Component) =&gt; (props) =&gt;
+  ...
+const withLoadingIndicator = (Component) =&gt; ({ isLoadingTodos, ...others }) =&gt;
+  ...
+function TodoList({ todos }) {
+  ...
+}
+const withConditionalRenderings = compose(
+  withLoadingIndicator,
+  withTodosNull,
+  withTodosEmpty
+);
+const TodoListWithConditionalRendering = withConditionalRenderings(TodoList);
+function App(props) {
+  return (
+    &lt;TodoListWithConditionalRendering
+      todos={props.todos}
+      isLoadingTodos={props.isLoadingTodos}
+    /&gt;
+  );
+}</code></pre>
+<h1 id="Hoc问题"><a href="#Hoc问题" class="headerlink" title="Hoc问题"></a>Hoc问题</h1><h2 id="抽象地狱"><a href="#抽象地狱" class="headerlink" title="抽象地狱"></a>抽象地狱</h2><p>也叫包装地狱。过多使用<code>HOC</code>层层嵌套，会导致层级冗余，逻辑难追踪，很难维护。所以要避免Hoc滥用，充分考虑引入<code>HOC</code>的必要性，尤其<code>HOC</code>多层封装的情况。对于复杂的嵌套结构，最好增加充分的注释。</p>
+<h2 id="不要在render中使用-HOC。"><a href="#不要在render中使用-HOC。" class="headerlink" title="不要在render中使用 HOC。"></a>不要在<code>render</code>中使用 <code>HOC</code>。</h2><p>每次<code>render</code>渲染都会创建新的 <code>HOC</code>。diff算法会对新旧子树进行 <code>====</code> 比较。如果不相等，子树会进行卸载，和重新挂载的操作。而每次重新渲染创建的 <code>HOC</code> 前后是 <code>!==</code> 的。</p>
+<pre><code class="language-jsx">render() {
+  // 每次调用 render 函数都会创建一个新的 EnhancedComponent
+  // EnhancedComponent1 !== EnhancedComponent2
+  const EnhancedComponent = enhance(MyComponent);
+  // 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！
+  return &lt;EnhancedComponent /&gt;;
+}</code></pre>
+<h2 id="Refs-不会被传递。"><a href="#Refs-不会被传递。" class="headerlink" title="Refs 不会被传递。"></a><code>Refs</code> 不会被传递。</h2><p>虽然<code>HOC</code>的约定是将所有 <code>props</code> 传递给被包装组件，但这对于 <code>refs</code> 并不适用。那是因为 <code>ref</code> 实际上并不是一个 <code>prop</code>- 就像 key 一样，它是由 React 专门处理的。如果将 ref 添加到 HOC 的返回组件中，则 ref 引用指向容器组件，而不是被包装组件。</p>
+<p>这个问题的解决方案是通过使用 <code>React.forwardRef</code>（<code>React 16.3</code> 中引入）。想要了解更多，可以阅览我的另一篇博文<a href="/2020/03/30/拥抱React-Hooks（二）-Refs/index.html">拥抱React-Hooks（二）-Refs</a></p>
+<h2 id="静态方法丢失。"><a href="#静态方法丢失。" class="headerlink" title="静态方法丢失。"></a>静态方法丢失。</h2><p>因为原始组件被包裹在一个容器组件内，也就意味着新组件会没有原始组件的任何静态方法。为了解决这个问题，你可以在返回之前把这些方法拷贝到容器组件上：</p>
+<pre><code class="language-jsx">function enhance(WrappedComponent) {
+  class Enhance extends React.Component {/*...*/}
+  // 必须准确知道应该拷贝哪些方法 :(
+  Enhance.staticMethod = WrappedComponent.staticMethod;
+  return Enhance;
+}</code></pre>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://zh-hans.reactjs.org/docs/higher-order-components.html" target="_blank" rel="noopener">官网-HOC</a><br><a href="https://www.robinwieruch.de/react-higher-order-components" target="_blank" rel="noopener">React Higher-order Component</a><br><a href="https://juejin.im/post/5c72b97de51d4545c66f75d5" target="_blank" rel="noopener">React 中的高阶组件及其应用场景</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/13/%E5%85%B3%E4%BA%8Esuper-props/" rel="next" title="关于React中的super(props)">
+                <i class="fa fa-chevron-left"></i> 关于React中的super(props)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/19/micro-service/" rel="prev" title="微前端入门Micro-frontends">
+                微前端入门Micro-frontends <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高阶函数"><span class="nav-number">1.</span> <span class="nav-text">高阶函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-HOC"><span class="nav-number">2.</span> <span class="nav-text">React HOC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高阶组件应用"><span class="nav-number">3.</span> <span class="nav-text">高阶组件应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作参数"><span class="nav-number">3.1.</span> <span class="nav-text">操作参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件渲染"><span class="nav-number">3.2.</span> <span class="nav-text">条件渲染</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件包装"><span class="nav-number">3.3.</span> <span class="nav-text">组件包装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#recompose-库"><span class="nav-number">4.</span> <span class="nav-text">recompose 库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hoc问题"><span class="nav-number">5.</span> <span class="nav-text">Hoc问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#抽象地狱"><span class="nav-number">5.1.</span> <span class="nav-text">抽象地狱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不要在render中使用-HOC。"><span class="nav-number">5.2.</span> <span class="nav-text">不要在render中使用 HOC。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Refs-不会被传递。"><span class="nav-number">5.3.</span> <span class="nav-text">Refs 不会被传递。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态方法丢失。"><span class="nav-number">5.4.</span> <span class="nav-text">静态方法丢失。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

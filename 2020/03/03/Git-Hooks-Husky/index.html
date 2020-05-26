@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="lint," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="众所周知，javascript一开始就是一种非常灵活的语言，随着新特性不断增加，框架层出不穷，加之个人的编程风格。前端代码的可维护性问题越来越突出。做一个有工程素养的前端的开发，我们要注重编码规范。做为架构或者团队的leader，更应该考虑编码规范的约束机制。所以做好代码风格检查（Code Linting，简称 Lint）已经成为前端团队必修课，是保障代码规范一致性的重要手段。 做好link可以有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git Hooks &amp; Husky">
+<meta property="og:url" content="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="众所周知，javascript一开始就是一种非常灵活的语言，随着新特性不断增加，框架层出不穷，加之个人的编程风格。前端代码的可维护性问题越来越突出。做一个有工程素养的前端的开发，我们要注重编码规范。做为架构或者团队的leader，更应该考虑编码规范的约束机制。所以做好代码风格检查（Code Linting，简称 Lint）已经成为前端团队必修课，是保障代码规范一致性的重要手段。 做好link可以有">
+<meta property="og:image" content="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/irk1.png">
+<meta property="og:image" content="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/irk2.png">
+<meta property="article:published_time" content="2020-03-03T08:05:26.000Z">
+<meta property="article:modified_time" content="2020-05-20T07:57:10.955Z">
+<meta property="article:author" content="光光～">
+<meta property="article:tag" content="lint">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/irk1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>Git Hooks & Husky | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/03/03/Git-Hooks-Husky/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git Hooks & Husky</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T16:05:26+08:00">
+                2020-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%8C%96/" itemprop="url" rel="index">
+                    <span itemprop="name">工程化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>众所周知，javascript一开始就是一种非常灵活的语言，随着新特性不断增加，框架层出不穷，加之个人的编程风格。前端代码的可维护性问题越来越突出。做一个有工程素养的前端的开发，我们要注重编码规范。做为架构或者团队的leader，更应该考虑编码规范的约束机制。所以做好<strong>代码风格检查（Code Linting，简称 Lint）</strong>已经成为前端团队必修课，是保障代码规范一致性的重要手段。 做好link可以有效的减少bug，提升开发效率和代码的可读性。其中，提交前lint更有效率。 如何着手呢？自然是从我们的代码管理工具。</p>
+<h1 id="Git-hooks"><a href="#Git-hooks" class="headerlink" title="Git hooks"></a>Git hooks</h1><p>现在最流行的版本管理工具非<strong>Git</strong>莫属，Git本身也增加了一些<strong>hooks（钩子）</strong>，在git命令前置执行来阻止一些不规范的操作。</p>
+<pre><code class="language-bash">$ cd .git/hooks
+$ ls -a</code></pre>
+<ul>
+<li>git hooks是在.git/hooks目录下的一些脚本文件，用于控制git工作的流程。</li>
+<li>内置的脚本示例都是<code>shell</code>脚本，其中一些还混杂了<code>Perl</code>代码，不过，任何正确命名的可执行脚本都可以正常使用 —— 你可以用<code>Ruby</code>或<code>Python</code>，当然我们前端也可以用<code>Node</code>来编写。</li>
+<li>钩子分为<strong>客户端钩子</strong>和<strong>服务端钩子</strong>。</li>
+<li>客户端钩子：<code>pre-commit、prepare-commit-msg、commit-msg、post-commit</code>等，主要用于控制客户端git的提交工作流。</li>
+<li>服务端钩子：<code>pre-receive、post-receive、update</code>，主要在服务端接收提交对象时、推送到服务器之前调用。</li>
+<li>钩子都是以<code>.sample</code>结尾的文件名。注意这些示例脚本是不会执行的，只有重命名去掉<code>.sample</code>后才会生效。</li>
+</ul>
+<p>但是直接使用git hooks不方便在团队内推广。需要有工具自动把脚本安装到每个人的本地项目上才能生效。所以我们需要借助一些其他工具库。</p>
+<h1 id="Husky"><a href="#Husky" class="headerlink" title="Husky"></a>Husky</h1><p>前端常用的git hooks工具有<code>pre-commit</code>和<code>Husky</code>。这里我只介绍Husky（更全面一些）。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>husky利用git hooks会在相关命令执行前执行的特性，<strong>取而代之</strong>。</p>
+<pre><code class="language-javascript">#!/bin/sh
+# husky
+export HUSKY_GIT_PARAMS=&quot;$*&quot;
+node_modules/run-node/run-node ./node_modules/husky/lib/runner/bin `basename &quot;$0&quot;`
+...
+</code></pre>
+<ul>
+<li><p>husky 使用了自定义的安装过程：<code>node lib/installer/bin install</code>（在<code>node_modules/husky/package.json</code>里）。执行的时会在项目的<code>.git/hooks</code> 目录生成所有 hook 的脚本（你自定义的hook脚本，husky不会覆盖）。</p>
+</li>
+<li><p>每个hook脚本都是一样的, 关键的部分是 <code>bashname &quot;$0&quot;</code>，这样可以拿到当前的 hook名，如pre-commit、pre-push。</p>
+</li>
+<li><p>最后根据<code>package.json</code>的配置，执行我们定义的，相对应的hook脚本（我们可以用node写）。</p>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><pre><code class="language-javascript">npm install husky --save-dev
+// 或者
+yarn add husky --dev</code></pre>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><pre><code class="language-javascript">//package.json文件
+&quot;husky&quot;: {
+  &quot;hooks&quot;: {
+    &quot;pre-commit&quot;: &quot;eslint&quot;,
+    &quot;commit-msg&quot;: &quot;node preCommit.js&quot;  // 可以集成到自己框架的的cli中，比如：luna preCommit
+  }
+}</code></pre>
+<ul>
+<li>当你<code>git commit</code>的时候，会触发hook（pre-commit），husky将会执行对应配置(pre-commit)里的<code>eslint</code>命令，没有问题才提交。</li>
+<li>当你<code>git commit</code>的时候，会触发hook (commit-msg)，husky将会执行对应配置(commit-msg)里的<code>preCommit.js</code>脚本，没有问题才提交。</li>
+</ul>
+<h2 id="实际应用场景一：Commit-message格式校验"><a href="#实际应用场景一：Commit-message格式校验" class="headerlink" title="实际应用场景一：Commit message格式校验"></a>实际应用场景一：Commit message格式校验</h2><p>上面配置中的<code>preCommit.js</code>文件是按公司要求，校验提交的<code>message</code>必须符合规定格式的脚本，代码如下：</p>
+<pre><code class="language-javascript">/*
+* 功能： git commit时，自动验证提交信息是否符合规范
+* 提交规范： 范式 {ir_key}:  {subject_content}.例如：&quot;STY-ABCD-TY-76379:某个功能开发&quot;
+* 主要是读取 .git/COMMIT_EDITMSG 这个文件，文件记录了当前commit之后的信息
+*/
+const fs = require(&#39;fs&#39;);
+const chalk = require(&#39;chalk&#39;);
+
+const warning = chalk.keyword(&#39;red&#39;);
+const msg = chalk.keyword(&#39;yellow&#39;);
+// const link = chalk.hex(&#39;#00bfff&#39;);
+
+const pattern = /^((STY|DTK)-ABCD-TY-)\d{5}:[^]/;
+const commitMsg = fs.readFileSync(process.env.HUSKY_GIT_PARAMS, &#39;utf-8&#39;).trim();
+
+if (!pattern.test(commitMsg.toUpperCase())) {
+  console.log(msg(`\nYour commit message: ${commitMsg}\n`));
+  console.log(warning(&#39;-----------------------Git提交Message不符合规范------------------------------\n&#39;));
+  console.log(msg(&#39;范式：{ir_key}: {subject_content}。“ir_key”不区分大小写，“冒号”必须半角英文\n&#39;));
+  console.log(msg(&#39;示例1：DTK-ABCD-TY-76379: 某个bug fix\n&#39;));
+  console.log(msg(&#39;示例2：STY-ABCD-TY-76379: 某个功能开发\n&#39;));
+  console.log(warning(&#39;-----------------------------------------------------------------------------\n&#39;));
+  process.exit(1);
+}
+process.exit(0);
+</code></pre>
+<h2 id="实际应用场景二：Commit-msg自动格式化"><a href="#实际应用场景二：Commit-msg自动格式化" class="headerlink" title="实际应用场景二：Commit msg自动格式化"></a>实际应用场景二：Commit msg自动格式化</h2><p>我们公司<code>commit msg</code>要求范式：<code>{ir_key}: {subject_content}</code>。即具体信息前面要加<code>ir_key:</code>(需求号)。那我们如何自动在msg前面添加<code>{ir_key}:</code>。只需解决两个问题：</p>
+<ul>
+<li>如何修改<code>commit msg</code></li>
+<li><code>ir_key</code>从哪里读取</li>
+</ul>
+<h3 id="解决思路："><a href="#解决思路：" class="headerlink" title="解决思路："></a>解决思路：</h3><ul>
+<li>从场景一代码了解到，当前<code>commit</code>的<code>msg</code>是通过<code>git/COMMIT_EDITMSG</code> 这个文件获取。那我们可以通过<code>hooks</code>修改这个文件的内容，便可以修改<code>msg</code>。</li>
+<li>同样，我们可以参考以上<code>git</code>的策略，我们只要把<code>ir_key</code>存在一个本地文件中，<code>commit</code>的时候读取即可。</li>
+</ul>
+<h3 id="具体方案："><a href="#具体方案：" class="headerlink" title="具体方案："></a>具体方案：</h3><p>我在项目的公共工具库项目新增了两个cli命令。</p>
+<ul>
+<li><code>irk &lt;ir_key&gt;</code>: 独立使用。后面带参数，且参数符合msg规范，则存入本地数据文件<code>.git/msg</code>(这样不会提交到远程，也无需再加.gitignore)；无参数，则读取<code>.git/msg</code>，打印<strong>当前分支</strong>的<code>ir_key</code>存储情况。数据文件中<code>ir_key</code>是按分支存储的。</li>
+<li><code>commit-msg-init</code>: 配合hook<code>commit-msg</code>使用。首先校验当前msg是否合规，如果不合规，且存在<strong>当前分支</strong>的<code>ir_key</code>缓存数据，则在当前<code>msg</code>前拼接<code>ir_key</code>, 存入<code>git/COMMIT_EDITMSG</code>文件。<br>使用效果如下：<img src="/2020/03/03/Git-Hooks-Husky/irk1.png" class="" title="irk">
+<img src="/2020/03/03/Git-Hooks-Husky/irk2.png" class="" title="commit">
+
+</li>
+</ul>
+<p><code>irk</code>核心代码如下：</p>
+<pre><code class="language-javascript">  try {
+    // 获取当前分支号
+    const branchName = getBranchName()
+    // 读取本地数据缓存文件: .git/msg
+    let dataObj = getFileObj(tempFilePath);
+    // ir_key 需符合格式
+    const pattern = /^((STY|DTK|BUG)-ABCD-(TY|GJ)-)\d{5}/;
+    // 读取参数
+    const param = process.argv[2];
+    // 有参数set，无参数get
+    if ( param ) {    
+      if (!pattern.test(param.toUpperCase())) {
+        // 不符合格式报错
+        console.log(warning(&#39;Wrong irk, Need to match:/^((STY|DTK|BUG)-ABCD-(TY|GJ)-)\d{5}/\n&#39;))
+      } else {
+        // 写入或复写
+        dataObj[branchName] = param;
+        setIrk(dataObj)
+      }
+    } else {
+      //读取显示
+      if (dataObj[branchName]) {
+        console.log(msg(`irk: ${dataObj[branchName]} \n`))
+      } else {
+        console.log(msg(&quot;No irk for current branch&quot;))
+      }
+    }
+  } catch (err) {
+    console.log(warning(&#39;Process err: &#39; + err))
+  }</code></pre>
+<p><code>commit-msg-init</code>核心代码如下：</p>
+<pre><code class="language-javascript">const fs = require(&#39;fs&#39;);
+const chalk = require(&#39;chalk&#39;);
+const { getBranchName, getFileObj, printMsgRuleLog } = require(&#39;../utils/utils&#39;)
+const { tempFilePath } = require(&#39;../config/config&#39;)
+// msg格式
+const pattern = /^((STY|DTK|BUG)-ABCD-(TY|GJ)-)\d{5}:[^]/;
+// 当前commit msg
+const commitMsg = fs.readFileSync(process.env.HUSKY_GIT_PARAMS, &#39;utf-8&#39;);
+// 获取当前分支号
+const branchName = getBranchName()
+// 如果当前msg不符合规范
+if (!pattern.test(commitMsg.toUpperCase())) {
+  // 读取本地数据缓存文件: .git/msg
+  const fileObj = getFileObj(tempFilePath);
+  // 如果文件有数据，并且存在当前分支的数据
+  if ( fileObj &amp;&amp; fileObj[branchName] ) {
+    // 拼接
+    const newCommitMsg = `${fileObj[branchName]}:${commitMsg}`
+    // 保险起见，二级校验拼接好的msg
+    if (pattern.test(newCommitMsg.toUpperCase())){
+      // 新msg写入文件
+      fs.writeFileSync(process.env.HUSKY_GIT_PARAMS,newCommitMsg)
+      console.log(chalk.green(`\n Formatted Message：${newCommitMsg}\n`))
+      process.exit(0);
+    } else {
+      //打印规范日志
+      printMsgRuleLog(commitMsg); 
+      process.exit(1);
+    }
+  } else {
+    printMsgRuleLog(commitMsg);
+    process.exit(1);
+  }
+} 
+process.exit(0);</code></pre>
+<h2 id="实际应用场景三：Commit-文件校验"><a href="#实际应用场景三：Commit-文件校验" class="headerlink" title="实际应用场景三：Commit 文件校验"></a>实际应用场景三：Commit 文件校验</h2><p>比如限制某些类型文件，某个特定目录的文件不允许修改，删除。</p>
+<blockquote>
+<p>以下代码来自：<a href="https://github.com/y8n/git-hooks-node/blob/master/xgfe-ma/pre-commit.js#L45-L73" target="_blank" rel="noopener">https://github.com/y8n/git-hooks-node/blob/master/xgfe-ma/pre-commit.js#L45-L73</a> </p>
+</blockquote>
+<pre><code class="language-javascript">var child_process = require(&#39;child_process&#39;);
+var execSync = child_process.execSync;
+var spawnSync = child_process.spawnSync;
+var path = require(&#39;path&#39;);
+
+var files = getDiffFiles();
+if (!files.length) {
+    quit();
+}
+var libFiles = files.filter(function (file) {
+    return isLibFiles(file.subpath) &amp;&amp; ~[&#39;d&#39;, &#39;m&#39;, &#39;c&#39;, &#39;r&#39;].indexOf(file.status);
+});
+if (libFiles.length) {
+    console.log(&#39;[WARNING] You cannot delete/modify/copy/rename any file in lib directory！！\n&#39; +
+        &#39;Listed below are thus files:&#39;);
+    var libFilePaths = libFiles.map(function (file) {
+        return file.subpath;
+    }).join(&#39;\n&#39;);
+    console.log(libFilePaths + &#39;\n&#39;);
+    quit(1);
+}
+// 待检查的文件相对路径
+var lintFiles = files.filter(function (file) {
+    return !isLibFiles(file.subpath)
+        &amp;&amp; !isDistFiles(file.subpath)
+        &amp;&amp; ~[&#39;a&#39;, &#39;m&#39;, &#39;c&#39;, &#39;r&#39;].indexOf(file.status);
+}).map(function (file) {
+    return file.subpath;
+});
+if (!lintFiles.length) {
+    quit();
+}
+
+var argv = [&#39;lint&#39;];
+argv = argv.concat(lintFiles);
+argv = argv.concat([&#39;-c&#39;, &#39;./.lintrc&#39;]);
+var result = spawnSync(&#39;xg&#39;, argv, {stdio: &#39;inherit&#39;});
+quit(result.status);
+
+/**
+ * 获取所有变动的文件,包括增(A)删(D)改(M)重命名(R)复制(C)等
+ * @param [type] {string} - 文件变动类型
+ * @returns {Array}
+ */
+function getDiffFiles(type) {
+    var DIFF_COMMAND = &#39;git diff --cached --name-status HEAD&#39;;
+    var root = process.cwd();
+    var files = execSync(DIFF_COMMAND).toString().split(&#39;\n&#39;);
+    var result = [];
+    type = type || &#39;admrc&#39;;
+    var types = type.split(&#39;&#39;).map(function (t) {
+        return t.toLowerCase();
+    });
+    files.forEach(function (file) {
+        if (!file) {
+            return;
+        }
+        var temp = file.split(/[\n\t]/);
+        var status = temp[0].toLowerCase();
+        var filepath = root + &#39;/&#39; + temp[1];
+        var extName = path.extname(filepath).slice(1);
+
+        if (types.length &amp;&amp; ~types.indexOf(status)) {
+            result.push({
+                status: status, // 文件变更状态-AMDRC
+                path: filepath, // 文件绝对路径
+                subpath: temp[1], // 文件相对路径
+                extName: extName // 文件后缀名
+            });
+        }
+    });
+    return result;
+}
+/**
+ * 是否是lib目录下的文件
+ */
+function isLibFiles(subpath) {
+    return subpath.match(/^src\/lib\/.*/i);
+}
+/**
+ * 是否是dist目录下的文件
+ */
+function isDistFiles(subpath) {
+    return subpath.match(/^dist\/.*/i);
+}
+/**
+ * 退出
+ * @param errorCode
+ */
+function quit(errorCode) {
+    if (errorCode) {
+        console.log(&#39;Commit aborted.&#39;);
+    }
+    process.exit(errorCode || 0);
+}</code></pre>
+<h1 id="Eslint"><a href="#Eslint" class="headerlink" title="Eslint"></a>Eslint</h1><p><strong>ESLint</strong>是一个用来识别 ECMAScript 并且按照规则给出报告的代码检测工具，使用它可以避免低级错误和统一代码的风格。它附带有大量的规则.<br>运行 <code>eslint --init</code> 之后，<code>.eslintrc</code> 文件会在你的文件夹中自动创建。你只要在文件的<code>rules</code>属性中配置你想要的规则，利用pre-commit钩子触发校验即可。它主要的特点是：</p>
+<ul>
+<li>使用 Espree 解析 JavaScript。</li>
+<li>使用 AST 去分析代码中的模式。</li>
+<li>完全插件化的。每一个规则都是一个插件并且你可以在运行时添加更多的规则。<br><a href="https://cn.eslint.org/docs/user-guide/getting-started" target="_blank" rel="noopener">eslint中文网</a></li>
+</ul>
+<h1 id="Lint-staged"><a href="#Lint-staged" class="headerlink" title="Lint-staged"></a>Lint-staged</h1><p>直接触发eslint进行代码检测有一个问题：引入初期，你只改了文件 A，但是文件 B、C、D …中也有大量错误。你基本上没有时间和勇气去fix所有lint错误。这个时候，很多同学（包括我）选择 <code>git commit -m &quot;fix bug&quot; --no-verify</code>来逃避。只是‘很负责任’的把文件A的错误解决。<br>如果每次提交只检查本次提交所修改的文件，上面的痛点就解决了。<code>lint-staged</code>的开发者就是基于这个想法，其中 <code>staged</code> 是<code>Git</code>里面的概念，指<strong>待提交区</strong>，使用 <code>git commit -a</code>，或者先 <code>git add</code> 然后 <code>git commit</code> 的时候，你的修改代码都会经过待提交区。<br>安装依赖：</p>
+<pre><code class="language-javascript">npm install lint-staged --save-dev
+// 或者
+yarn add lint-staged --dev</code></pre>
+<p>引入<code>Lint-staged</code>之后, 之前的<code>husky</code>配置升级如下：</p>
+<pre><code class="language-javascript">//package.json文件
+&quot;husky&quot;: {
+  &quot;hooks&quot;: {
+    &quot;pre-commit&quot;: &quot;lint-staged&quot;,  // 看这里
+    &quot;commit-msg&quot;: &quot;node preCommit.js&quot; 
+  }
+},
+&quot;lint-staged&quot;: {                  // 和这里
+  &quot;src/**/*.js&quot;: &quot;eslint&quot;
+}</code></pre>
+<h1 id="prettier"><a href="#prettier" class="headerlink" title="prettier"></a>prettier</h1><p><code>prettier</code> 是业界主流的代码风格<strong>格式化</strong>工具。虽然用<code>eslint —fix</code>也可以进行代码格式化，但是eslint已经配置繁多。我们还是用eslint检查代码，用<code>prettier</code>来格式化代码。<strong>术业有专攻</strong>。</p>
+<ul>
+<li>你可以在vscode安装<code>Prettier- Code formatter</code>插件。默认快捷键是<code>alt + shift + f</code>。安装成功后，编辑器的配置<code>setting.json</code>会出现<code>prettier</code>插件的相关配置节点，同时也能看到一些默认的配置信息。</li>
+<li>实际项目中<strong>推荐</strong>在根目录创建<code>.prettierrc</code>文件配置（比配置在<code>Package.json</code>更独立）来使用，这样配置可以集成到脚手架，保证所有项目规则统一。</li>
+</ul>
+<p>常用配置如下：</p>
+<pre><code class="language-javascript">module.exports = {
+  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80
+  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80
+  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减
+  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号
+  &quot;semi&quot;: true, //行位是否使用分号，默认为true
+  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;
+  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：{ foo: bar }
+  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。
+}</code></pre>
+<p>更多配置，可以参考官网：<a href="https://prettier.io/docs/en/index.html" target="_blank" rel="noopener"> prettier 官网</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://www.ctolib.com/docs-Git-Chinese-Course-c-index.html" target="_blank" rel="noopener">Git hooks文档</a><br><a href="https://segmentfault.com/a/1190000007820338" target="_blank" rel="noopener">用 Node.js 写前端自己的 Git-hooks</a><br><a href="https://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html" target="_blank" rel="noopener">阮一峰-Node.js 命令行程序开发教程</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/lint/" rel="tag"># lint</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/" rel="next" title="兼容问题笔记">
+                <i class="fa fa-chevron-left"></i> 兼容问题笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/05/React%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB/" rel="prev" title="React技术体系">
+                React技术体系 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git-hooks"><span class="nav-number">1.</span> <span class="nav-text">Git hooks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Husky"><span class="nav-number">2.</span> <span class="nav-text">Husky</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际应用场景一：Commit-message格式校验"><span class="nav-number">2.4.</span> <span class="nav-text">实际应用场景一：Commit message格式校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际应用场景二：Commit-msg自动格式化"><span class="nav-number">2.5.</span> <span class="nav-text">实际应用场景二：Commit msg自动格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决思路："><span class="nav-number">2.5.1.</span> <span class="nav-text">解决思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体方案："><span class="nav-number">2.5.2.</span> <span class="nav-text">具体方案：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际应用场景三：Commit-文件校验"><span class="nav-number">2.6.</span> <span class="nav-text">实际应用场景三：Commit 文件校验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eslint"><span class="nav-number">3.</span> <span class="nav-text">Eslint</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lint-staged"><span class="nav-number">4.</span> <span class="nav-text">Lint-staged</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prettier"><span class="nav-number">5.</span> <span class="nav-text">prettier</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

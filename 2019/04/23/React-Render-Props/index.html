@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="可组合组件我们先回顾一下可组合组件。在 props 对象中有一个常用的 children 属性。通过它你可以将元素从上层传递到你的组件中，这些元素对你的组件来说是未知的，但是却为组件相互组合提供了可能性。children 非常灵活，可以是字符串，组件，甚至他们的集合，就像写html一样： const A&#x3D; ({ children }) &#x3D;&gt; (   &lt;div&gt;     &lt;p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React - Render Props">
+<meta property="og:url" content="http://www.mala520.life/2019/04/23/React-Render-Props/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="可组合组件我们先回顾一下可组合组件。在 props 对象中有一个常用的 children 属性。通过它你可以将元素从上层传递到你的组件中，这些元素对你的组件来说是未知的，但是却为组件相互组合提供了可能性。children 非常灵活，可以是字符串，组件，甚至他们的集合，就像写html一样： const A&#x3D; ({ children }) &#x3D;&gt; (   &lt;div&gt;     &lt;p">
+<meta property="article:published_time" content="2019-04-23T06:29:49.000Z">
+<meta property="article:modified_time" content="2020-05-06T10:19:45.813Z">
+<meta property="article:author" content="光光～">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2019/04/23/React-Render-Props/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>React - Render Props | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/04/23/React-Render-Props/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="光光～">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React - Render Props</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-23T14:29:49+08:00">
+                2019-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="可组合组件"><a href="#可组合组件" class="headerlink" title="可组合组件"></a>可组合组件</h1><p>我们先回顾一下<strong>可组合组件</strong>。在 <code>props</code> 对象中有一个常用的 <code>children</code> 属性。通过它你可以将元素从上层传递到你的组件中，这些元素对你的组件来说是未知的，但是却为组件相互组合提供了可能性。<code>children</code> 非常灵活，可以是字符串，组件，甚至他们的集合，就像写<code>html</code>一样：</p>
+<pre><code class="language-jsx">const A= ({ children }) =&gt; (
+  &lt;div&gt;
+    &lt;p&gt; A logic&lt;/p&gt;
+    { children }
+  &lt;/div&gt;
+)
+const App = () =&gt; (
+  &lt;&gt;
+    &lt;p&gt; children 示例：&lt;/p&gt;
+    &lt;A&gt;
+      组件B：&lt;B /&gt;
+      组件C：&lt;C /&gt;
+    &lt;/A&gt;
+  &lt;/&gt;
+);</code></pre>
+<p>上面的组件<code>A</code>就是一个可组合组件。</p>
+<h1 id="可共享的可组合组件"><a href="#可共享的可组合组件" class="headerlink" title="可共享的可组合组件"></a>可共享的可组合组件</h1><p>上面示例中 <code>children</code> 是最基本的使用方式，只是在组合层面，还没到达共享层面。如果 <code>B</code> <code>C</code> 组件要使用 <code>A</code> 组件的属性，即 <code>A</code> 组件要共享自己的属性给<code>B C</code> 使用。通过 通过<code>callBack</code> 实现 <code>A &gt; APP &gt; B&amp;C</code> 这种传递显然太low。这里就有一个技巧：把 <code>children</code> 函数化 这样便可以通过传递实现数据共享。<br>我们来看一个实例：一个检测浏览器在线/离线状态的共享组件，很多组件都需要通过这个组件获取浏览器是否在线：</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+
+// 共享组件
+class BrowserIfOnline extends React.Component {
+  state = {
+    isOnline: window.navigator.onLine
+  };
+  onOffline = () =&gt; {
+    this.setState({ isOnline: false });
+  };
+  onOnline = () =&gt; {
+    this.setState({ isOnline: true });
+  };
+  componentDidMount() {
+    // 事件监听
+    window.addEventListener(&quot;offline&quot;, this.onOffline);
+    window.addEventListener(&quot;online&quot;, this.onOnline);
+  }
+  componentWillUnmount() {
+    window.removeEventListener(&quot;offline&quot;, this.onOffline);
+    window.removeEventListener(&quot;online&quot;, this.onOnline);
+  }
+
+  render() {
+    return (
+      &lt;&gt;
+        {this.state.isOnline ? (
+          &lt;div&gt;网断已连接 ...&lt;/div&gt;
+        ) : (
+          &lt;div&gt;网络已断开 ...&lt;/div&gt;
+        )}
+        {this.props.children(this.state.isOnline)}
+      &lt;/&gt;
+    );
+  }
+}
+// 子组件
+const B = ({ isOnline }) =&gt; &lt;p&gt;组件B：{isOnline ? &quot;在线&quot; : &quot;离线&quot;}&lt;/p&gt;;
+const C = ({ isOnline }) =&gt; &lt;p&gt;组件C：{isOnline ? &quot;在线&quot; : &quot;离线&quot;}&lt;/p&gt;;
+
+// 通过 函数化的 children 使用共享组件
+class A extends React.Component {
+  render() {
+    return (
+      &lt;BrowserIfOnline&gt;
+        {isOnline =&gt; (
+          &lt;&gt;
+            &lt;B isOnline={isOnline} /&gt;
+            &lt;C isOnline={isOnline} /&gt;
+          &lt;/&gt;
+        )}
+      &lt;/BrowserIfOnline&gt;
+    );
+  }
+}
+export default A</code></pre>
+<h1 id="Render-props-技巧"><a href="#Render-props-技巧" class="headerlink" title="Render props 技巧"></a>Render props 技巧</h1><p><code>render props</code> 是 <code>React</code> 的 一个高级特性。指一种在 <code>React</code> 组件之间使用一个值为函数的 <code>prop</code> <strong>共享代码/逻辑</strong>的简单技术。是一个用于告知组件需要渲染什么内容的函数。</p>
+<p>上述<strong>可共享的可组合组件</strong>的实现，使用的便是 <code>children</code> + <code>render props</code> 技巧。在官方文档中介绍的 <code>render props</code> 使用的是另一种方式：把一个函数作为<code>render</code> 属性传递，而非 <code>children</code>：</p>
+<pre><code class="language-jsx">// 共享组件 
+// 通过props.render 渲染其他组件，并共享数据
+class BrowserIfOnline extends React.Component {
+
+  // ......
+  // 这里省略其他逻辑 同上
+  // ......
+
+  render() {
+    return (
+      &lt;&gt;
+        {this.state.isOnline ? (
+          &lt;div&gt;网断已连接 ...&lt;/div&gt;
+        ) : (
+          &lt;div&gt;网络已断开 ...&lt;/div&gt;
+        )}
+        {this.props.render(this.state.isOnline)}
+      &lt;/&gt;
+    );
+  }
+}
+//通过`render props` 的 属性（render）方式使用共享组件
+class A extends React.Component {
+  render() {
+    return (
+      &lt;BrowserIfOnline
+        render={isOnline =&gt; (
+          &lt;&gt;
+            &lt;B isOnline={isOnline} /&gt;
+            &lt;C isOnline={isOnline} /&gt;
+          &lt;/&gt;
+        )}
+      /&gt;
+    );
+  }
+}</code></pre>
+<p><code>render</code> 属性是国际惯例，你也可以自定义，但最好不要。复杂场景下，你可能需要多个 <code>render</code> 函数。这个时候必须要重命名了，但依然建议加<code>render</code>前缀，比如<code>renderOne renderTwo</code>。</p>
+<h1 id="render-props-优势"><a href="#render-props-优势" class="headerlink" title="render props 优势"></a><code>render props</code> 优势</h1><p>很多时候，<code>React Hoc</code> 可替代 <code>render props</code> 来实现逻辑共享。比如上面的功能用<code>React Hoc</code> 实现如下：</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+// 把BrowserIfOnline组件封装成一个高阶组件 withBrowserIfOnline
+const withBrowserIfOnline = comps =&gt;
+  class BrowserIfOnline extends React.Component {
+    state = {
+      isOnline: window.navigator.onLine
+    };
+    onOffline = () =&gt; {
+      this.setState({ isOnline: false });
+    };
+    onOnline = () =&gt; {
+      this.setState({ isOnline: true });
+    };
+    componentDidMount() {
+      // 事件监听
+      window.addEventListener(&quot;offline&quot;, this.onOffline);
+      window.addEventListener(&quot;online&quot;, this.onOnline);
+    }
+    componentWillUnmount() {
+      window.removeEventListener(&quot;offline&quot;, this.onOffline);
+      window.removeEventListener(&quot;online&quot;, this.onOnline);
+    }
+
+    render() {
+      return (
+        &lt;&gt;
+          {this.state.isOnline ? (
+            &lt;div&gt;网断已连接 ...&lt;/div&gt;
+          ) : (
+            &lt;div&gt;网络已断开 ...&lt;/div&gt;
+          )}
+          {comps.map((Comp) =&gt; &lt;Comp isOnline={this.state.isOnline}/&gt;)}
+        &lt;/&gt;
+      );
+    }
+  }
+const B = ({ isOnline }) =&gt; &lt;p&gt;组件B：{isOnline ? &quot;在线&quot; : &quot;离线&quot;}&lt;/p&gt;;
+const C = ({ isOnline }) =&gt; &lt;p&gt;组件C：{isOnline ? &quot;在线&quot; : &quot;离线&quot;}&lt;/p&gt;;
+
+const D = withBrowserIfOnline([B, C]);
+export default class A extends React.Component {
+  render() {
+    return (
+      &lt;D/&gt;
+    );
+  }
+}
+</code></pre>
+<p>我们使用 <code>render props</code> 的优点主要体现在它的灵活性。比如上述示例，我们是可以在组件 <code>B</code>  <code>C</code> 前后增加一些零碎的代码逻辑，而<code>React Hoc</code>就没那么便利。</p>
+<pre><code class="language-jsx">class A extends React.Component {
+  render() {
+    return (
+      &lt;BrowserIfOnline
+        render={isOnline =&gt; (
+          &lt;&gt;
+            &lt;p&gt;组件B：&lt;/p&gt;
+            &lt;B isOnline={isOnline} /&gt;
+            &lt;p&gt;组件C：&lt;/p&gt;
+            &lt;C isOnline={isOnline} /&gt;
+            &lt;p&gt;其他信息&lt;/p&gt;
+          &lt;/&gt;
+        )}
+      /&gt;
+    );
+  }
+}
+</code></pre>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zh-hans.reactjs.org/docs/render-props.html" target="_blank" rel="noopener">官网 - Render Props</a><br><a href="https://www.robinwieruch.de/react-render-props" target="_blank" rel="noopener">React Render Props</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/09/React-%E6%B5%8B%E8%AF%95/" rel="next" title="React 单元测试">
+                <i class="fa fa-chevron-left"></i> React 单元测试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/25/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="vue学习笔记">
+                vue学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="光光～" />
+            
+              <p class="site-author-name" itemprop="name">光光～</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#可组合组件"><span class="nav-number">1.</span> <span class="nav-text">可组合组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可共享的可组合组件"><span class="nav-number">2.</span> <span class="nav-text">可共享的可组合组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Render-props-技巧"><span class="nav-number">3.</span> <span class="nav-text">Render props 技巧</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#render-props-优势"><span class="nav-number">4.</span> <span class="nav-text">render props 优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">光光～</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>
