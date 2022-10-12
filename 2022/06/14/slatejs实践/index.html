@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate 架构设计类似于 MVC：  (Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (View">
+<meta name="description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate.js 架构设计类似于 MVC：  (Model)slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (Vi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="slatejs实践">
 <meta property="og:url" content="http://www.mala520.life/2022/06/14/slatejs%E5%AE%9E%E8%B7%B5/index.html">
 <meta property="og:site_name" content="Live and learn">
-<meta property="og:description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate 架构设计类似于 MVC：  (Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (View">
+<meta property="og:description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate.js 架构设计类似于 MVC：  (Model)slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (Vi">
 <meta property="article:published_time" content="2022-06-14T06:51:27.000Z">
-<meta property="article:modified_time" content="2022-09-28T06:19:54.384Z">
+<meta property="article:modified_time" content="2022-10-11T13:06:21.175Z">
 <meta property="article:author" content="祁连">
 <meta name="twitter:card" content="summary">
 
@@ -311,31 +311,31 @@
 
       
         <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><hr>
-<p>Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。 </p>
-<p>slate 架构设计类似于 MVC：</p>
+<p><code>Slate.js</code> 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 <code>Ian Storm Taylor</code>。它和 <code>Draft.js</code>, <code>Prosemirror</code>, <code>Quill</code>类似，都是基于结构化对象来渲染富文本内容。 </p>
+<p><code>slate.js</code> 架构设计类似于 <code>MVC</code>：</p>
 <ul>
-<li>(Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。</li>
-<li>(View) slate 定义了一套与数据模型对应的视图模型（洋葱模型），使用 react 将数据模型渲染成视图模型。</li>
-<li>(Ctrl) slate 支持自定义事件监听，然后通过 commonds 调用更新数据模型。</li>
+<li><code>(Model)</code>slate 定义了一套数据模型以及更新 model 的一系列 commonds。</li>
+<li><code>(View)</code> slate 定义了一套与数据模型对应的视图模型（洋葱模型），使用 react 将数据模型渲染成视图模型。</li>
+<li><code>(Ctrl)</code> slate 支持自定义事件监听，然后通过 commonds 调用更新数据模型。</li>
 </ul>
-<p>这里，commonds指的是 slate 内部定义的一系列 Operation。和用来生产Operation的一系列Transforms 辅助方法。<br>model 更新以后会通过一些规则来保证数据格式的规范，对model进行正确性校验，然后触发view变更。</p>
-<p>slate 仓库下包含四个 package：</p>
+<p>这里，<code>commonds</code>指的是 <code>slate</code> 内部定义的一系列 <code>Operation</code>。和用来生产<code>Operation</code>的一系列<code>Transforms</code> 辅助方法。<br><code>model</code> 更新以后会通过一些规则来保证数据格式的规范，对<code>model</code>进行正确性校验，然后触发<code>view</code>变更。</p>
+<p><code>slate</code> 仓库下包含四个 <code>package</code>：</p>
 <ul>
-<li>slate：这一部分是编辑器的核心，定义了数据模型（model），操作模型的方法和编辑器实例本身。</li>
-<li>slate-react：以插件的形式提供 DOM 渲染和用户交互能力，包括光标、快捷键等等。</li>
-<li>slate-history：以插件的形式提供 undo/redo 能力。</li>
-<li>slate-hyperscript：让用户能够使用 JSX 语法来创建 slate 的数据。</li>
+<li><code>slate</code>：这一部分是编辑器的核心，定义了数据模型<code>（model）</code>，操作模型的方法和编辑器实例本身。</li>
+<li><code>slate-react</code>：以插件的形式提供 <code>DOM</code> 渲染和用户交互能力，包括光标、快捷键等等。</li>
+<li><code>slate-history</code>：以插件的形式提供 <code>undo/redo</code> 能力。</li>
+<li><code>slate-hyperscript</code>：让用户能够使用 <code>JSX</code>语法来创建 <code>slate</code> 的数据。</li>
 </ul>
 <h1 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h1><hr>
 <ul>
 <li>灵活，完全可定制。</li>
 <li>插件是一等公民，你可以以插件的形式定制自己的用于修改编辑器的行为API.</li>
-<li>数据模型类似于可嵌套的Dom树，Schema结构非常精简。</li>
-<li>具有原子化操作 API，支持协同编辑。</li>
-<li>使用 React 作为渲染层；</li>
+<li>数据模型类似于可嵌套的<code>Dom</code>树，<code>Schema</code>结构非常精简。</li>
+<li>具有原子化操作 <code>API</code>，支持协同编辑。</li>
+<li>使用 <code>React</code> 作为渲染层；</li>
 </ul>
 <h1 id="slate-数据模型"><a href="#slate-数据模型" class="headerlink" title="slate 数据模型"></a>slate 数据模型</h1><hr>
-<p>slate 以树形结构来表示和存储文档内容，树的节点类型为 Node，分为三种子类型：</p>
+<p><code>slate</code> 以树形结构来表示和存储文档内容，树的节点类型为 <code>Node</code>，分为三种子类型：</p>
 <pre><code class="language-js">export type Node = Editor | Element | Text
 
 export interface Element {
@@ -348,11 +348,11 @@ export interface Text {
   [key: string]: unknown
 }</code></pre>
 <ul>
-<li>Editor 是一种特殊的 Element ，它既是编辑器实例类型，也是文档树的根节点</li>
-<li>Element 类型含有 children 属性，可以作为其他 Node 的父节点</li>
-<li>Text 类型是树的叶子结点，包含文字信息</li>
+<li><code>Editor</code> 是一种特殊的 <code>Element</code> ，它既是编辑器实例类型，也是文档树的根节点</li>
+<li><code>Element</code> 类型含有 <code>children</code> 属性，可以作为其他 <code>Node</code> 的父节点</li>
+<li><code>Text</code> 类型是树的叶子结点，包含文字信息</li>
 </ul>
-<p>用户可以自行拓展 Node 的属性，例如通过添加 type 字段标识 Node 的类型（paragraph, ordered list, heading 等等），或者是文本的属性（italic, bold 等等），来描述富文本中的文字和段落。</p>
+<p>用户可以自行拓展 <code>Node</code> 的属性，例如通过添加 <code>type</code> 字段标识<code>Node</code> 的类型（<code>paragraph</code>, <code>ordered list</code>, <code>heading</code> 等等），或者是文本的属性（<code>italic</code>, <code>bold</code>等等），来描述富文本中的文字和段落。</p>
 <pre><code class="language-js">const initialValue = [
     {
         type: &#39;paragraph&#39;,
@@ -370,40 +370,40 @@ export interface Text {
     // 其他的继续扩展
 ]</code></pre>
 <h1 id="slate-渲染模型"><a href="#slate-渲染模型" class="headerlink" title="slate 渲染模型"></a>slate 渲染模型</h1><hr>
-<p>slate数据模型通过slate-react视图渲染以后的组件层级如下图所示：</p>
-<p>你会看到一些 data- 开头的自定义内置特性（attribute），比如 data-slate-node 等。</p>
-<p>slate主要内置特性如下：</p>
+<p><code>slate</code>数据模型通过<code>slate-react</code>视图渲染以后的组件层级如下图所示：</p>
+<p>你会看到一些 <code>data-</code> 开头的自定义内置特性（<code>attribute</code>），比如 <code>data-slate-node</code> 等。</p>
+<p><code>slate</code>主要内置特性如下：</p>
 <ul>
-<li><p>Editable</p>
+<li><p><code>Editable</code></p>
 <ul>
-<li>data-slate-editor 用于标识编辑器组件。</li>
+<li><code>data-slate-editor</code> 用于标识编辑器组件。</li>
 </ul>
 </li>
-<li><p>Element</p>
+<li><p><code>Element</code></p>
 <ul>
-<li>data-slate-node: ‘element’|’value’|’text’；取值分别代表元素、文档全量值（适用于 Editable 上）、文本节点。</li>
-<li>data-slate-void: 若为空元素则取值为 true，否则不存在。</li>
-<li>data-slate-inline: 若为内联元素则取值为 true，否则不存在。</li>
+<li><code>data-slate-node</code>: ‘element’|’value’|’text’；取值分别代表元素、文档全量值（适用于 Editable 上）、文本节点。</li>
+<li><code>data-slate-void</code>: 若为空元素则取值为 true，否则不存在。</li>
+<li><code>data-slate-inline</code>: 若为内联元素则取值为 true，否则不存在。</li>
 </ul>
 </li>
-<li><p>Leaf</p>
+<li><p><code>Leaf</code></p>
 <ul>
-<li>data-slate-leaf: 必须，取值为 true，表明对应 DOM 元素为 Leaf 节点。</li>
+<li><code>data-slate-leaf</code>: 必须，取值为 true，表明对应 DOM 元素为 Leaf 节点。</li>
 </ul>
 </li>
-<li><p>String</p>
+<li><p><code>String</code></p>
 <ul>
-<li>data-slate-string: 若为文本节点则取值为 true，否则不存在。</li>
-<li>data-slate-zero-width: 若为零宽度文本节点则取值 ‘n’|’z’，分别指代换行、不换行，否则不存在。</li>
-<li>data-slate-length: 用于标注零宽度文本节点的实际宽度，单位为字符数。默认为 0，如果不为零则为被设置了 isVoid 的元素的文本字符的宽度。</li>
+<li><code>data-slate-string</code>: 若为文本节点则取值为 true，否则不存在。</li>
+<li><code>data-slate-zero-width</code>: 若为零宽度文本节点则取值 ‘n’|’z’，分别指代换行、不换行，否则不存在。</li>
+<li><code>data-slate-length</code>: 用于标注零宽度文本节点的实际宽度，单位为字符数。默认为 0，如果不为零则为被设置了 isVoid 的元素的文本字符的宽度。</li>
 </ul>
 </li>
 </ul>
-<p>此外，对于 Element 的 attributes 中还有以下内置特性内容：</p>
+<p>此外，对于 <code>Element</code> 的 <code>attributes</code> 中还有以下内置特性内容：</p>
 <ul>
-<li>contentEditable: 若不可编辑则取值为 false，否则不存在。</li>
-<li>dir: 若编辑方向为从右到左则取值 ‘rtl’，否则不存在。</li>
-<li>ref: 必选，当前元素的 ref 引用。Slate 会在每次 Element 渲染时将该元素和其对应 DOM 节点的映射关系添加到 ELEMENT_TO_NODE 的 WeakMap 中。若缺少 ref 则会因为 ELEMENT_TO_NODE 中映射关系的缺失而导致渲染失败和 toSlateNode 中报错。</li>
+<li><code>contentEditable</code>: 若不可编辑则取值为 false，否则不存在。</li>
+<li><code>dir</code>: 若编辑方向为从右到左则取值 ‘rtl’，否则不存在。</li>
+<li><code>ref</code>: 必选，当前元素的 ref 引用。Slate 会在每次 Element 渲染时将该元素和其对应 DOM 节点的映射关系添加到 ELEMENT_TO_NODE 的 WeakMap 中。若缺少 ref 则会因为 ELEMENT_TO_NODE 中映射关系的缺失而导致渲染失败和 toSlateNode 中报错。</li>
 </ul>
 <h1 id="简单实例"><a href="#简单实例" class="headerlink" title="简单实例"></a>简单实例</h1><hr>
 <pre><code class="language-jsx">
@@ -437,7 +437,13 @@ export default  BasicEditor = () =&gt; {
     )
 }
 </code></pre>
-<h1 id="renderElement"><a href="#renderElement" class="headerlink" title="renderElement"></a>renderElement</h1><h1 id="renderLeaf"><a href="#renderLeaf" class="headerlink" title="renderLeaf"></a>renderLeaf</h1><h1 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h1><h1 id="操作API"><a href="#操作API" class="headerlink" title="操作API"></a>操作API</h1><h1 id="简单插件"><a href="#简单插件" class="headerlink" title="简单插件"></a>简单插件</h1><h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h1 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h1><ul>
+<h1 id="renderElement"><a href="#renderElement" class="headerlink" title="renderElement"></a>renderElement</h1><p>slate.js 提供了 renderElement 让我们来自定义渲染逻辑，不过先别着急。富文本编辑器嘛，肯定不仅仅只有文字，还有很多数据类型，这些都是需要渲染的，所以都要依赖于这个 renderElement 。</p>
+<h1 id="renderLeaf"><a href="#renderLeaf" class="headerlink" title="renderLeaf"></a>renderLeaf</h1><p>renderElement 是渲染 Element ，但是它管不了更底层的 Text ，所以 slate.js 提供了 renderLeaf ，用来控制文本格式。renderElement 和 renderLeaf 并不冲突，可以一起用。</p>
+<h1 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h1><p>在 slate.js，自定义事件可以直接在 <Editable> 组件监听 DOM 事件即可。通常，一些快捷键可以通过这种方式来设置。</p>
+<h1 id="操作API"><a href="#操作API" class="headerlink" title="操作API"></a>操作API</h1><p>到 Editor 和 Transforms 对象里封装了很多常用的一系列 API 。可以增加样式，操作节点等。</p>
+<h1 id="简单插件"><a href="#简单插件" class="headerlink" title="简单插件"></a>简单插件</h1><p>slate.js 提供的是编辑器的基本能力，如果不能满足使用，它提供了插件机制供用户去自行扩展。<br>另外，有了规范的插件机制，还可以形成自己的社区，可以直接下载使用第三方插件。</p>
+<p>插件开发其实很简单，就是对 editor 的扩展和装饰。你想要做什么，可以充分返回自己的想象力。</p>
+<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h1 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h1><ul>
 <li>contenteditable</li>
 <li>execCommand</li>
 <li>Selection 和 Range </li>
@@ -448,7 +454,6 @@ export default  BasicEditor = () =&gt; {
 <li><a href="https://juejin.cn/post/6970289345911586853" target="_blank" rel="noopener">富文本编辑器框架 - slate.js</a></li>
 <li><a href="https://juejin.cn/post/7086816312789794846" target="_blank" rel="noopener">从 Slate 的内置特性到洋葱模型</a></li>
 </ul>
-<p>proseMirror</p>
 
       
     </div>

@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Live and learn">
 <meta property="og:description" content="ReRender 问题 在 React 组件树中，组件重新渲染的情况主要有以下几种：  当组件的 state 或者 props 发生变化，会触发组件的重新渲染。 类组件中，当 setState 调用后，组件的 render 方法也会自动调用，并且会嵌套渲染所有子组件。 函数组件中，使用 useState，state 改变导致组件重新渲染时，也会嵌套渲染所有子组件。  上述特性暴露出 React 一">
 <meta property="article:published_time" content="2020-04-13T13:28:45.000Z">
-<meta property="article:modified_time" content="2022-10-11T09:40:33.553Z">
+<meta property="article:modified_time" content="2022-10-11T12:43:58.636Z">
 <meta property="article:author" content="祁连">
 <meta name="twitter:card" content="summary">
 
@@ -523,11 +523,10 @@ export default function UseMemoPage() {
 </ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
 <li><code>shouldComponentUpdate</code>生命周期 和 <code>React.PurComponent</code> 用于类组件优化 <code>reRender</code>。</li>
-<li><code>React.memo</code> 和 <code>useMemo</code> 用于函数组件优化 <code>reRender</code>。</li>
-<li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
-<li>避免出现阻止必要<code>reRender</code>的情况。</li>
-<li>适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改的子组件。</li>
+<li><code>React.memo</code> 和 <code>useCallback</code> 用于函数组件优化 <code>reRender</code>性能问题。适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改而渲染消耗较大的子组件。</li>
 <li><code>useMemo</code>用于局部包含复杂计算逻辑方法优化，相对其他<code>API</code>，更灵活，更放心。</li>
+<li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
+<li>别不小心阻止了必要<code>reRender</code>的情况。</li>
 </ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zh-hans.reactjs.org/docs/react-api.html#reactpurecomponent" target="_blank" rel="noopener">官网-purecomponent</a><br><a href="https://juejin.im/post/5c9472085188252d6a08731a" target="_blank" rel="noopener">React 渲染优化</a><br><a href="https://www.robinwieruch.de/react-prevent-rerender-component/" target="_blank" rel="noopener">React rerender component</a></p>
 

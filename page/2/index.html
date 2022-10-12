@@ -2753,11 +2753,10 @@ export default function UseMemoPage() {
 </ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
 <li><code>shouldComponentUpdate</code>生命周期 和 <code>React.PurComponent</code> 用于类组件优化 <code>reRender</code>。</li>
-<li><code>React.memo</code> 和 <code>useMemo</code> 用于函数组件优化 <code>reRender</code>。</li>
-<li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
-<li>避免出现阻止必要<code>reRender</code>的情况。</li>
-<li>适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改的子组件。</li>
+<li><code>React.memo</code> 和 <code>useCallback</code> 用于函数组件优化 <code>reRender</code>性能问题。适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改而渲染消耗较大的子组件。</li>
 <li><code>useMemo</code>用于局部包含复杂计算逻辑方法优化，相对其他<code>API</code>，更灵活，更放心。</li>
+<li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
+<li>别不小心阻止了必要<code>reRender</code>的情况。</li>
 </ul>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zh-hans.reactjs.org/docs/react-api.html#reactpurecomponent" target="_blank" rel="noopener">官网-purecomponent</a><br><a href="https://juejin.im/post/5c9472085188252d6a08731a" target="_blank" rel="noopener">React 渲染优化</a><br><a href="https://www.robinwieruch.de/react-prevent-rerender-component/" target="_blank" rel="noopener">React rerender component</a></p>
 
@@ -3721,7 +3720,7 @@ export default App;
   useRef,
   forwardRef,
 } from &#39;react&#39;;
-import PropTypes from &#39;prop-types&#39;;
+
 const App = () =&gt; {
   const [greeting, setGreeting] = useState(&#39;Hello React!&#39;);
   const handleChange = event =&gt; setGreeting(event.target.value);
@@ -3734,6 +3733,7 @@ const App = () =&gt; {
     &lt;/div&gt;
   );
 };
+
 const Input = forwardRef(({ value, handleChange }, ref) =&gt; (
   &lt;input
     type=&quot;text&quot;
@@ -3742,12 +3742,7 @@ const Input = forwardRef(({ value, handleChange }, ref) =&gt; (
     ref={ref}
   /&gt;
 ));
-Input.propTypes = {
-  value: PropTypes.string.isRequired,
-};
-Input.defaultProps = {
-  headline: &#39;Hello Component&#39;,
-};
+
 export default App;</code></pre>
 <p>以下是对上述示例发生情况的逐步解释：</p>
 <ul>
