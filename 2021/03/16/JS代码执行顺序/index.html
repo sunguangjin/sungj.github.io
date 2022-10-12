@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="JS引擎（V8为例） &#96;JavaScirpt 引擎主要用来将 JS 代码编译为不同 CPU(Intel, ARM 以及 MIPS 等)能识别的对应的汇编代码。同时，JavaScript 引擎的工作也不只是编译代码，它还要负责执行代码、分配内存以及垃圾回收。 最出名的JS引擎当属 Google V8。 V8 引擎是用 C ++ 编写的开源高性能 JavaScript 和 WebAssembly 引擎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈 JS Event Loop 机制">
+<meta property="og:url" content="http://www.mala520.life/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="JS引擎（V8为例） &#96;JavaScirpt 引擎主要用来将 JS 代码编译为不同 CPU(Intel, ARM 以及 MIPS 等)能识别的对应的汇编代码。同时，JavaScript 引擎的工作也不只是编译代码，它还要负责执行代码、分配内存以及垃圾回收。 最出名的JS引擎当属 Google V8。 V8 引擎是用 C ++ 编写的开源高性能 JavaScript 和 WebAssembly 引擎">
+<meta property="og:image" content="http://www.mala520.life/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/v8Img.jpeg">
+<meta property="article:published_time" content="2021-03-16T04:06:23.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.956Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/v8Img.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/03/16/JS代码执行顺序/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>浅谈 JS Event Loop 机制 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈 JS Event Loop 机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-16T12:06:23+08:00">
+                2021-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="JS引擎（V8为例）"><a href="#JS引擎（V8为例）" class="headerlink" title="JS引擎（V8为例）"></a>JS引擎（V8为例）</h1><hr>
+<p>`JavaScirpt 引擎主要用来将 JS 代码编译为不同 CPU(Intel, ARM 以及 MIPS 等)能识别的对应的汇编代码。同时，JavaScript 引擎的工作也不只是编译代码，它还要负责执行代码、分配内存以及垃圾回收。</p>
+<p>最出名的JS引擎当属 Google V8。</p>
+<p>V8 引擎是用 C ++ 编写的开源高性能 JavaScript 和 WebAssembly 引擎，它已被用于 Chrome 和 Node.js 等。 V8 是一个可以独立运行的模块，完全可以嵌入到任何 C ++应用程序中，比如 Node。</p>
+<p>V8 是一个非常复杂的项目，有超过 100 万行 C++代码。它由许多子模块构成，其中最重要的 4 个模块是：</p>
+<ul>
+<li>Parser：负责将 JavaScript 源码转换为 Abstract Syntax Tree (AST)</li>
+<li>Ignition：interpreter，解释器，负责将 AST 转换为 Bytecode，解释执行 Bytecode；同时收集 TurboFan 优化编译所需的信息，比如函数参数的类型。</li>
+<li>TurboFan：compiler，即编译器，利用 Ignitio 所收集的类型信息，将 Bytecode 转换为优化的汇编代码；</li>
+<li>Orinoco：garbage collector，垃圾回收模块，负责将程序不再需要的内存空间回收。</li>
+</ul>
+<img src="/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/v8Img.jpeg" class="" title="V8执行JS代码过程">
+
+<p>总结下来就是：Parser 将 JS 源码转换为 AST，然后 Ignition 将 AST 转换为 Bytecode，最后 TurboFan 将 Bytecode 转换为经过优化的 Machine Code(实际上是汇编代码)。</p>
+<p>在 V8 出现之前，所有的 JavaScript 虚拟机所采用的都是解释执行的方式，这是 JavaScript 执行速度过慢的一个主要原因。而 V8 率先引入了即时编译（JIT）的双轮驱动的设计（混合使用编译器和解释器的技术），这是一种权衡策略，混合编译执行和解释执行这两种手段，给 JavaScript 的执行速度带来了极大的提升。</p>
+<blockquote>
+<p>即时编译(Just-in-time compilation),简称为 JIT。指可以直接执行源码(比如：node test.js)，但是在运行的时候先编译再执行，这种方式被称为JIT。V8 也属于 JIT 编译器。</p>
+</blockquote>
+<p>解释执行和编译执行都有各自的优缺点，解释执行启动速度快，但是执行时速度慢，而编译执行启动速度慢，但是执行速度快。为了充分地利用解释执行和编译执行的优点，规避其缺点，V8 采用了一种权衡策略，在启动过程中采用了解释执行的策略，但是如果某段代码的执行频率超过一个值，那么 V8 就会采用优化编译器将其编译成执行效率更加高效的机器代码。</p>
+<p>V8 执行一段 JavaScript 代码所经历的主要流程可总结为：</p>
+<ul>
+<li>初始化基础环境；</li>
+<li>解析源码生成 AST 和作用域；</li>
+<li>依据 AST 和作用域生成字节码；</li>
+<li>解释执行字节码；</li>
+<li>监听热点代码；</li>
+<li>优化热点代码为二进制的机器代码；</li>
+<li>反优化生成的二进制机器代码。</li>
+</ul>
+<blockquote>
+<p>V8 有对应的 D8工具。它是一个非常有用的调试工具，你可以把它看成是 debug for V8 的缩写。我们可以使用 d8 来查看 V8 在执行 JavaScript 过程中的各种中间数据，比如作用域、AST、字节码、优化的二进制代码、垃圾回收的状态，还可以使用 d8 提供的私有 API 查看一些内部信息。</p>
+</blockquote>
+<p>此外，V8引擎内部还做了一系列优化措施：</p>
+<ul>
+<li>惰性解析基础上，增加预解析器来解决了闭包所带来的外部变量无法释放的问题。</li>
+<li>引入快属性，慢属性机制，提升对象属性的访问速度。</li>
+<li>通过内联缓存来提升函数执行效率。</li>
+<li>引入字节码，相对二进制码，降低了时间和空间成本。</li>
+</ul>
+<blockquote>
+<p>具体优化细节可参考下面文献：<a href="https://zhuanlan.zhihu.com/p/265001795" target="_blank" rel="noopener">浏览器是如何工作的：Chrome V8让你更懂JavaScript</a></p>
+</blockquote>
+<p>下面，我们主要探究一下JS的异步代码处理机制。</p>
+<h1 id="JS异步"><a href="#JS异步" class="headerlink" title="JS异步"></a>JS异步</h1><hr>
+<ul>
+<li>我们都知道，<code>JS</code>引擎 是单线程设计。它的创造者就是单纯为了 <code>keep it simple</code>。</li>
+<li>我们也知道，<code>JS</code> 代码可以分为 <code>同步代码</code> 和 <code>异步代码</code>。</li>
+</ul>
+<p>常见的 <code>异步代码</code> 生产者有：</p>
+<ul>
+<li><p><code>seTimeout</code></p>
+</li>
+<li><p><code>setInterval</code></p>
+</li>
+<li><p><code>Dom</code>事件</p>
+</li>
+<li><p><code>ajax</code>/<code>fetch</code>请求</p>
+</li>
+<li><p><code>process.nextTick</code>（<code>Nodejs</code>特有）等</p>
+</li>
+</ul>
+<p>处理 <code>异步代码</code> 的方式有：</p>
+<ul>
+<li><code>callBack</code></li>
+<li><code>promise</code></li>
+<li><code>async/wait</code></li>
+<li>发布/订阅 (观察者模式)</li>
+</ul>
+<p>为了异步处理一些耗时的操作，<code>JS引擎</code>又是基于 <code>事件循环（Event Loop）</code>机制（单独的<code>事件触发线程</code>处理），实现 <code>非阻塞I/O</code>的。那么，<code>Event Loop</code> 机制如何工作呢：</p>
+<ul>
+<li><p><code>JS</code> 将执行环境分为 <code>执行栈</code> 和 <code>任务队列</code> 。</p>
+</li>
+<li><p>首先，当前代码块所有代码被放到 <code>执行栈</code> 中 自上而下 执行；</p>
+</li>
+<li><p>当遇到异步操作，将异步<code>API</code>中定义的 <strong>回调函数</strong> 作为 <code>任务</code>，添加到 <code>任务队列</code> 中；</p>
+</li>
+<li><p>当 <code>执行栈</code> 中的 <code>同步代码</code> 全部执行完，处于空闲态后，会去循环处理 <code>任务队列</code> 里的任务;</p>
+</li>
+<li><p>将 <code>任务队列</code> 里的 <code>任务</code> 按先来后到的顺序依次放到 <code>执行栈</code> 中执行。</p>
+</li>
+<li><p>当 <code>任务</code> 代码中遇到异步代码，再次放入 <code>任务队列</code>;</p>
+</li>
+<li><p>如此往复，称为 <code>事件循环(Event Loop)</code>;</p>
+</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li><p>熟悉 <code>Promise</code> 原理就会很清楚：<code>Promise</code> 构造函数代码是<code>同步代码</code>。异步是体现在 <code>then</code> 和 <code>catch</code> 块中。</p>
+</li>
+<li><p>在 <code>async/await</code> 中，<code>await</code>出现之前的代码也是立即执行的 <code>同步代码</code>。之后的代码是放入 <code>任务队列</code> 的<code>异步代码</code>。</p>
+</li>
+</ul>
+<pre><code class="language-js">// async/await 本身就是promise+generator的语法糖。
+async function async1() {
+  console.log(&#39;async1 start&#39;);
+  await async2();
+  console.log(&#39;async1 end&#39;);
+}
+//等价于
+function async1() {
+  console.log(&#39;async1 start&#39;);
+  Promise.resolve(async2()).then(() =&gt; {
+    console.log(&#39;async1 end&#39;);
+  })
+}</code></pre>
+<p>另外，<code>任务队列</code> 中的 <code>异步任务</code> 又分为 <code>宏任务</code> 和<code>微任务</code></p>
+<h2 id="宏任务"><a href="#宏任务" class="headerlink" title="宏任务"></a>宏任务</h2><p>宏任务(<code>macrotask</code>)，也叫<code>tasks</code>。以下 异步任务产生的回调会被放入 <code>宏任务</code> 队列：</p>
+<ul>
+<li><code>setTimeout</code></li>
+<li><code>setInterval</code></li>
+<li><code>I/O</code> 操作</li>
+<li><code>UI rendering</code> (浏览器独有)</li>
+<li><code>requestAnimationFrame</code> (浏览器独有)</li>
+<li><code>setImmediate</code> (<code>Node</code>独有)</li>
+</ul>
+<h2 id="微任务"><a href="#微任务" class="headerlink" title="微任务"></a>微任务</h2><p>微任务(<code>microtask</code>)，也叫<code>jobs</code>。以下 <code>异步任务</code> 会被放入 <code>微任务</code>队列：</p>
+<ul>
+<li><code>Promise</code></li>
+<li><code>async/await</code></li>
+<li><code>MutationObserver</code></li>
+<li><code>window.queueMicrotask()</code></li>
+<li><code>process.nextTick</code> (<code>Node</code>独有)</li>
+</ul>
+<blockquote>
+<p><code>MutationObserver</code>: 一个用来监视 <code>DOM</code> 变动的 <code>API</code>。<code>DOM</code> 的任何变动，比如节点的增减、属性的变动、文本内容的变动，这个 <code>API</code> 都可以得到通知。<a href="https://javascript.ruanyifeng.com/dom/mutationobserver.html" target="_blank" rel="noopener">了解更多</a>）</p>
+</blockquote>
+<blockquote>
+<p><code>queueMicrotask()</code>: 为了允许第三方库、框架、polyfills 能使用微任务，Window 暴露了 queueMicrotask() 方法。</p>
+</blockquote>
+<p>下面，我们来看看 分 <code>宏任务队列</code> 和 <code>微任务队列</code> 的<code>Event Loop</code> 执行顺序:</p>
+<ul>
+<li><p>所有代码被放到 <code>执行栈</code> 中 自上而下 执行；</p>
+</li>
+<li><p>遇到 异步操作 <code>API</code>，根据 <code>API</code> 的类型， 将 回调函数 添加到 <code>任务队列</code> 中 <code>宏任务队列</code> 或者 <code>微任务队列</code> ；</p>
+</li>
+<li><p>当 <code>执行栈</code> 中的 同步代码 全部执行完，处于空闲态后，先去循环 <code>微任务队列</code> 里的函数;</p>
+</li>
+<li><p>依次将 <code>微任务队列</code> 里的函数 放到 <code>执行栈</code> 中执行，如果过程中产生新的微任务，也会放入微任务队列的末尾，并且在此次循环中执行完成。</p>
+</li>
+<li><p>当 <code>微任务队列</code> 里的函数全部执行完成，才会将 <code>宏任务队列</code> 里的函数按顺序放到 <code>执行栈</code> 中执行。</p>
+</li>
+<li><p>当执行完当前的 <code>宏任务</code> 时，只有当 <code>微任务队列</code> 为空的时候，才会继续执行下一个 <code>宏任务</code>。也就是说，在执行 <code>宏任务</code> 的时候产生了新的 <code>微任务</code>，那么在这个 <code>宏任务</code> 执行完成以后，依然优先处理 <code>微任务</code>。</p>
+</li>
+<li><p>如此往复。直到所有 <code>任务队列</code> 为空。</p>
+</li>
+</ul>
+<blockquote>
+<p>重要：每一个宏任务执行完毕，会检查渲染任务列表，如果有渲染任务，<code>GUI</code>线程会接管渲染，渲染完成后，<code>JS</code>线程继续接管。</p>
+</blockquote>
+<h1 id="Nodejs-有所不同"><a href="#Nodejs-有所不同" class="headerlink" title="Nodejs 有所不同"></a>Nodejs 有所不同</h1><hr>
+<ul>
+<li><code>NodeJS</code> 的 异步操作 也分 <code>宏任务</code> 和 <code>微任务</code>。</li>
+<li><code>宏任务</code>分为 6 个阶段，4个队列。</li>
+<li><code>微任务</code> 分为 2 个队列。</li>
+</ul>
+<h2 id="宏任务-1"><a href="#宏任务-1" class="headerlink" title="宏任务"></a>宏任务</h2><p>6个阶段：</p>
+<ul>
+<li><code>timers</code>阶段：这个阶段执行 <code>setTimeout</code>和 <code>setInterval</code> 设置的 <code>callback</code>。</li>
+<li><code>I/O callback</code>阶段：执行[close事件、timers、setImmediate()] 设定的callbacks之外的其他<code>callbacks</code>。</li>
+<li><code>idle, prepare</code>阶段：仅<code>node</code>内部使用。</li>
+<li><code>poll</code>阶段：获取新的<code>I/O</code>事件，适当的条件下<code>node</code>将阻塞在这里。</li>
+<li><code>check</code>阶段：执行 <code>setImmediate()</code> 设定的<code>callbacks</code>。</li>
+<li><code>close</code>阶段：执行 <code>socket.on(&#39;close&#39;, ....)</code> 这些<code>callbacks</code>。</li>
+</ul>
+<p>4个队列：</p>
+<ul>
+<li><code>iTimers</code> ： <code>setTimeout</code>， <code>setInterval</code></li>
+<li><code>iIO Callbacks</code>:  <code>other……</code></li>
+<li><code>iCheck</code> : <code>setImmediate()</code></li>
+<li><code>iClose</code>:  <code>socket.on(&#39;close&#39;, ....)</code></li>
+</ul>
+<h2 id="微任务-1"><a href="#微任务-1" class="headerlink" title="微任务"></a>微任务</h2><p>2个队列</p>
+<ul>
+<li><code>Next Tick</code>：是放置<code>process.nextTick(callback)</code>的回调任务.</li>
+<li><code>Other Micro</code>：放置其他 <code>微任务</code>，比如<code>Promise</code>等。</li>
+</ul>
+<h2 id="Node-js-中的-EventLoop-过程"><a href="#Node-js-中的-EventLoop-过程" class="headerlink" title="Node.js 中的 EventLoop 过程"></a>Node.js 中的 EventLoop 过程</h2><p><code>NodeJS 11</code> 之前：</p>
+<ul>
+<li>执行全局 <code>Script</code>的同步代码。</li>
+<li>执行 <code>微任务</code>，先执行所有<code>Next Tick Queue</code>中的所有任务，再执行<code>Other Microtask Queue</code>中的所有任务。</li>
+<li>开始执行 <code>宏任务</code>，共 <code>6</code> 个阶段，从第 <code>1</code> 个阶段开始执行。每一个阶段的 <code>宏任务</code> <strong>全部</strong> 执行完成后，回去执行所有 <code>微任务</code>（同上），再执行 下个阶段 的全部 <code>宏任务</code>。</li>
+<li>这就是 <code>NodeJs</code> 的 <code>Event Loop</code>。</li>
+</ul>
+<p><code>Node 11 +</code>的变化:</p>
+<ul>
+<li><p>宏任务还是分阶段依次执行，但是每一个阶段的每一个 <code>宏任务</code>执行完，都回去执行所有 <code>微任务</code>，再继续执行下一个 <code>宏任务</code>。而不是等每个阶段 <code>宏任务</code> 全部执行完才回去执行微任务。</p>
+</li>
+<li><p>和浏览器更加趋同.</p>
+</li>
+</ul>
+<h1 id="执行顺序自测"><a href="#执行顺序自测" class="headerlink" title="执行顺序自测"></a>执行顺序自测</h1><hr>
+<p>浏览器端输出顺序：</p>
+<pre><code class="language-js">async function async1() {
+  console.log(&#39;async1 start&#39;);
+  await async2();
+  console.log(&#39;async1 end&#39;);
+}
+async function async2() {
+  console.log(&#39;async2&#39;);
+}
+
+console.log(&#39;script start&#39;);
+
+setTimeout(function() {
+  console.log(&#39;setTimeout&#39;);
+}, 0)
+
+async1();
+
+new Promise(function(resolve) {
+  console.log(&#39;promise1&#39;);
+  resolve();
+}).then(function() {
+  console.log(&#39;promise2&#39;);
+});
+console.log(&#39;script end&#39;);
+
+/*
+script start
+async1 start
+async2
+promise1
+script end
+async1 end
+promise2
+setTimeout
+*/</code></pre>
+<p>NodeJS中输出顺序：</p>
+<pre><code class="language-js">console.log(1);
+setTimeout(() =&gt; {
+  console.log(2);
+  process.nextTick(() =&gt; {
+    console.log(3);
+  });
+  new Promise((resolve) =&gt; {
+    console.log(4);
+    resolve();
+  }).then(() =&gt; {
+    console.log(5);
+  });
+});
+new Promise((resolve) =&gt; {
+  console.log(7);
+  resolve();
+}).then(() =&gt; {
+  console.log(8);
+});
+process.nextTick(() =&gt; {
+  console.log(6);
+});
+setTimeout(() =&gt; {
+  console.log(9);
+  process.nextTick(() =&gt; {
+    console.log(10);
+  });
+  new Promise((resolve) =&gt; {
+    console.log(11);
+    resolve();
+  }).then(() =&gt; {
+    console.log(12);
+  });
+});
+
+//node &lt;11: 1 7 6 8 2 4 9 11 3 10 5 12
+// node&gt;=11: 1 7 6 8 2 4 3 5 9 11 10 12</code></pre>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
+<p><a href="https://www.jianshu.com/p/62c7d633a879" target="_blank" rel="noopener">前端干货 JS执行顺序</a><br><a href="https://zhuanlan.zhihu.com/p/265001795" target="_blank" rel="noopener">浏览器是如何工作的：Chrome V8让你更懂JavaScript</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/16/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="next" title="排序算法">
+                <i class="fa fa-chevron-left"></i> 排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/19/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/" rel="prev" title="浏览器渲染原理">
+                浏览器渲染原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JS引擎（V8为例）"><span class="nav-number">1.</span> <span class="nav-text">JS引擎（V8为例）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JS异步"><span class="nav-number">2.</span> <span class="nav-text">JS异步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#宏任务"><span class="nav-number">2.1.</span> <span class="nav-text">宏任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微任务"><span class="nav-number">2.2.</span> <span class="nav-text">微任务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nodejs-有所不同"><span class="nav-number">3.</span> <span class="nav-text">Nodejs 有所不同</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#宏任务-1"><span class="nav-number">3.1.</span> <span class="nav-text">宏任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微任务-1"><span class="nav-number">3.2.</span> <span class="nav-text">微任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js-中的-EventLoop-过程"><span class="nav-number">3.3.</span> <span class="nav-text">Node.js 中的 EventLoop 过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#执行顺序自测"><span class="nav-number">4.</span> <span class="nav-text">执行顺序自测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">5.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

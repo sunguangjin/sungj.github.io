@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="react 受控组件表单元素比如 ,  和  会以原生 HTML 的形式保存他们自己的状态。一旦有人从外部做了一些修改，它们就会修改内部的值，在 React 中这被称为不受控组件，因为它们自己处理状态。在 React 中，你应该确保这些元素变为受控组件。你应该怎么做呢？你只需要设置输入框的值属性。 react 可组合组件在 props 对象中还有一个小小的属性可供使用: children 属性。通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React碎片">
+<meta property="og:url" content="http://www.mala520.life/2018/04/07/React%E7%A2%8E%E7%89%87/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="react 受控组件表单元素比如 ,  和  会以原生 HTML 的形式保存他们自己的状态。一旦有人从外部做了一些修改，它们就会修改内部的值，在 React 中这被称为不受控组件，因为它们自己处理状态。在 React 中，你应该确保这些元素变为受控组件。你应该怎么做呢？你只需要设置输入框的值属性。 react 可组合组件在 props 对象中还有一个小小的属性可供使用: children 属性。通">
+<meta property="article:published_time" content="2018-04-07T10:13:18.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.970Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2018/04/07/React碎片/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>React碎片 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2018/04/07/React%E7%A2%8E%E7%89%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React碎片</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-07T18:13:18+08:00">
+                2018-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="react-受控组件"><a href="#react-受控组件" class="headerlink" title="react 受控组件"></a>react 受控组件</h1><p>表单元素比如 <input>, <textarea> 和 <select> 会以原生 HTML 的形式保存他们自己的状态。一旦有人从外部做了一些修改，它们就会修改内部的值，在 React 中这被称为不受控组件，因为它们自己处理状态。在 React 中，你应该确保这些元素变为受控组件。<br>你应该怎么做呢？你只需要设置输入框的值属性。</p>
+<h1 id="react-可组合组件"><a href="#react-可组合组件" class="headerlink" title="react 可组合组件"></a>react 可组合组件</h1><p>在 <code>props</code> 对象中还有一个小小的属性可供使用: <code>children</code> 属性。通过它你可以将元素从上层传递到你的组件中。</p>
+<h1 id="React-事件须知"><a href="#React-事件须知" class="headerlink" title="React 事件须知"></a>React 事件须知</h1><ul>
+<li><code>React</code>所有事件都挂载载 <code>document</code> 上</li>
+<li>真实 <code>Dom</code> 触发后冒泡到 <code>document</code>后才会对<code>React</code>事件进行处理</li>
+<li>所有原生事件先执行</li>
+<li>然后执行<code>React</code>合成事件</li>
+<li>最后执行真正在<code>document</code>上挂载的事件</li>
+<li>原生事件中如果执行了<code>stopPropagation()</code>会导致其他<code>React</code> 事件失效，因为所有事件无法冒泡到<code>document</code>上</li>
+</ul>
+<h1 id="React-模块热替换-HMR"><a href="#React-模块热替换-HMR" class="headerlink" title="React 模块热替换(HMR)"></a>React 模块热替换(HMR)</h1><p>帮助你在浏览器中重新加载应用的工具，并且无需再让浏览器刷新页面。</p>
+<pre><code class="language-jsx">import React from &#39;react&#39;;
+import ReactDOM from &#39;react-dom&#39;;
+import App from &#39;./App&#39;;
+import &#39;./index.css&#39;;
+ReactDOM.render(
+&lt;App /&gt;,
+document.getElementById(&#39;root&#39;)
+);
+// HMR
+if (module.hot) {
+module.hot.accept();
+}</code></pre>
+<h1 id="React-列表关键字-Key"><a href="#React-列表关键字-Key" class="headerlink" title="React 列表关键字 Key"></a>React 列表关键字 Key</h1><p><code>React</code> 可以在列表发生变化的时候识别其中成员的添加、更改和删除的状态。你应该确保这个关键字属性是一个稳定的标识符。不要错误地使用列表成员在数组的索引(<code>index</code>)作为关键字。列表成员的索引是完全不稳定的。</p>
+<h1 id="React-PorpTypes"><a href="#React-PorpTypes" class="headerlink" title="React PorpTypes"></a>React PorpTypes</h1><p>强烈建议所有子组件声明<code>PorpTypes</code>，尤其UI/业务组件库。</p>
+<ul>
+<li>支持类型：<code>PropTypes.array</code>，<code>bool</code>，<code>func</code>,<code>number</code>,<code>object</code>,<code>string</code>,（<code>node</code>,<code>element</code> ：可渲染的片段（节点）。比如一段字符串，或者一个 <code>React</code> 元素）</li>
+<li>必须参数：必须参数类型后加<code>.isRequired</code>，比如：<code>PropTypes.func.isRequired</code>。</li>
+<li>默认值：<code>defaultProps</code>。</li>
+<li>你可以将数组 <code>PropTypes</code> 的元素定义的更加明确：</li>
+</ul>
+<pre><code class="language-javascript">// 类型
+Table.propTypes = {
+  list: PropTypes.arrayOf(
+  PropTypes.shape({
+    objectID: PropTypes.string.isRequired,
+    author: PropTypes.string,
+    url: PropTypes.string,
+    num_comments: PropTypes.number,
+    points: PropTypes.number,
+    })
+  ).isRequired,
+  onDismiss: PropTypes.func.isRequired,
+};
+// 默认值
+Table.defaultProps = {
+  className: &#39;&#39;,
+};</code></pre>
+<h1 id="props-详解"><a href="#props-详解" class="headerlink" title="props 详解"></a>props 详解</h1><p><a href="https://www.robinwieruch.de/react-pass-props-to-component" target="_blank" rel="noopener">https://www.robinwieruch.de/react-pass-props-to-component</a></p>
+<h1 id="子组件状态管理"><a href="#子组件状态管理" class="headerlink" title="子组件状态管理"></a>子组件状态管理</h1><p>子组件初始化状态来自父组件(<code>props</code>)。<code>props</code>改变以后，会触发子组件会重新渲染，但不会执行<code>constructor</code>函数和<code>componentDidMount</code>生命周期。状态管理可总结为两类：</p>
+<ul>
+<li><p><strong><code>props</code>完全自控</strong>：在<code>constructor</code>函数读取<code>props</code>建立自己的<code>state</code>。<code>onChange</code>的时候<code>setState({})</code>重新渲染自身。同时调用父组件方法更新数据。适用多数组件，比如<code>input</code>使用这种方式比较合理。</p>
+</li>
+<li><p><strong><code>props</code>非完全自控</strong>： 在<code>render</code>函数直接根据<code>props</code>渲染，<code>onChange</code>的时候调用父组件方法更新父组件的<code>state</code>, 然后父组件重新渲染触发子组件渲染。比如一个<code>list</code>选择组件，<code>initList</code>，<code>checkedValue</code>，来自父组件，<code>value</code>是可控的，可以本地<code>state</code>管理，如果<code>initList</code>是不可控的，取决于父组件，如果在父组件中是可能发生改变的，就没有办法本地管理，所以只能使用这种方式。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/27/%E5%BA%95%E5%B1%82API%E5%AE%9E%E7%8E%B0Audio%E5%8A%9F%E8%83%BD/" rel="next" title="底层API实现Audio元素">
+                <i class="fa fa-chevron-left"></i> 底层API实现Audio元素
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/06/hexo-prism-%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AE/" rel="prev" title="hexo + prism 代码高亮">
+                hexo + prism 代码高亮 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#react-受控组件"><span class="nav-number">1.</span> <span class="nav-text">react 受控组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#react-可组合组件"><span class="nav-number">2.</span> <span class="nav-text">react 可组合组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-事件须知"><span class="nav-number">3.</span> <span class="nav-text">React 事件须知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-模块热替换-HMR"><span class="nav-number">4.</span> <span class="nav-text">React 模块热替换(HMR)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-列表关键字-Key"><span class="nav-number">5.</span> <span class="nav-text">React 列表关键字 Key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-PorpTypes"><span class="nav-number">6.</span> <span class="nav-text">React PorpTypes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#props-详解"><span class="nav-number">7.</span> <span class="nav-text">props 详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子组件状态管理"><span class="nav-number">8.</span> <span class="nav-text">子组件状态管理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

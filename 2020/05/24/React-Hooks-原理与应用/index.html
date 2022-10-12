@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="React Hooks 起源 React 一直都提倡使用函数式组件。更轻便，更优雅，性能更佳。函数式组件又称无状态组件(FSC)。 以前，需要使用 state ，生命周期等React 特性，必须重构为 class 组件。 Hooks 是 React 16.8 新增的特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 现在，你可以直接在现有的函数式组件中使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Hooks 原理与应用">
+<meta property="og:url" content="http://www.mala520.life/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="React Hooks 起源 React 一直都提倡使用函数式组件。更轻便，更优雅，性能更佳。函数式组件又称无状态组件(FSC)。 以前，需要使用 state ，生命周期等React 特性，必须重构为 class 组件。 Hooks 是 React 16.8 新增的特性，它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。 现在，你可以直接在现有的函数式组件中使">
+<meta property="og:image" content="http://www.mala520.life/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/hooks-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/react-hooks2.jpg">
+<meta property="article:published_time" content="2020-05-24T12:15:11.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.956Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/hooks-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/05/24/React-Hooks-原理与应用/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>React Hooks 原理与应用 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Hooks 原理与应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-24T20:15:11+08:00">
+                2020-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="React-Hooks-起源"><a href="#React-Hooks-起源" class="headerlink" title="React Hooks 起源"></a>React Hooks 起源</h1><ul>
+<li>React 一直都提倡使用函数式组件。更轻便，更优雅，性能更佳。函数式组件又称<strong>无状态组件(FSC)</strong>。</li>
+<li>以前，需要使用 <code>state</code> ，生命周期等React 特性，必须重构为 class 组件。</li>
+<li><code>Hooks</code> 是 React 16.8 新增的特性，它可以让你在不编写 <code>class</code> 的情况下使用 <code>state</code> 以及其他的 React 特性。</li>
+<li>现在，你可以直接在现有的函数式组件中使用 <code>Hooks</code>，而无须重构为 <code>class</code> 组件。</li>
+<li>全新的思维方式。no magic, just javascript and some rules。</li>
+</ul>
+<img src="/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/hooks-1.jpg" class="" title="hooks起源">
+
+<h1 id="类组件被诟病"><a href="#类组件被诟病" class="headerlink" title="类组件被诟病"></a>类组件被诟病</h1><ul>
+<li>类(累)：自js开天辟地，就是面向函数式编程(<code>FP</code>), 面向对象编程(<code>OOP</code>)为何物。烦人的构造函数。<code>super</code>是什么？……</li>
+<li>this绑定：类方法不会自动绑定 this 到实例上。现有四种<code>bind</code>方式。不优雅，易出错，<code>bind</code>还影响性能（使用箭头函数后有所改善）。</li>
+<li><code>setState()</code>: 异步更新机制，<code>state</code> 浅合并机制。不理解这些概念，很容易踩坑。</li>
+<li>生命周期耦合：每个生命周期方法通常包含一堆不相关的逻辑；不同生命周期中的逻辑又有关联。</li>
+</ul>
+<p>下面组件来自实际项目，经过简化和微调（方便演示和直观感受），基本上暴露出了上面所有问题。业务逻辑严谨性不用推敲：</p>
+<pre><code class="language-jsx">class NumberInput extends React.Component {
+  constructor(props) {
+    // 为什么必须super，不传props会怎样
+    super(props)
+    this.state = {
+      focus: false
+    }
+    this.tradingpwd = &#39;&#39;
+    // 第一种bind，官方推荐
+    ;[&#39;onBlur&#39;].forEach(method =&gt; {
+      this[method] = this[method].bind(this)
+    })
+  }
+  // 下面两个生命周期得相互配合，实现某些功能
+  componentDidMount() {
+    this.tradingPwdHideInput.focus()
+    // 处理某类兼容问题
+    let bodyTop = document.body.getBoundingClientRect().top
+    const styleText = &#39;position: fixed; width: 100%; top: &#39; + bodyTop + &#39;px&#39;
+    document.body.style.cssText = styleText
+  }
+
+  componentWillUnmount() {
+    this.tradingPwdHideInput.blur()
+    document.body.style.position = &#39;static&#39;
+  }
+
+  tradingPwdChange(e) {
+    // ...
+    this.tradingpwd = e.target.value
+    this.props.inputChangeCallback(e.target.value)
+    // ...
+  }
+  // 第二种bind
+  onFocus = () =&gt; {
+    this.setState({
+      focus: true
+    })
+  }
+  onBlur() {
+    this.setState({
+      focus: false
+    })
+  }
+
+  render() {
+    return (
+      &lt;div className={classNames(&#39;NumberInput&#39;)}&gt;
+        &lt;input
+          type=&#39;tel&#39;
+          ref={ref =&gt; {
+            this.tradingPwdHideInput = ref
+          }}
+          id=&#39;tradingPwdHideInput&#39;
+          /* 第三种bind */
+          onClick={() =&gt; {
+            this.tradingPwdHideInput.focus()
+          }}
+          onBlur={ this.onBlur }
+          onFocus={ this.onFocus }
+          /* 第四种bind，不推荐，在每次 render() 方法执行时绑定类方法，消耗性能*/
+          onChange={ this.tradingPwdChange.bind(this) }
+        /&gt;
+      &lt;/div&gt;
+    )
+  }
+}</code></pre>
+<blockquote>
+<p><a href="https://github.com/tc39/proposal-class-fields" target="_blank" rel="noopener">proposal-class-fields</a> 新提案会改善上述情况，目前处于第三阶段。</p>
+</blockquote>
+<p>随着类组件趋于复杂，还有其他诟病：</p>
+<ul>
+<li>难拆分，本地<code>state</code>逻辑到处都是，当组件越来越复杂，想拆分比较难。</li>
+<li>状态逻辑难复用：需要引入高阶特性进行代码重构，需要调整组件结构，成本高。</li>
+<li>抽象地狱：大型<code>React</code>往往使用<code>render props</code> ，<code>HOC</code>，<code>Context</code> 等高阶特性，形成大量包装组件（wrapping components）。层级冗余，逻辑难追踪。</li>
+</ul>
+<h1 id="Hooks-优越性"><a href="#Hooks-优越性" class="headerlink" title="Hooks 优越性"></a>Hooks 优越性</h1><p><code>Hooks</code> 引入的一个重要的原因，就是类组件存在着种种诟病。那他必然存在一些优越性。</p>
+<p>在说明这些优越性之前，先了解一个概念：</p>
+<blockquote>
+<p><strong>副作用</strong>：React 中主要指那些没有发生在数据向视图（M-V）转换过程中的逻辑，如 <code>Ajax</code> 请求、访问原生 <code>DOM</code> 元素、本地持久化缓存、绑定/解绑事件、添加/取消订阅、设置定时器、记录日志等。</p>
+</blockquote>
+<p>Hooks 的优越性：</p>
+<ul>
+<li>函数式编程：No <code>class</code>, No <code>super</code>, No <code>this</code>。对于不了解 <code>OOP</code> 的 <code>React</code> 初学者更友好。</li>
+<li>有状态逻辑易复用：可以通过 <code>Custom Hook</code>（后面讲解）重构，而不用修改组件结构。</li>
+<li>易拆分：状态管理和副作用管理松耦合，原子性强。很容易将一些相关联的逻辑拆分成更小的函数。</li>
+<li>可逐步引入：<code>Hooks</code> 向后兼容，与现有代码可并行工作，因此我们可以逐步采用它们。</li>
+<li>副作用分组：很多副作用逻辑分散在类组件生命周期函数中。而 <code>Hooks</code> 可以将每个副作用的设置和清理封装在一个函数中。</li>
+<li>副作用分离：副作用操作都在页面渲染之后。</li>
+</ul>
+<h1 id="抛弃类组件？"><a href="#抛弃类组件？" class="headerlink" title="抛弃类组件？"></a>抛弃类组件？</h1><p>既然 <code>Hooks</code> 存在这么多优越性。那是不是就到了抛弃 <code>class</code> 组件的时候了。</p>
+<p>对此，官方说：</p>
+<ul>
+<li>新版本依然支持 <code>class</code> 相关API，在相当一段时期内，<code>class</code> 组件 和 <code>Hooks</code> 组件并存。</li>
+<li>向后兼容，是加法。注意，是函数组件的加法，即 <code>Hooks</code> 只能用在函数组件中。</li>
+<li>推荐使用 函数组件 + <code>Hooks</code>。</li>
+</ul>
+<p>个人看法：</p>
+<p>不抛弃，不放弃。<code>class</code> 组件将我们带到了 <code>OOP</code> 的世界，<code>OOP</code>在编程界举足轻重，其思想是值得学习的，还会长期存在。即便 <code>class</code> 组件已然成为一种历史产物，但他的存量巨大，依然需要去维护，去慢慢消化。</p>
+<p>所以：</p>
+<ul>
+<li>对于 <code>React</code> 老司机：拥抱<code>Hooks</code>，是拥抱变化。这个变化，是加法，是学习新的<code>API</code>，新的技能，新的思想。</li>
+<li>对于 <code>React</code> 新手：拥抱<code>Hooks</code>，降低了学习门槛，可以更快入门。但是类组件也非常有必要去了解，理解。知己知彼，重构不殆。</li>
+</ul>
+<p>说了这么多，我们来和这些 <code>React Hooks</code> 的 <code>API</code> 见个面：</p>
+<p>基础 <code>Hook</code></p>
+<ul>
+<li><code>useState</code> 简单状态管理</li>
+<li><code>useEffect</code> 副作用管理</li>
+</ul>
+<p>常用 <code>Hook</code></p>
+<ul>
+<li><code>useContext</code> 全局状态管理</li>
+<li><code>useReducer</code> 复杂状态管理</li>
+<li><code>useRef</code> 访问 <code>Dom</code> 元素</li>
+</ul>
+<p>其他 <code>Hook</code></p>
+<ul>
+<li><code>useMemo</code></li>
+<li><code>useCallback</code></li>
+<li><code>useImperativeHandle</code></li>
+<li><code>useLayoutEffect</code></li>
+<li><code>useDebugValue</code></li>
+<li>… 还会增加</li>
+</ul>
+<h1 id="useState-hook"><a href="#useState-hook" class="headerlink" title="useState hook"></a>useState hook</h1><ul>
+<li>功能：在函数组件中用来进行简单状态管理，创建<strong>一些</strong>本地 <code>state</code>。</li>
+<li>API：<code>const [currentState, setFunction] = useState(initialState);</code>。传一个参数，返回一个数组（包含两个值）- 三要素。</li>
+</ul>
+<pre><code class="language-jsx">import React, { useState } from &#39;react&#39;;
+function Form() {
+  // ES6 解构
+  const [name, setName] = useState(&#39;Mary&#39;);              // State 变量 1
+  const [surname, setSurname] = useState(&#39;Poppins&#39;);     // State 变量 2
+  const [width, setWidth] = useState(window.innerWidth); // State 变量 3
+
+  function handleNameChange(e) {
+    setName(e.target.value);
+  }
+
+  function handleSurnameChange(e) {
+    setSurname(e.target.value);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;input value={name} onChange={handleNameChange} /&gt;
+      &lt;input value={surname} onChange={handleSurnameChange} /&gt;
+      &lt;p&gt;Hello, {name} {surname}&lt;/p&gt;
+      &lt;p&gt;Window width: {width}&lt;/p&gt;
+    &lt;/&gt;
+  );
+}
+export default Form;</code></pre>
+<h2 id="useState「粒度」问题"><a href="#useState「粒度」问题" class="headerlink" title="useState「粒度」问题"></a>useState「粒度」问题</h2><p>看到这里，对于写过<code>class</code>组件的我们，很容易产生一个疑问。 实际工作中，一个类组件的 <code>this.state</code> 中往往有十几项，用 <code>Hooks</code> 改写的话难道要写十几个 <code>useState</code> 么？</p>
+<p>根据官方文档，总结下来，有几点：</p>
+<ul>
+<li>建议将 <code>state</code> 分割为多个 <code>useState</code>。粒度更细，更易于管理，更好复用。</li>
+<li>可能一起改变的 <code>state</code> 可合并成一个<code>useState</code>（ 比如<code>Dom</code>元素的 <code>top</code> <code>left</code>）。</li>
+<li>当 <code>state</code> 逻辑趋于复杂，建议使用 <code>useReducer</code> 或 <code>Custom Hook</code> 管理（<strong>后面介绍</strong>）。</li>
+</ul>
+<p>当组件的 <code>state</code> 很多的时候，为了提高代码的可读性，也可以把逻辑相关的一些 <code>state</code> 合并为一个 <code>useState</code>（ 比如分页参数 ）。但这些 <code>state</code> 并不是一起改变的，所以当其中一个 <code>state</code> 改变，调用对应的 <code>setFunction</code> 的时候。你需要做<strong>对象合并</strong>(不合并就丢了)：</p>
+<pre><code class="language-jsx">const [ pageData, setPageDate ] = useState({ pageSize: 20, current: 1, total:0, })
+
+const onPageChange = current =&gt; {
+  // 常规操作
+  setPageDate( Object.assign( {}, pageData, { current } ) ）
+  // 官方建议
+  setPageDate(currentPageData =&gt; ({ ...currentPageData, current}));
+}
+</code></pre>
+<blockquote>
+<p>知识点：调用 <code>useState</code> 的更新函数时，可以传一个箭头函数，这个函数的参数是当前最新的 <code>state</code>， 返回值是要设置的 <code>state</code>。</p>
+</blockquote>
+<h1 id="useEffect-hook"><a href="#useEffect-hook" class="headerlink" title="useEffect hook"></a>useEffect hook</h1><p>API 可抽象为: <code>useEffect(arrowFunction, [depsArr])</code> </p>
+<ul>
+<li><code>arrowFunction</code>: 必须。执行函数，执行副作用操作。它决定了做什么。</li>
+<li><code>depsArr</code>: 非必须。一个依赖项数组。它决定了什么时候做（下面示例中介绍）。</li>
+</ul>
+<p>根据实际情况，可细分为三种：</p>
+<pre><code class="language-jsx">// 第一种
+// 最基础的，只有箭头函数。没有依赖项，所以组件每次渲染都会执行。
+// 相当于  componentDidMount + componentDidUpdate
+useEffect(() =&gt; { 
+  //side-effect 
+})
+// 第二种
+// 有依赖项，是一个空数组，因为它永远不会变，所以只会首次执行。
+// 相当于 componentDidMount
+useEffect(() =&gt; { 
+  //side-effect 
+}, [])
+// 第三种
+// 有第二个参数，且非空数组。首次渲染会执行。重新渲染时，只有当依赖项的值改变了才会执行。
+useEffect(() =&gt; { 
+  //side-effect 
+}, [...state])</code></pre>
+<p>总结下来：</p>
+<ul>
+<li>功能：管理 <code>React</code> 函数组件的副作用，赋予生命周期能力。</li>
+<li>怎么管：组件每次渲染到屏幕之后，根据依赖项的情况判断是否调用执行函数。</li>
+<li>二要素：执行函数，依赖项。</li>
+<li>清理机制：你可以在执行函数中返回另一个函数-<strong>清理函数</strong>，清理函数会在组件卸载的时候，会在组件重新渲染，且useEffect的依赖项值改变的时候调用。起到了 class 组件中<code>componentWillUnmount</code>的作用, 后续会在场景实例中介绍。</li>
+<li>使用上：和 <code>useState</code> 一样，可使用多个。建议一个副作用对应一个 <code>useEffect</code>。</li>
+</ul>
+<p>以定时器为例，让我们来实现一个秒表组件。这是一个学习和理解 <code>useEffect</code> 非常有意思的例子:</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &#39;react&#39;;
+
+function App() {
+  // 秒表开关
+  const [isOn, setIsOn] = useState(false);
+  // 计数
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() =&gt; {
+    let interval;
+    //开关打开的时候才执行
+    if (isOn) {
+      // 通过定时器增加计数
+      interval = setInterval(
+        () =&gt; setTimer(val =&gt; val + 1),
+        1000,
+      );
+    }
+    // 需要清除定时器
+    return () =&gt; clearInterval(interval);
+  },[isOn]);
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;{timer}&lt;/p&gt;
+
+      {!isOn &amp;&amp; (
+        &lt;button type=&quot;button&quot; onClick={() =&gt; setIsOn(true)}&gt;
+          Start
+        &lt;/button&gt;
+      )}
+
+      {isOn &amp;&amp; (
+        &lt;button type=&quot;button&quot; onClick={() =&gt; setIsOn(false)}&gt;
+          Stop
+        &lt;/button&gt;
+      )}
+    &lt;/&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<blockquote>
+<p>规则：<code>useEffect</code> 不能接收 <code>async</code> 作为执行函数。<code>useEffect</code> 接收的函数，要么返回一个能清除副作用的函数，要么就不返回任何内容。而 <code>async</code> 返回的是 <code>promise</code>。<br><code>useEffect</code> 调用的函数如果依赖 <code>state</code> 或者 <code>props</code>。最好在执行函数中定义。这样依赖容易追踪。</p>
+</blockquote>
+<p><code>useEffect</code> 的使用，看起来很简单。但是要做到不滥用，正确使用也不是那么容易。主要在使用之前要多一些思考。</p>
+<h1 id="Custom-Hooks"><a href="#Custom-Hooks" class="headerlink" title="Custom Hooks"></a>Custom Hooks</h1><p>它并不是 <code>React hooks</code> 的 <code>API</code>，而是<strong>自定义 hook</strong>。顾名思义，<code>React</code>允许你构建自己的 <code>hooks</code>。在学习完前面两个最受欢迎的 <code>hooks</code> 以后，你完全具备了实现自定义 <code>hooks</code> 的能力。</p>
+<blockquote>
+<p>官网定义： 自定义 <code>Hook</code> 是一个 <code>JavaScript</code> 函数，其名称以 <code>”use”</code> 开头，可以调用其他 <code>Hook</code>。</p>
+</blockquote>
+<p>为什么需要<code>Custom Hooks？</code></p>
+<ul>
+<li><code>useState</code> 解决了函数组件无状态的问题。</li>
+<li><code>useEffect</code> 实现了副作用管理，生命周期的功能。</li>
+<li><code>Custom Hooks</code> 将解决有状态（<code>stateful</code>）逻辑共享的问题（相当于类组件中<code>Hoc</code>的功能）。👇</li>
+</ul>
+<p>我们来到一个实际场景。如今 <code>HTML5</code> 移动应用或 <code>Web app</code> 中越来越普遍的使用了离线浏览技术，所以用 <code>JS</code> 检测浏览器在线/离线状态非常常见。首先，我们用 <code>React Hooks</code> 来实现这个功能：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &#39;react&#39;;
+function App() {
+  const [isOffline, setIsOffline] = useState(window.navigator.onLine);
+  // 离线事件处理方法
+  function onOffline() {
+    setIsOffline(true);
+  }
+  // 在线事件处理方法
+  function onOnline() {
+    setIsOffline(false);
+  }
+  useEffect(() =&gt; {
+    // 事件监听
+    window.addEventListener(&#39;offline&#39;, onOffline);
+    window.addEventListener(&#39;online&#39;, onOnline);
+    // 清理函数
+    return () =&gt; {
+      window.removeEventListener(&#39;offline&#39;, onOffline);
+      window.removeEventListener(&#39;online&#39;, onOnline);
+    };
+  }, []); // 只需要首次执行
+  return (
+    &lt;&gt;
+       { 
+         isOffline
+         ? &lt;div&gt;网断已断开 ...&lt;/div&gt;
+         : &lt;div&gt;网络已连接 ...&lt;/div&gt;
+       }
+    &lt;/&gt;
+  )
+}
+export default App;</code></pre>
+<blockquote>
+<p>无论浏览器是否在线，<code>navigator.onLine</code> 属性都会提供一个布尔值。 如果浏览器在线，则设置为 <code>true</code> ，否则设置为 <code>false</code> 。</p>
+</blockquote>
+<p>OK，我们实现了一个很不错的功能。很明显，这个功能是可复用的，应该共享的。<br>我们把功能逻辑提取出来，把它封装成一个 <code>Custom hook</code> 就可以了：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &#39;react&#39;;
+// 自定义 hook
+function useOffline() {
+  const [isOffline, setIsOffline] = useState(window.navigator.onLine);
+  function onOffline() {
+    setIsOffline(true);
+  }
+  function onOnline() {
+    setIsOffline(false);
+  }
+  useEffect(() =&gt; {
+    window.addEventListener(&#39;offline&#39;, onOffline);
+    window.addEventListener(&#39;online&#39;, onOnline);
+    return () =&gt; {
+      window.removeEventListener(&#39;offline&#39;, onOffline);
+      window.removeEventListener(&#39;online&#39;, onOnline);
+    };
+  }, []);
+  return isOffline; // 只暴露一个 state
+}
+
+// 函数组件
+function App() {
+  const isOffline = useOffline();
+  return (
+    &lt;&gt;
+       { 
+         isOffline
+         ? &lt;div&gt;网断已断开 ...&lt;/div&gt;
+         : &lt;div&gt;网络已连接 ...&lt;/div&gt;
+       }
+    &lt;/&gt;
+  )
+}
+export default App;</code></pre>
+<p>从重构层面来说，就是把组件中的一些 <code>hooks</code> 抽离到一个函数中，再使用这个函数。这个函数就是 <code>React custom hooks</code>。</p>
+<p>书写 <code>custom hooks</code> 需要注意些什么呢：</p>
+<ul>
+<li>自定义 <code>Hooks</code> 自然地遵循 <code>Hooks</code> 设计的约定。即遵循所有你用到的 <code>Hooks</code>  的规则。</li>
+<li>请使用 <code>use</code> 开头。这个习惯非常重要。如果没有它，我们就不能自动检查该 <code>Hook</code> 是否违反了 <code>Hooks</code> 的规则，因为我们无法判断某个函数是否包含对其内部 <code>Hooks</code> 的调用。</li>
+</ul>
+<h1 id="useRef-Hook"><a href="#useRef-Hook" class="headerlink" title="useRef Hook"></a>useRef Hook</h1><p>在典型的 <code>React</code> 数据流中，<code>DOM</code> 元素的修改都是通过 <code>M-V</code> 的形式重新渲染。<code>M</code> 主要是组件的本地 <code>state</code> ，以及父组件传递给子组件的 <code>props</code>。<br>但是，在某些情况下，你需要在典型数据流之外，手动使用/操作 <code>DOM</code>：</p>
+<ul>
+<li>管理焦点，媒体播放，文本选择，触发强制动画等。</li>
+<li>集成第三方 <code>DOM</code> 库。</li>
+</ul>
+<pre><code class="language-jsx">import React, { useState, useEffect, useRef } from &quot;react&quot;;
+function App() {
+  const [value, setValue] = useState(&quot;hellow hooks&quot;);
+  //创建 refs 只有这里有修改
+  const inputRef = useRef();
+  // 日志A
+  console.log(inputRef.current) 
+  useEffect(() =&gt; {
+    // 日志B
+    console.log(inputRef.current);
+    inputRef.current.focus();
+  });
+  function inputHandler(val) {
+    setValue(val.target.value);
+  }
+  return (
+    &lt;&gt;
+      &lt;input type=&quot;text&quot; value={value} ref={inputRef} onChange={inputHandler} /&gt;
+    &lt;/&gt;
+  );
+}
+export default App;</code></pre>
+<ul>
+<li>类组件中：<code>React16.3</code> 及以上版本建议使用 <code>React.createRef</code> 这个<code>API</code>，低版本使用 <code>回调refs</code>。</li>
+<li>函数组件中：为性能考虑，建议都使用 <code>useRef</code> 这个 <code>hook</code>。</li>
+</ul>
+<h1 id="useContext-Hook"><a href="#useContext-Hook" class="headerlink" title="useContext Hook"></a>useContext Hook</h1><p><code>React 16.3.0</code> 中引入了 <code>Context</code> 系列 <code>API</code>。用于共享那些对于一个组件树而言是 “全局” 的 <code>state</code>。可用于解决 <code>prop drilling</code> 问题。</p>
+<p><code>useContext Hook</code> 只是新增了一种方式，让你在函数组件中更方便，更优雅的消费 <code>context</code>:</p>
+<pre><code class="language-jsx">//
+// 目标子组件 - D
+// 使用 context 对象的 Consumer 组件获取共享数据,通过更新函数更新数据
+const D = () =&gt; (
+  const { value, setValue } = React.useContext(MyContext)
+  return (
+    &lt;input
+      type=&quot;text&quot;
+      value={value}
+      onChange={e =&gt; {
+        setValue(e.target.value);
+      }}
+    /&gt;
+  )
+);</code></pre>
+<p>可读性更高了，还可很方便的消费多个 <code>context</code>。</p>
+<h1 id="UseReducer-Hook"><a href="#UseReducer-Hook" class="headerlink" title="UseReducer Hook"></a>UseReducer Hook</h1><p><code>useReducer hook</code> 用于 <code>React</code> 函数组件中管理<strong>复杂的</strong> <code>state</code> 。它把一个<code>reducer</code>方法，和初始<code>state</code>作为输入，包含当前<code>state</code>，和一个<code>dispatch</code>方法的解构数组作为输出。</p>
+<p><code>API</code>（ 对照 <code>useState</code> ）：</p>
+<pre><code class="language-js">// useReducer hook API
+const [current, dispatch] = useReducer(reducer, initState);
+
+// useState hook API
+const [current, setFunc] = useReducer(initState);
+</code></pre>
+<p>来看一个使用 <code>useReducer</code> 的简单例子：</p>
+<pre><code class="language-jsx">const initialState = {count: 0};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case &#39;increment&#39;:
+      return {count: state.count + 1};
+    case &#39;decrement&#39;:
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    &lt;&gt;
+      Count: {state.count}
+      &lt;button onClick={() =&gt; dispatch({type: &#39;decrement&#39;})}&gt;-&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({type: &#39;increment&#39;})}&gt;+&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+<p>上述示例中的 <code>state</code> 很简单，其实使用 <code>useState</code> 就可以。那么，我们什么时候该使用 <code>useReducer</code> 呢？</p>
+<p>适用于<code>useReducer</code> 的复杂 <code>state</code> 的场景主要有:</p>
+<ul>
+<li><code>state</code> 逻辑较复杂且包含多个子值（大的对象，数组）。</li>
+<li><code>state</code> 更新依赖于之前的 <code>state</code>。</li>
+<li><code>state</code> 组件树深层更新。使用<code>useReducer</code>可以向子组件传递 <code>dispatch</code> 而不是回调函数，这样可以优化性能。</li>
+</ul>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><ul>
+<li><strong>集中管理</strong>：每个组件都有一个 “内存单元” 的内部列表，作为 <code>Hooks</code>管理中心。</li>
+<li><strong>just js</strong>：只是 <code>JavaScript</code> 对象 + 闭包。你可以想象它是一个数组（实际上是一个单向链表），我们可以在其中放置一些数据。</li>
+<li><strong>顺序调用</strong>：当组件调用 <code>useState()</code> 等 <code>Hook</code> 时，它读取当前单元格(或在第一次呈现时初始化它)，然后将指针(<code>cursor</code>) 移动到下一个单元格。这就是多个 <code>useState()</code> 调用各自获取独立本地<code>state</code>的方式。</li>
+</ul>
+<img src="/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/react-hooks2.jpg" class="" title="hooks原理">
+
+<h1 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h1><p>需要开发者遵从许多规则。理解并合理运用这些规则，能写出优雅的，可读性高的，性能好的代码。反之，很容易出现死循环，数据重复请求等问题。最让人担心的是性能，很多时候业务功能实现了，但是其实存在很多不必要的开销。</p>
+<hr>
+<p><strong>参考资料</strong><br><a href="http://react.html.cn/docs/hooks-intro.html" target="_blank" rel="noopener">官网-Hooks</a><br><a href="https://www.robinwieruch.de/react-hooks" target="_blank" rel="noopener">What Are React Hooks</a><br><a href="https://juejin.im/post/5dbbdbd5f265da4d4b5fe57d#heading-17" target="_blank" rel="noopener">React Hooks 详解 + 项目实战</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/13/Nodejs%E5%B7%A5%E5%85%B7-Commander/" rel="next" title="(Nodejs 开发 cli 工具) - Commander">
+                <i class="fa fa-chevron-left"></i> (Nodejs 开发 cli 工具) - Commander
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/14/React%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" rel="prev" title="React核心原理">
+                React核心原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#React-Hooks-起源"><span class="nav-number">1.</span> <span class="nav-text">React Hooks 起源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类组件被诟病"><span class="nav-number">2.</span> <span class="nav-text">类组件被诟病</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hooks-优越性"><span class="nav-number">3.</span> <span class="nav-text">Hooks 优越性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抛弃类组件？"><span class="nav-number">4.</span> <span class="nav-text">抛弃类组件？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useState-hook"><span class="nav-number">5.</span> <span class="nav-text">useState hook</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#useState「粒度」问题"><span class="nav-number">5.1.</span> <span class="nav-text">useState「粒度」问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useEffect-hook"><span class="nav-number">6.</span> <span class="nav-text">useEffect hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Custom-Hooks"><span class="nav-number">7.</span> <span class="nav-text">Custom Hooks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useRef-Hook"><span class="nav-number">8.</span> <span class="nav-text">useRef Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useContext-Hook"><span class="nav-number">9.</span> <span class="nav-text">useContext Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UseReducer-Hook"><span class="nav-number">10.</span> <span class="nav-text">UseReducer Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">11.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缺点"><span class="nav-number">12.</span> <span class="nav-text">缺点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

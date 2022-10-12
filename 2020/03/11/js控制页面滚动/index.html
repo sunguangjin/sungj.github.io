@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言最近解决一个 wkwebview 的兼容性问题，需要JS控制页面的滚动，踩了不少坑。 通常我们控制页面滚动用到下面几个api。  window.scrollTo(x,y)  window.scrollX&#x2F;window.scrollY window.pageYOffset&#x2F;window.pageXOffset document.documentElement.scrollTop document">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS控制页面滚动">
+<meta property="og:url" content="http://www.mala520.life/2020/03/11/js%E6%8E%A7%E5%88%B6%E9%A1%B5%E9%9D%A2%E6%BB%9A%E5%8A%A8/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="前言最近解决一个 wkwebview 的兼容性问题，需要JS控制页面的滚动，踩了不少坑。 通常我们控制页面滚动用到下面几个api。  window.scrollTo(x,y)  window.scrollX&#x2F;window.scrollY window.pageYOffset&#x2F;window.pageXOffset document.documentElement.scrollTop document">
+<meta property="article:published_time" content="2020-03-11T07:30:57.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.971Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/03/11/js控制页面滚动/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>JS控制页面滚动 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/03/11/js%E6%8E%A7%E5%88%B6%E9%A1%B5%E9%9D%A2%E6%BB%9A%E5%8A%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS控制页面滚动</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-11T15:30:57+08:00">
+                2020-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%BC%E5%AE%B9%E6%80%A7/" itemprop="url" rel="index">
+                    <span itemprop="name">兼容性</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近解决一个 <code>wkwebview</code> 的兼容性问题，需要<code>JS</code>控制页面的滚动，踩了不少坑。</p>
+<p>通常我们控制页面滚动用到下面几个<code>api</code>。</p>
+<ul>
+<li><code>window.scrollTo(x,y)</code> </li>
+<li><code>window.scrollX/window.scrollY</code></li>
+<li><code>window.pageYOffset/window.pageXOffset</code></li>
+<li><code>document.documentElement.scrollTop</code></li>
+<li><code>document.body.scrollTop</code></li>
+</ul>
+<h1 id="window-scrollTo-x-y"><a href="#window-scrollTo-x-y" class="headerlink" title="window.scrollTo(x,y)"></a>window.scrollTo(x,y)</h1><p>设置页面滚动。<code>IE9+ 、firefox、chrome，opera</code>均支持该方式获取页面滚动高度值，忽略Doctype规则。</p>
+<h1 id="window-scrollX-Y"><a href="#window-scrollX-Y" class="headerlink" title="window.scrollX/Y"></a>window.scrollX/Y</h1><p>只读属性 <code>firefox、chrome，opera</code>支持，<code>IE</code>不支持，忽略Doctype规则</p>
+<h1 id="window-pageXOffset"><a href="#window-pageXOffset" class="headerlink" title="window.pageXOffset"></a>window.pageXOffset</h1><p>只读属性 <code>IE9+ 、firefox、chrome，opera</code>均支持，忽略Doctype规则</p>
+<h1 id="document-documentElement-和-document-body（划重点）"><a href="#document-documentElement-和-document-body（划重点）" class="headerlink" title="document.documentElement 和 document.body（划重点）"></a>document.documentElement 和 document.body（划重点）</h1><p>网上清一色：使用DTD定义文档时（<code>&lt;!DOCTYPE ...&gt;</code>），使用<code>document.documentElement</code>，否则 使用<code>document.body</code>。除此之外，无其他兼容问题。<br>发现问题：公司ios移动端使用wkwebview，h5页面均定义DTD<code>&lt;!DOCTYPE html&gt;</code>，所以使用了<code>document.documentElement.scrollTop</code>。结果发现部分ios手机不兼容，比如：<code>iphone xs 12.4.1</code>使用<code>document.body</code>才可以。</p>
+<p><strong>至少得出结论</strong>：关于<code>document.documentElement</code> 和 <code>document.body</code>,<code>safari</code>内核不符合DTD规则，某些版本仅支持<code>document.body</code>控制滚动</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><pre><code class="language-javascript">  document.scrollingElement.scrollTop = 200 
+  // 等价于
+  document.documentElement.scrollTop = 200 
+  document.body.scrollTop = 200 </code></pre>
+<p><code>Document.scrollingElement</code>可以解决上述safari不兼容性问题, 而且更清爽。虽然这个API<code>IE</code>从<code>ie12-Edge</code>才兼容，但是移动端使用不存在兼容性问题。</p>
+<h1 id="通用兼容性方案（支持桌面-移动端-IE等）"><a href="#通用兼容性方案（支持桌面-移动端-IE等）" class="headerlink" title="通用兼容性方案（支持桌面 移动端 IE等）"></a>通用兼容性方案（支持桌面 移动端 IE等）</h1><p>移动端建议使用<code>Document.scrollingElement</code>即可，想全端兼容，大而全的写法如下：</p>
+<pre><code class="language-javascript">//以获取scrolltop以及设置scrolltop为例
+    function getScrollTop() {
+        return window.pageYOffset
+           ||  document.documentElement.scrollTop  
+             ||  document.body.scrollTop;
+    }
+
+    function setScrollTop(height) {
+        document.documentElement.scrollTop = height;
+        document.body.scrollTop = height;
+        window.pageYOffset = height;
+    }</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/11/GitLab-CI-CD/" rel="next" title="GitLab-CI/CD 基础教程(转)">
+                <i class="fa fa-chevron-left"></i> GitLab-CI/CD 基础教程(转)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/11/shim%E5%92%8Cpolyfill/" rel="prev" title="shim和polyfill">
+                shim和polyfill <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#window-scrollTo-x-y"><span class="nav-number">2.</span> <span class="nav-text">window.scrollTo(x,y)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#window-scrollX-Y"><span class="nav-number">3.</span> <span class="nav-text">window.scrollX&#x2F;Y</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#window-pageXOffset"><span class="nav-number">4.</span> <span class="nav-text">window.pageXOffset</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#document-documentElement-和-document-body（划重点）"><span class="nav-number">5.</span> <span class="nav-text">document.documentElement 和 document.body（划重点）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">5.0.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通用兼容性方案（支持桌面-移动端-IE等）"><span class="nav-number">6.</span> <span class="nav-text">通用兼容性方案（支持桌面 移动端 IE等）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

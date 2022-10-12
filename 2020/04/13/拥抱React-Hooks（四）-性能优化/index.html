@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ReRender 问题 在 React 组件树中，组件重新渲染的情况主要有以下几种：  当组件的 state 或者 props 发生变化，会触发组件的重新渲染。 类组件中，当 setState 调用后，组件的 render 方法也会自动调用，并且会嵌套渲染所有子组件。 函数组件中，使用 useState，state 改变导致组件重新渲染时，也会嵌套渲染所有子组件。  上述特性暴露出 React 一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱React-Hooks（四）- 性能优化">
+<meta property="og:url" content="http://www.mala520.life/2020/04/13/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E5%9B%9B%EF%BC%89-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="ReRender 问题 在 React 组件树中，组件重新渲染的情况主要有以下几种：  当组件的 state 或者 props 发生变化，会触发组件的重新渲染。 类组件中，当 setState 调用后，组件的 render 方法也会自动调用，并且会嵌套渲染所有子组件。 函数组件中，使用 useState，state 改变导致组件重新渲染时，也会嵌套渲染所有子组件。  上述特性暴露出 React 一">
+<meta property="article:published_time" content="2020-04-13T13:28:45.000Z">
+<meta property="article:modified_time" content="2022-10-11T09:40:33.553Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/04/13/拥抱React-Hooks（四）-性能优化/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>拥抱React-Hooks（四）- 性能优化 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/04/13/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E5%9B%9B%EF%BC%89-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拥抱React-Hooks（四）- 性能优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-13T21:28:45+08:00">
+                2020-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ReRender-问题"><a href="#ReRender-问题" class="headerlink" title="ReRender 问题"></a>ReRender 问题</h1><hr>
+<p>在 <code>React</code> 组件树中，组件重新渲染的情况主要有以下几种：</p>
+<ul>
+<li>当组件的 <code>state</code> 或者 <code>props</code> 发生变化，会触发组件的重新渲染。</li>
+<li>类组件中，当 <code>setState</code> 调用后，组件的 <code>render</code> 方法也会自动调用，并且会嵌套渲染所有子组件。</li>
+<li>函数组件中，使用 <code>useState</code>，<code>state</code> 改变导致组件重新渲染时，也会嵌套渲染所有子组件。</li>
+</ul>
+<p>上述特性暴露出 <code>React</code> 一个典型的性能问题 - <code>reRender</code> 问题。确切的说，是子组件不必要的 <code>reRender</code> 问题。</p>
+<blockquote>
+<p><code>Context</code> 中 <code>Provider</code> 的 <code>value</code> 值改变以后，所有对应的 <code>Consumer</code> 组件也会重新渲染。不过没有<code>reRender</code> 问题。</p>
+</blockquote>
+<h1 id="Diff"><a href="#Diff" class="headerlink" title="Diff"></a>Diff</h1><hr>
+<p><code>reRender</code> 问题是问题么，<code>React</code> 不是有 <code>diff</code> 算法么？我之前也有这个误解。<br>我们可以把重新渲染过程分为两个阶段：</p>
+<ul>
+<li>阶段一：重新渲染，生成新的虚拟 <code>Dom</code> 树。<code>reRender</code> 问题发生在这个阶段。</li>
+<li>阶段二：通过对比新旧虚拟 <code>Dom</code> 树。如有差异，更新真实 <code>Dom</code>。<code>diff</code> 算法作用于这个阶段。</li>
+</ul>
+<p>虽然不必要的 <code>reRender</code> 在 <code>diff</code> 的时候没有差异，所以不会更新真实 <code>Dom</code>。但是生成新的虚拟<code>Dom</code>，进行<code>diff</code>计算本身就消耗很多性能。</p>
+<h1 id="shouldComponentUpdate"><a href="#shouldComponentUpdate" class="headerlink" title="shouldComponentUpdate"></a>shouldComponentUpdate</h1><hr>
+<p>在类组件中，我们一般通过 <code>shouldComponentUpdate</code> 生命周期来阻止 <code>reRender</code> 。<br><code>shouldComponentUpdate</code> 函数在重渲染时，会在 <code>render()</code> 函数调用前被调用，它接受两个参数：<code>nextProps</code>和<code>nextState</code>，分别表示下一个<code>props</code>和下一个<code>state</code>的值。并且，当函数返回<code>false</code>时候，阻止接下来的<code>render()</code>函数的调用，阻止组件重新渲染，而返回<code>true</code>时，组件照常重新渲染。</p>
+<pre><code class="language-jsx">class Square extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.number === nextProps.number) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  render() {
+    return &lt;Item&gt;{this.props.number * this.props.number}&lt;/Item&gt;;
+  }
+}</code></pre>
+<p>实际项目中，要考虑对象引用，复杂数据结构在 <code>===</code> 时候的坑。浅比较可能对比不出深层差异，深比较本身性能消耗也较大。要仔细权衡。</p>
+<p>如果你不关心具体数据的变更，想对 <code>props</code> 和 <code>state</code> 整体对比的常规写法如下：</p>
+<pre><code class="language-jsx">shouldComponentUpdate(nextProps, nextState) {
+  if (this.props === nextProps &amp;&amp; this.state === nextState) {
+    return false;
+  } else {
+    return true;
+  }
+}</code></pre>
+<p> 这个时候，你可以考虑使用 <code>PurComponent</code>。</p>
+<h1 id="React-PurComponent"><a href="#React-PurComponent" class="headerlink" title="React.PurComponent"></a>React.PurComponent</h1><p><code>React.PurComponent</code> “纯”组件，是自带 <code>shouldComponentUpdate</code> 生命周期函数实现的组件。它会在组件重新渲染的时候对 新旧 <code>state</code> 和 <code>props</code> 整体做浅层比较。如果都相等，就阻止重新渲染。 </p>
+<pre><code class="language-jsx">// PurComponent 实现源码
+if (this._compositeType === CompositeTypes.PureClass) {
+  shouldUpdate = !shallowEqual(prevProps, nextProps) || ! shallowEqual(inst.state, nextState);
+}
+// shallowEqual 源码
+const hasOwn = Object.prototype.hasOwnProperty
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    return x !== x &amp;&amp; y !== y
+  }
+}
+
+export default function shallowEqual(objA, objB) {
+  //在 === 基础上 修复了 NaN 和 +-0 的情况
+  if (is(objA, objB)) return true
+
+  if (typeof objA !== &#39;object&#39; || objA === null ||
+      typeof objB !== &#39;object&#39; || objB === null) {
+    return false
+  }
+
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i &lt; keysA.length; i++) {
+    if (!hasOwn.call(objB, keysA[i]) ||
+        !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false
+    }
+  }
+
+  return true
+}</code></pre>
+<p>因为是浅层比较，一些不合理的写法，会导致 <code>PurComponent</code>中 <code>shallowEqual</code> 无法找出差异。</p>
+<p>看下面代码：</p>
+<pre><code class="language-jsx">const newObj = this.state.obj;
+newObj.id = 1;
+this.setState({
+  obj: newObj
+})</code></pre>
+<p><code>newObj</code> 和 <code>obj</code> 指向同一个引用地址，<code>shallowEqual</code> 比较结果是 <code>true</code> 阻止了重新渲染。正确的书写方式是通过 <code>clone</code>来定义<code>newObj</code>。</p>
+<p>另外，因为是浅层比较，对于复杂数据结构，不建议使用 <code>PurComponent</code>。<br><code>PurComponent</code> 并不等于高性能，对于 <code>props</code> 经常改变的组件，<code>PurComponent</code> 频繁比较，反而性能会降低。</p>
+<h1 id="React-memo"><a href="#React-memo" class="headerlink" title="React.memo"></a>React.memo</h1><hr>
+<p><code>React.memo</code> 为高阶组件。它与 <code>React.PureComponent</code> 非常相似，但只适用于函数组件，而不适用类组件。<br><code>React.memo</code> 仅检查 <code>props</code> 变更。如果函数组件被 <code>React.memo</code> 包裹。其内部使用了 <code>useState</code> 或 <code>useContext</code>。当 <code>state</code> , <code>context</code> 发生变化时，它仍会重新渲染。</p>
+<p>默认情况下其只会对复杂对象做浅层对比，如果你想要控制对比过程，那么请将自定义的比较函数通过第二个参数传入来实现。</p>
+<pre><code class="language-jsx">function MyComponent(props) {
+  /* 使用 props 渲染 */
+}
+function areEqual(prevProps, nextProps) {
+  /*
+  如果把 nextProps 传入 render 方法的返回结果与
+  将 prevProps 传入 render 方法的返回结果一致则返回 true，
+  否则返回 false
+  */
+}
+export default React.memo(MyComponent, areEqual);</code></pre>
+<h1 id="useCallback-Hook"><a href="#useCallback-Hook" class="headerlink" title="useCallback Hook"></a>useCallback Hook</h1><hr>
+<p>在函数组件中，我们经常会创建很多函数。还会把函数作为子组件的参数向下传递。那么当组件 <code>reRender</code> 的时候，这些函数每次都会重新定义。</p>
+<p>所以我们会有这样的误解：这会不会很消耗性能，是不是应该缓存下来？而 <code>useCallback</code> 的功能就是在函数组件中做函数的缓存来优化性能。</p>
+<p>所以很多人陷入一个误区：对于会频繁 <code>reRender</code> 的函数组件，我们定义的函数都应该使用 <code>useCallback</code> 来缓存下来，避免反复定义。</p>
+<ul>
+<li>一方面，官方文档也指出，在现代浏览器中，创建函数和闭包的性能消耗，只有在个别极端情况下才会有明显差异。* 另一方面，在 <code>javascript</code> 中，当组件刷新时，未被 <code>useCallback</code> 包裹的函数将被垃圾回收并重新定义，但被 <code>useCallback</code> 所制造的闭包将保持对回调函数和依赖项的引用，不利于垃圾回收。用的越多，反而负担越重。</li>
+</ul>
+<p><code>useCallback</code> 正确的用法是配合 <code>React.memo</code> 来避免渲染成本较高的子组件非必要 <code>reRender</code> 问题。比如这样一个典型的场景：</p>
+<pre><code class="language-jsx">import React, { useState } from &#39;react&#39;;
+
+const  FatherComp = () =&gt; {
+  const [dataA, setDataA] = useState(0);
+  const [dataB, setDataB] = useState(0);
+
+  const onClickA = () =&gt; {
+      setDataA(o =&gt; o + 1);
+  };
+
+  const onClickB = () =&gt; {
+      setDataB(o =&gt; o + 1);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;A data= {dataA} onClick={(onClickA)}/&gt;
+      &lt;B data= {dataB} onClick={(onClickB)}/&gt;
+    &lt;/div&gt;
+  )
+}
+export default FatherComp;</code></pre>
+<p>父组件 <code>FatherComp</code> 中有2个受控子组件，其中组件 <code>A</code> 交互频繁，而导致父组件频繁 <code>reRender</code>。子组件 <code>B</code> 也因此频繁进行不必要的 <code>reRender</code>。如果 <code>B</code> 是一个渲染成本非常高的组件，那就得优化其不必要<code>reRender</code> 的问题。</p>
+<p>这个时候，你只是用 <code>React.memo</code> 包裹 <code>B</code> 组件是没有办法阻止其重新渲染的，因为每次 <code>onClickB</code> 都是重新定义的，<code>B</code> 组件的 <code>props</code> 是改变的。这个时候就需要 <code>useCallback</code> 来包裹 <code>onClickB</code> 来达到阻止的效果。</p>
+<pre><code class="language-jsx">import React, { useState } from &#39;react&#39;;
+
+const  FatherComp = () =&gt; {
+  const [dataA, setDataA] = useState(0);
+  const [dataB, setDataB] = useState(0);
+
+  const onClickA = () =&gt; {
+    setDataA(o =&gt; o + 1);
+  };
+
+  const onClickB = useCallback(() =&gt; {
+    setDataB(o =&gt; o + 1);
+  },[])
+
+  return (
+    &lt;div&gt;
+      &lt;A data= {dataA} onClick={(onClickA)}/&gt;
+      &lt;MemoB data= {dataB} onClick={(onClickB)}/&gt;
+    &lt;/div&gt;
+  )
+}
+
+const MemoB =  React.memo(B);
+
+export default FatherComp;</code></pre>
+<p>我们抽象 <code>useCallback</code> 的API为：<code>const memoFun = useCallback(arrFun, depsArr)</code>;</p>
+<ul>
+<li>arrFun: 必须，是一个函数，首次渲染时，会赋给 <code>memoFun</code> 并缓存。</li>
+<li>depsArr：可为空，依赖项，更新渲染时：<ul>
+<li>依赖项没有变化，会直接将上次缓存的 <code>arrFun</code> 赋给 <code>memoFun</code>（<code>memoFun</code> 没有变）。</li>
+<li>依赖项发生变化，会重新声明一个 <code>arrFun</code> 赋给 <code>memoFun</code>（<code>memoFun</code> 改变了）。</li>
+</ul>
+</li>
+</ul>
+<h1 id="useMemo-Hook"><a href="#useMemo-Hook" class="headerlink" title="useMemo Hook"></a>useMemo Hook</h1><hr>
+<p><code>useMemo</code> 这个 <code>Hook</code>，用于函数组件重新渲染时，阻止无用方法的调用（无需重新调用），尤其一些高开销的计算逻辑。它用于局部优化，而不是阻止整个组件 <code>Rerender</code>。</p>
+<pre><code class="language-jsx">import React, { useMemo, useState } from &#39;react&#39;
+
+export default function UseMemoPage() {
+
+    const [count, setCount] = useState(0)
+    const [value, setValue] = useState(&quot;&quot;)
+
+    //-----------当前的计算只和count有关------
+    const expensive = useMemo(() =&gt; {
+        console.log(&quot;compute&quot;);
+        let sum = 0;
+        for (let i = 0; i &lt; count; i++) {
+            sum += i
+        }
+        return sum;
+        // 只有 count 发生改变的时候，才执行这个方法
+    }, [count])
+    //-------------重点！！局部优化---------
+
+    return (
+        &lt;div&gt;
+            &lt;h3&gt;UseMemo&lt;/h3&gt;
+            &lt;p&gt;count：{count}&lt;/p&gt;
+            &lt;p&gt;expensive:{expensive}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;add&lt;/button&gt;
+            &lt;input value={value} onChange={event =&gt; setValue(event.target.value)} /&gt;
+        &lt;/div&gt;
+    )
+}</code></pre>
+<p>把 <strong>局部高开销计算封装成一个函数</strong> , 和 依赖项数组 一起作为参数传入 <code>useMemo</code>，返回一个 <code>memoized</code> 值 。重新渲染时，它仅会在某个依赖项改变时才重新调用函数计算 <code>memoized</code> 值。</p>
+<ul>
+<li><p>传入 <code>useMemo</code> 的函数会在渲染期间执行。请不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 <code>useEffect</code> 的适用范畴，而不是 <code>useMemo</code>。</p>
+</li>
+<li><p>所有计算函数中引用的值都应该出现在依赖项数组中。如果没有提供依赖项数组，<code>useMemo</code> 在每次渲染时都会计算新的值，便没有任何意义。</p>
+</li>
+<li><p>依赖项数组不会作为参数传给计算函数。</p>
+</li>
+<li><p>保险起见，先编写在没有 <code>useMemo</code> 的情况下也可以执行的代码。之后再在你的代码中添加 <code>useMemo</code>，以达到优化性能的目的。</p>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>shouldComponentUpdate</code>生命周期 和 <code>React.PurComponent</code> 用于类组件优化 <code>reRender</code>。</li>
+<li><code>React.memo</code> 和 <code>useMemo</code> 用于函数组件优化 <code>reRender</code>。</li>
+<li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
+<li>避免出现阻止必要<code>reRender</code>的情况。</li>
+<li>适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改的子组件。</li>
+<li><code>useMemo</code>用于局部包含复杂计算逻辑方法优化，相对其他<code>API</code>，更灵活，更放心。</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zh-hans.reactjs.org/docs/react-api.html#reactpurecomponent" target="_blank" rel="noopener">官网-purecomponent</a><br><a href="https://juejin.im/post/5c9472085188252d6a08731a" target="_blank" rel="noopener">React 渲染优化</a><br><a href="https://www.robinwieruch.de/react-prevent-rerender-component/" target="_blank" rel="noopener">React rerender component</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/09/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%B8%89%EF%BC%89-Context/" rel="next" title="拥抱React-Hooks（三）- useContext">
+                <i class="fa fa-chevron-left"></i> 拥抱React-Hooks（三）- useContext
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/16/React-%E7%B1%BB%E7%BB%84%E4%BB%B6%E7%AE%80%E7%95%A5%E8%AF%AD%E6%B3%95/" rel="prev" title="React 类组件简略语法">
+                React 类组件简略语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ReRender-问题"><span class="nav-number">1.</span> <span class="nav-text">ReRender 问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Diff"><span class="nav-number">2.</span> <span class="nav-text">Diff</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shouldComponentUpdate"><span class="nav-number">3.</span> <span class="nav-text">shouldComponentUpdate</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-PurComponent"><span class="nav-number">4.</span> <span class="nav-text">React.PurComponent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-memo"><span class="nav-number">5.</span> <span class="nav-text">React.memo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useCallback-Hook"><span class="nav-number">6.</span> <span class="nav-text">useCallback Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useMemo-Hook"><span class="nav-number">7.</span> <span class="nav-text">useMemo Hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

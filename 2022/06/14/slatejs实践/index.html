@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate 架构设计类似于 MVC：  (Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="slatejs实践">
+<meta property="og:url" content="http://www.mala520.life/2022/06/14/slatejs%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="简介 Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。  slate 架构设计类似于 MVC：  (Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。 (View">
+<meta property="article:published_time" content="2022-06-14T06:51:27.000Z">
+<meta property="article:modified_time" content="2022-09-28T06:19:54.384Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2022/06/14/slatejs实践/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>slatejs实践 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2022/06/14/slatejs%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">slatejs实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-06-14T14:51:27+08:00">
+                2022-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><hr>
+<p>Slate.js 是一个完全可定制的的富文本编辑器，准确来说是一个框架。其诞生于 2016 年，作者是 Ian Storm Taylor。它和 Draft.js, Prosemirror, Quill类似，都是基于结构化对象来渲染富文本内容。 </p>
+<p>slate 架构设计类似于 MVC：</p>
+<ul>
+<li>(Model) slate 定义了一套数据模型以及更新 model 的一系列 commonds。</li>
+<li>(View) slate 定义了一套与数据模型对应的视图模型（洋葱模型），使用 react 将数据模型渲染成视图模型。</li>
+<li>(Ctrl) slate 支持自定义事件监听，然后通过 commonds 调用更新数据模型。</li>
+</ul>
+<p>这里，commonds指的是 slate 内部定义的一系列 Operation。和用来生产Operation的一系列Transforms 辅助方法。<br>model 更新以后会通过一些规则来保证数据格式的规范，对model进行正确性校验，然后触发view变更。</p>
+<p>slate 仓库下包含四个 package：</p>
+<ul>
+<li>slate：这一部分是编辑器的核心，定义了数据模型（model），操作模型的方法和编辑器实例本身。</li>
+<li>slate-react：以插件的形式提供 DOM 渲染和用户交互能力，包括光标、快捷键等等。</li>
+<li>slate-history：以插件的形式提供 undo/redo 能力。</li>
+<li>slate-hyperscript：让用户能够使用 JSX 语法来创建 slate 的数据。</li>
+</ul>
+<h1 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h1><hr>
+<ul>
+<li>灵活，完全可定制。</li>
+<li>插件是一等公民，你可以以插件的形式定制自己的用于修改编辑器的行为API.</li>
+<li>数据模型类似于可嵌套的Dom树，Schema结构非常精简。</li>
+<li>具有原子化操作 API，支持协同编辑。</li>
+<li>使用 React 作为渲染层；</li>
+</ul>
+<h1 id="slate-数据模型"><a href="#slate-数据模型" class="headerlink" title="slate 数据模型"></a>slate 数据模型</h1><hr>
+<p>slate 以树形结构来表示和存储文档内容，树的节点类型为 Node，分为三种子类型：</p>
+<pre><code class="language-js">export type Node = Editor | Element | Text
+
+export interface Element {
+  children: Node[]
+  [key: string]: unknown
+}
+
+export interface Text {
+  text: string
+  [key: string]: unknown
+}</code></pre>
+<ul>
+<li>Editor 是一种特殊的 Element ，它既是编辑器实例类型，也是文档树的根节点</li>
+<li>Element 类型含有 children 属性，可以作为其他 Node 的父节点</li>
+<li>Text 类型是树的叶子结点，包含文字信息</li>
+</ul>
+<p>用户可以自行拓展 Node 的属性，例如通过添加 type 字段标识 Node 的类型（paragraph, ordered list, heading 等等），或者是文本的属性（italic, bold 等等），来描述富文本中的文字和段落。</p>
+<pre><code class="language-js">const initialValue = [
+    {
+        type: &#39;paragraph&#39;,
+        children: [{ text: &#39;我是&#39;, bold: true }, { text: &#39;一行&#39;, underline: true }, {text: &#39;文字&#39;}]
+    },
+    {
+        type: &#39;code&#39;,
+        children: [{ text: &#39;hello world&#39; }]
+    },
+    {
+        type: &#39;image&#39;,
+        children: [],
+        url: &#39;xxx.png&#39;
+    }
+    // 其他的继续扩展
+]</code></pre>
+<h1 id="slate-渲染模型"><a href="#slate-渲染模型" class="headerlink" title="slate 渲染模型"></a>slate 渲染模型</h1><hr>
+<p>slate数据模型通过slate-react视图渲染以后的组件层级如下图所示：</p>
+<p>你会看到一些 data- 开头的自定义内置特性（attribute），比如 data-slate-node 等。</p>
+<p>slate主要内置特性如下：</p>
+<ul>
+<li><p>Editable</p>
+<ul>
+<li>data-slate-editor 用于标识编辑器组件。</li>
+</ul>
+</li>
+<li><p>Element</p>
+<ul>
+<li>data-slate-node: ‘element’|’value’|’text’；取值分别代表元素、文档全量值（适用于 Editable 上）、文本节点。</li>
+<li>data-slate-void: 若为空元素则取值为 true，否则不存在。</li>
+<li>data-slate-inline: 若为内联元素则取值为 true，否则不存在。</li>
+</ul>
+</li>
+<li><p>Leaf</p>
+<ul>
+<li>data-slate-leaf: 必须，取值为 true，表明对应 DOM 元素为 Leaf 节点。</li>
+</ul>
+</li>
+<li><p>String</p>
+<ul>
+<li>data-slate-string: 若为文本节点则取值为 true，否则不存在。</li>
+<li>data-slate-zero-width: 若为零宽度文本节点则取值 ‘n’|’z’，分别指代换行、不换行，否则不存在。</li>
+<li>data-slate-length: 用于标注零宽度文本节点的实际宽度，单位为字符数。默认为 0，如果不为零则为被设置了 isVoid 的元素的文本字符的宽度。</li>
+</ul>
+</li>
+</ul>
+<p>此外，对于 Element 的 attributes 中还有以下内置特性内容：</p>
+<ul>
+<li>contentEditable: 若不可编辑则取值为 false，否则不存在。</li>
+<li>dir: 若编辑方向为从右到左则取值 ‘rtl’，否则不存在。</li>
+<li>ref: 必选，当前元素的 ref 引用。Slate 会在每次 Element 渲染时将该元素和其对应 DOM 节点的映射关系添加到 ELEMENT_TO_NODE 的 WeakMap 中。若缺少 ref 则会因为 ELEMENT_TO_NODE 中映射关系的缺失而导致渲染失败和 toSlateNode 中报错。</li>
+</ul>
+<h1 id="简单实例"><a href="#简单实例" class="headerlink" title="简单实例"></a>简单实例</h1><hr>
+<pre><code class="language-jsx">
+import React, { useState, useMemo } from &#39;react&#39;
+import { createEditor } from &#39;slate&#39;  // 创建编辑器实例的方法
+import { Slate, Editable, withReact } from &#39;slate-react&#39;
+import { withHistory } from &#39;slate-history&#39;; //以插件的形式提供 undo/redo 能力
+
+// 初始化编辑器内容的数据。其结构类似于 vnode。
+const initialValue = [
+  {
+    type: &#39;paragraph&#39;,
+    children: [ { text: &#39;我是一行文字&#39; } ]
+  }
+]
+
+export default  BasicEditor = () =&gt; {
+    /** editor 变量为编辑器的对象实例，可以使用它提供的大量 API，也可以用来扩展其他插件。 */
+    const editor = useMemo(() =&gt; withHistory(withReact(createEditor())) ,[])
+    const [value, setValue] = useState(initialValue)
+
+    return (
+        &lt;div style={{ border: '1px solid #ccc', padding: '10px' }}&gt;
+            &lt;Slate
+                editor={editor}
+                onChange={newValue =&gt; setValue(newValue)}
+            &gt;
+                &lt;Editable/&gt;
+            &lt;/Slate&gt;
+        &lt;/div&gt;
+    )
+}
+</code></pre>
+<h1 id="renderElement"><a href="#renderElement" class="headerlink" title="renderElement"></a>renderElement</h1><h1 id="renderLeaf"><a href="#renderLeaf" class="headerlink" title="renderLeaf"></a>renderLeaf</h1><h1 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h1><h1 id="操作API"><a href="#操作API" class="headerlink" title="操作API"></a>操作API</h1><h1 id="简单插件"><a href="#简单插件" class="headerlink" title="简单插件"></a>简单插件</h1><h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h1 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h1><ul>
+<li>contenteditable</li>
+<li>execCommand</li>
+<li>Selection 和 Range </li>
+<li>自定义组件</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://docs.slatejs.org/" target="_blank" rel="noopener">slate.js 官网</a></li>
+<li><a href="https://juejin.cn/post/6970289345911586853" target="_blank" rel="noopener">富文本编辑器框架 - slate.js</a></li>
+<li><a href="https://juejin.cn/post/7086816312789794846" target="_blank" rel="noopener">从 Slate 的内置特性到洋葱模型</a></li>
+</ul>
+<p>proseMirror</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/01/%E6%97%A5%E6%8A%A5%E6%8E%A8%E9%80%81%E5%AF%B9%E5%A4%96%E7%89%88/" rel="next" title="报表导出与自动推送在大数据平台场景下的探索与实践">
+                <i class="fa fa-chevron-left"></i> 报表导出与自动推送在大数据平台场景下的探索与实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/07/21/canvas%E7%A2%8E%E7%89%87/" rel="prev" title="canvas碎片">
+                canvas碎片 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#特点"><span class="nav-number">2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#slate-数据模型"><span class="nav-number">3.</span> <span class="nav-text">slate 数据模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#slate-渲染模型"><span class="nav-number">4.</span> <span class="nav-text">slate 渲染模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单实例"><span class="nav-number">5.</span> <span class="nav-text">简单实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#renderElement"><span class="nav-number">6.</span> <span class="nav-text">renderElement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#renderLeaf"><span class="nav-number">7.</span> <span class="nav-text">renderLeaf</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义事件"><span class="nav-number">8.</span> <span class="nav-text">自定义事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作API"><span class="nav-number">9.</span> <span class="nav-text">操作API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单插件"><span class="nav-number">10.</span> <span class="nav-text">简单插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据处理"><span class="nav-number">11.</span> <span class="nav-text">数据处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他概念"><span class="nav-number">12.</span> <span class="nav-text">其他概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">13.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

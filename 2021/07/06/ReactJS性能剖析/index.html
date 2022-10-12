@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文地址。带补充标示的地方是翻译过程中拓展的知识点。  今天，我们来看看如何使用 React 的 Profiler API 来测试 React 的渲染性能; 如何使用 React 实验性的 交互追踪 API 来追踪 React 的交互；如何使用 Timing API 来测量自定义指标。   为了方便演示，我们将使用一个展示电影列表的应用。 React Profiler API React 提供的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《ReactJS性能剖析》（译）">
+<meta property="og:url" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="原文地址。带补充标示的地方是翻译过程中拓展的知识点。  今天，我们来看看如何使用 React 的 Profiler API 来测试 React 的渲染性能; 如何使用 React 实验性的 交互追踪 API 来追踪 React 的交互；如何使用 Timing API 来测量自定义指标。   为了方便演示，我们将使用一个展示电影列表的应用。 React Profiler API React 提供的">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/react-movies-queue@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/devtools-profiler@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/876878.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ranked-view@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/4324242.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/interaction@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/trace@3x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/timings@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/timings@3x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot3.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/nextjs@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/lighthouse-cli@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/concurrent-mode@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/long-tasks@2x.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot4.jpg">
+<meta property="article:published_time" content="2021-07-06T11:05:30.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.957Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/react-movies-queue@2x.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/07/06/ReactJS性能剖析/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>《ReactJS性能剖析》（译） | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《ReactJS性能剖析》（译）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-06T19:05:30+08:00">
+                2021-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><a href="https://addyosmani.com/blog/profiling-react-js/?utm_source=wechat_session&utm_medium=social&utm_oi=827853996734705664" target="_blank" rel="noopener">原文地址</a>。带<strong>补充</strong>标示的地方是翻译过程中拓展的知识点。</p>
+</blockquote>
+<p>今天，我们来看看如何使用 <code>React</code> 的 <code>Profiler API</code> 来测试 <code>React</code> 的渲染性能; 如何使用 <code>React</code> 实验性的 交互追踪 <code>API</code> 来追踪 <code>React</code> 的交互；如何使用 <code>Timing</code> <code>API</code> 来测量自定义指标。</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/react-movies-queue@2x.jpg" class="">
+
+<p>为了方便演示，我们将使用一个展示电影列表的应用。</p>
+<h1 id="React-Profiler-API"><a href="#React-Profiler-API" class="headerlink" title="React Profiler API"></a>React Profiler API</h1><hr>
+<p><code>React</code> 提供的 <code>Profiler API</code> 用于测量 渲染和渲染成本，以帮助我们定位应用程序缓慢的瓶颈。</p>
+<pre><code class="language-js">import React, { Fragment, unstable_Profiler as Profiler} from &quot;react&quot;;
+</code></pre>
+<p><code>Profiler</code> 使用 <code>onRender</code> 回调作为一个 <code>prop</code>，被分析的树中的组件每次提交更新时，这个回调都会被执行。</p>
+<pre><code class="language-js">const Movies = ({ movies, addToQueue }) =&gt; (
+  &lt;Fragment&gt;
+    &lt;Profiler id=&quot;Movies&quot; onRender={callback}&gt;
+</code></pre>
+<p>为了测试，让我们试着使用 <code>Profiler</code> 来测量部分 <code>Movies</code> 组件的渲染时间。像这样：</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot1.jpg" class="">
+
+<p><code>Profiler</code> 的 <code>onRender</code> 回调接收一些参数，用于描述渲染的内容和渲染时间。这些参数如下：</p>
+<ul>
+<li><code>id</code>: 提交更新的 <code>Profiler</code> 树的 “<code>id</code>“ 属性。</li>
+<li><code>phase</code>: “<code>mount</code>“ (首次加载) 或 “<code>update</code>“ (重现渲染)</li>
+<li><code>actualDuration</code>: 提交更新的渲染时间</li>
+<li><code>baseDuration</code>: 没有记忆化（<code>memoization</code>）的情况下，渲染所有子节点的估时</li>
+<li><code>startTime</code>: React 开始渲染的时间</li>
+<li><code>commitTime</code>: React 完成渲染的时间</li>
+<li><code>interactions</code>: 引发更新的具体交互</li>
+</ul>
+<blockquote>
+<p>补充：<code>Memoization</code> 是一种将函数返回值缓存起来的空间换时间的方法。原理很简单，就是把函数的每次执行结果都放入一个键值对(数组也可以)中，在接下来的执行中，在键值对中如果有值，直接返回该值，没有才去执行函数体求值并缓存。现代 <code>JavaScript</code> 中经常使用这种技术。<code>React useMemo</code>就是通过 <code>memoization</code> 来提高性能的。</p>
+</blockquote>
+<pre><code class="language-js">
+const callback = (id, phase, actualTime, baseTime, startTime, commitTime) =&gt; {
+    console.log(`${id}&#39;s ${phase} phase:`);
+    console.log(`Actual time: ${actualTime}`);
+    console.log(`Base time: ${baseTime}`);
+    console.log(`Start time: ${startTime}`);
+    console.log(`Commit time: ${commitTime}`);
+}
+</code></pre>
+<p>我们可以加载我们的页面，前往 <code>Chrome DevTools</code> 控制台，应该可以看到以下时间：</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/devtools-profiler@2x.jpg" class="">
+
+<p>我们也可以打开 <code>React DevTools</code>，进入 <code>Profiler</code> 标签，直观地看到我们的组件的渲染时间。下面是火焰图的视图：</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/876878.jpg" class="">
+
+<p>我也很喜欢使用 <code>Ranked</code> 视图，它是按顺序排列的，所以渲染时间最长的组件会显示在最上面。</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ranked-view@2x.jpg" class="">
+
+<p>你也可以使用多个 <code>Profilers</code> 来测量你的应用程序的不同部分。</p>
+<pre><code class="language-js">
+import React, { Fragment, unstable_Profiler as Profiler} from &quot;react&quot;;
+
+render(
+  &lt;App&gt;
+    &lt;Profiler id=&quot;Header&quot; onRender={callback}&gt;
+      &lt;Header {...props} /&gt;
+    &lt;/Profiler&gt;
+    &lt;Profiler id=&quot;Movies&quot; onRender={callback}&gt;
+      &lt;Movies {...props} /&gt;
+    &lt;/Profiler&gt;
+  &lt;/App&gt;
+);
+</code></pre>
+<blockquote>
+<p>补充: <code>React devtools</code>  的 <code>Profiler</code> 功能 只支持 <code>React v16.5+</code> 构建的应用的追踪。因为 <code>React 16.5</code> 添加了对开发者工具的 <code>Profiler</code> 插件的支持。</p>
+</blockquote>
+<p>但是，如果你想进行交互追踪怎么办？</p>
+<h1 id="交互追踪-API"><a href="#交互追踪-API" class="headerlink" title="交互追踪 API"></a>交互追踪 API</h1><hr>
+<p>如果我们能够追踪交互（例如点击用户界面），以回答 “这个按钮的点击需要多长时间来更新DOM？”这样的问题，那将是非常强大的。感谢<code>Brian Vaughn</code>，<code>React</code> 通过新的 <a href="https://www.npmjs.com/package/scheduler" target="_blank" rel="noopener"><code>scheduler</code></a>包中的交互追踪 <code>API</code> 对交互追踪提供了实验性支持。<a href="https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16" target="_blank" rel="noopener">这里</a>有更详细的记录。</p>
+<p>交互被注释为一个描述（例如 “点击添加到购物车按钮”）和一个时间戳。交互也应该提供一个回调，在那里你可以做与交互有关的工作。</p>
+<p>在我们的 “<code>Movies</code>“ 应用程序中，我们有一个 “将电影添加到队列 “ 按钮（”+”）。点击这个按钮将电影添加到你的观看队列中。</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot2.jpg" class="">
+
+<p>下面是一个追踪这种交互的状态更新的例子。</p>
+<pre><code class="language-js">import { unstable_Profiler as Profiler } from &quot;react&quot;;
+import { render } from &quot;react-dom&quot;;
+import { unstable_trace as trace } from &quot;scheduler/tracing&quot;;
+
+class MyComponent extends Component {
+  addMovieButtonClick = event =&gt; {
+    trace(&quot;Add To Movies Queue click&quot;, performance.now(), () =&gt; {
+      this.setState({ itemAddedToQueue: true });
+    });
+  };
+}</code></pre>
+<p>我们可以记录这种交互，并在 <code>React DevTools</code> 中看到它的持续时间：</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/4324242.jpg" class="">
+
+<p>我们也可以使用交互追踪API来追踪初始渲染，如下所示：</p>
+<pre><code class="language-js">import { unstable_trace as trace } from &quot;scheduler/tracing&quot;;
+
+trace(&quot;initial render&quot;, performance.now(), () =&gt; {
+   ReactDom.render(&lt;App /&gt;, document.getElementById(&quot;app&quot;));
+});</code></pre>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/interaction@2x.jpg" class="">
+
+<p><code>Brian</code>在他的 <code>React gist</code> 中涵盖了更多的交互追踪的例子，比如如何追踪异步交互。</p>
+<blockquote>
+<p>补充：<code>Github</code> 提供了一个非常有用的服务 <code>Gist</code>。开发人员可以使用 <code>Gist</code> 记录他们的代码片段，但是 <code>Gist</code> 不仅仅是为极客和码农开发的，每个人都可以用到它。</p>
+</blockquote>
+<h1 id="Puppeteer"><a href="#Puppeteer" class="headerlink" title="Puppeteer"></a>Puppeteer</h1><p>对于更深入的 UI 交互脚本跟踪，您可能会对 <code>Puppeteer</code> 感兴趣。<code>Puppeteer</code> 是一个 <code>Node</code> 库，它提供了一系列 高级 <code>API</code>，用于通过 <code>DevTools</code> 协议控制 <strong>无头 <code>Chrome</code> 浏览器</strong>。</p>
+<p>它暴露了 <code>trace.start()/stop()</code> 助手，用于捕获 <code>DevTools</code> 的性能追踪情况。下面，我们使用它来跟踪单击主按钮时发生的情况：</p>
+<pre><code class="language-js">const puppeteer = require(&#39;puppeteer&#39;);
+
+(async () =&gt; {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const navigationPromise = page.waitForNavigation();
+  await page.goto(&#39;https://react-movies-queue.glitch.me/&#39;)
+  await page.setViewport({ width: 1276, height: 689 });
+  await navigationPromise;
+
+  const addMovieToQueueBtn = &#39;li:nth-child(3) &gt; .card &gt; .card__info &gt; div &gt; .button&#39;;
+  await page.waitForSelector(addMovieToQueueBtn);
+
+  // Begin profiling...
+  await page.tracing.start({ path: &#39;profile.json&#39; });
+  // Click the button
+  await page.click(addMovieToQueueBtn);
+  // Stop profliling
+  await page.tracing.stop();
+
+  await browser.close();
+})()</code></pre>
+<p>加载 <code>profile.json</code> 到 <code>DevTools</code> 的 <code>Performance</code> 面板中，我们可以看到点击按钮后的所有 <code>JavaScript</code> 函数调用:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/trace@3x.jpg" class="">
+
+<p>如果你有兴趣阅读更多关于这个主题的内容，请查看 <code>Stoyan Stefanov</code> 的文章 <a href="https://calendar.perfplanet.com/2019/javascript-component-level-cpu-costs/" target="_blank" rel="noopener">JavaScript组件级CPU成本</a>。</p>
+<h1 id="User-Timing-API"><a href="#User-Timing-API" class="headerlink" title="User Timing API"></a>User Timing API</h1><hr>
+<p><code>User Timing</code> <code>API</code>允许使用 高精度时间戳 为应用程序度量自定义性能指标。<code>Window.performance.mark()</code> 存储具有关联名称的时间戳，而 <code>window.performance.measure()</code> 存储两个标记之间经过的时间。</p>
+<pre><code class="language-js">// Record the time before running a task
+performance.mark(&#39;Movies:updateStart&#39;);
+// Do some work
+
+// Record the time after running a task
+performance.mark(&#39;Movies:updateEnd&#39;);
+
+// Measure the difference between the start and end of the task
+performance.measure(&#39;moviesRender&#39;, &#39;Movies:updateStart&#39;, &#39;Movies:updateEnd&#39;);</code></pre>
+<p>在使用 <code>Chrome DevTools</code> 的 <code>Performance</code> 面板分析 <code>React</code> 应用程序时，你会发现一个名为 “<code>Timings</code>” 的部分，里面包含了你的 <code>React</code> 组件的处理时间。在渲染时，<code>React</code> 能够通过 <code>User Timing API</code> 发布该信息。</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/timings@2x.jpg" class="">
+
+<p>注意: <code>React</code> 正在从他们的 <code>DEV</code> 包中移除 <code>User Timing</code>，以支持 <code>React Profiler</code>，后者提供了更准确的计时。他们可能会在未来的3级浏览器中重新添加 <code>User Timing</code>。</p>
+<p>纵观整个 <code>web</code>，你会发现 <code>React</code> 应用利用 <code>User Timing</code> 来定义自己的定制指标。其中包括 <code>Reddit</code> 的“<code>Time to first post title visible</code>” 和 <code>Spotify</code> 的 “<code>Time to playback ready</code>“:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/timings@3x.jpg" class="">
+
+<blockquote>
+<p>补充：<code>Spotify</code> 是世界上最大的音乐流媒体服务。<code>Reddit</code>是个社交新闻站点。</p>
+</blockquote>
+<p>自定义的 <code>User Timing</code> 标记和度量也可以清晰的反映在 <code>Chrome DevTools</code> 的 <a href="https://developers.google.com/web/tools/lighthouse/" target="_blank" rel="noopener"><code>Lighthouse</code>面板</a>:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot3.jpg" class="">
+
+<p>最近版本的 <code>Next.js</code> 还为一些事件添加了更多的 <code>User Timing</code> 标记和度量，包括:</p>
+<ul>
+<li><strong>Next.js-hydration</strong>：hydration 时间。</li>
+<li><strong>Next.js-nav-to-render</strong>：导航开始,直到呈现之前。</li>
+</ul>
+<p>所有这些度量都将出现在 <code>Timings</code> 区域:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/nextjs@2x.jpg" class="">
+
+<h1 id="DevTools-amp-Lighthouse"><a href="#DevTools-amp-Lighthouse" class="headerlink" title="DevTools &amp; Lighthouse"></a>DevTools &amp; Lighthouse</h1><hr>
+<p>提醒一下, <a href="https://developers.google.com/web/tools/lighthouse" target="_blank" rel="noopener">Lighthouse</a>和<a href="https://developers.google.com/web/tools/chrome-devtools/evaluate-performance" target="_blank" rel="noopener">DevTools Performance panel 面板</a> 可用于深入分析 <code>React</code> 应用程序的加载和运行时性能, 突出关键以用户为中心的幸福指标:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/lighthouse-cli@2x.jpg" class="">
+
+<p><code>React</code> 用户可能会喜欢像<a href="https://web.dev/tbt/" target="_blank" rel="noopener"><code>Total Blocking Time</code></a> (<code>TBT</code>)这样的新指标，它可以衡量一个页面从最初的不可响应变得具有可靠的响应性(<a href="https://web.dev/tti/" target="_blank" rel="noopener">Time to Interactive</a>)的过程。下面我们可以看到使用 <code>Concurrent</code> 模式前后，<code>TBT</code>的情况:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/concurrent-mode@2x.jpg" class="">
+
+<blockquote>
+<p>补充：<code>Concurrent</code> 模式是一组 <code>React</code> 的新功能，可帮助应用保持响应，并根据用户的设备性能和网速进行适当的调整。</p>
+</blockquote>
+<p>这些工具通常有助于获得浏览器级的瓶颈视图，如延迟响应的繁重<a href="https://web.dev/long-tasks-devtools/" target="_blank" rel="noopener">长任务</a>(如按钮单击响应)，如下所示:</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/long-tasks@2x.jpg" class="">
+
+<p><code>Lighthouse</code> 还提供了一些 <code>React</code> 特定的的审记指引。在 <code>Lighthouse 6.0</code> 中，您将看到一个<a href="https://web.dev/remove-unused-code/" target="_blank" rel="noopener"> remove unused JavaScript audit </a>的审记，高亮提示可以使用 <code>React.lazy()</code> 动态引入这些已加载但未使用的 <code>JavaScript</code>。</p>
+<img src="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/ScreenShot4.jpg" class="">
+
+<p>这总比在真实用户的硬件上对性能进行体检要好。我经常依靠<a href="https://addyosmani.com/blog/profiling-react-js/webpagetest.org/easy" target="_blank" rel="noopener">webpagetest.org/easy</a>和来自<a href="https://web.dev/user-centric-performance-metrics/#in-the-field" target="_blank" rel="noopener">RUM</a>和<a href="https://web.dev/chrome-ux-report/" target="_blank" rel="noopener">CrUX</a>的现场数据来描绘一个更完整的画面。</p>
+<h1 id="Read-more"><a href="#Read-more" class="headerlink" title="Read more"></a>Read more</h1><hr>
+<ul>
+<li><a href="https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html" target="_blank" rel="noopener">Introducing the React Profiler</a></li>
+<li><a href="https://gist.github.com/bvaughn/60a883af01716a03a1b3285a1029be0c" target="_blank" rel="noopener">The React Profiler on-going notes</a></li>
+<li><a href="https://gist.github.com/bvaughn/25e6233aeb1b4f0cdb8d8366e54a3977" target="_blank" rel="noopener">How to use Profiler in production with react-dom</a></li>
+<li><a href="https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16" target="_blank" rel="noopener">Interaction tracing with React</a></li>
+<li><a href="https://www.debugbear.com/blog/measuring-react-app-performance" target="_blank" rel="noopener">Measuring React app performance</a></li>
+<li><a href="https://houssein.me/progressive-react" target="_blank" rel="noopener">Progressive React</a></li>
+<li><a href="https://web.dev/custom-metrics/" target="_blank" rel="noopener">Measuring Custom metrics</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/07/HeadlessCMS%E5%92%8CJamstack/" rel="next" title="Headless CMS & JAMStack">
+                <i class="fa fa-chevron-left"></i> Headless CMS & JAMStack
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/09/01/JS%E4%B9%8B%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="JS之正则表达式">
+                JS之正则表达式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#React-Profiler-API"><span class="nav-number">1.</span> <span class="nav-text">React Profiler API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#交互追踪-API"><span class="nav-number">2.</span> <span class="nav-text">交互追踪 API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Puppeteer"><span class="nav-number">3.</span> <span class="nav-text">Puppeteer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#User-Timing-API"><span class="nav-number">4.</span> <span class="nav-text">User Timing API</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DevTools-amp-Lighthouse"><span class="nav-number">5.</span> <span class="nav-text">DevTools &amp; Lighthouse</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Read-more"><span class="nav-number">6.</span> <span class="nav-text">Read more</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

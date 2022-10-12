@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言  随着CPU，内存，以及浏览器内核性能不断提升，前端在软件开发中扮演越来越重要的角色。 前端框架层出不穷，逻辑日益复杂，代码量日益庞大。 前端也需要一种有效组织和管理大型应用系统代码的方式。 前端开始探索自己的模块化开发之路。  什么是模块化  模块化是指解决一个复杂问题时自顶向下逐层把系统分解为更好的可管理模块的方式。 每个模块完成一个特定的子功能，封装细节，提供使用接口，彼此之间可相互依">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端模块化之路">
+<meta property="og:url" content="http://www.mala520.life/2020/08/21/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="前言  随着CPU，内存，以及浏览器内核性能不断提升，前端在软件开发中扮演越来越重要的角色。 前端框架层出不穷，逻辑日益复杂，代码量日益庞大。 前端也需要一种有效组织和管理大型应用系统代码的方式。 前端开始探索自己的模块化开发之路。  什么是模块化  模块化是指解决一个复杂问题时自顶向下逐层把系统分解为更好的可管理模块的方式。 每个模块完成一个特定的子功能，封装细节，提供使用接口，彼此之间可相互依">
+<meta property="article:published_time" content="2020-08-21T09:12:28.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.988Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/08/21/前端模块化/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>前端模块化之路 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/08/21/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端模块化之路</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-21T17:12:28+08:00">
+                2020-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><hr>
+<ul>
+<li>随着<code>CPU</code>，内存，以及浏览器内核性能不断提升，前端在软件开发中扮演越来越重要的角色。</li>
+<li>前端框架层出不穷，逻辑日益复杂，代码量日益庞大。</li>
+<li>前端也需要一种有效组织和管理大型应用系统代码的方式。</li>
+<li>前端开始探索自己的模块化开发之路。</li>
+</ul>
+<h1 id="什么是模块化"><a href="#什么是模块化" class="headerlink" title="什么是模块化"></a>什么是模块化</h1><hr>
+<ul>
+<li>模块化是指解决一个复杂问题时自顶向下逐层把系统<strong>分解</strong>为更好的<strong>可管理模块</strong>的方式。</li>
+<li>每个模块完成一个特定的子功能，<strong>封装细节</strong>，提供使用<strong>接口</strong>，彼此之间可<strong>相互依赖，但互不影响</strong>。</li>
+<li>所有的模块可以按某种方法<strong>组装</strong>起来，成为一个整体，完成整个系统所要求的功能。</li>
+<li>模块化使代码耦合度降低，最大化的设计重用，以最少的模块，更快速的满足更多的个性化需要。</li>
+</ul>
+<p>科学的模块化肯定要具备以下几点：</p>
+<ul>
+<li>分解成模块，每个模块实现特定子功能。</li>
+<li>模块封装具体细节，提供使用接口。</li>
+<li>模块间互不影响。</li>
+<li>模块间依赖明确，可连接。</li>
+</ul>
+<h1 id="模块化的好处"><a href="#模块化的好处" class="headerlink" title="模块化的好处"></a>模块化的好处</h1><ul>
+<li>避免变量名冲突（全局变量污染）</li>
+<li>更好的分离代码，可按需加载，提升性能</li>
+<li>可维护性更高</li>
+<li>可复用性更高</li>
+<li>…</li>
+</ul>
+<h1 id="前端模块化探索"><a href="#前端模块化探索" class="headerlink" title="前端模块化探索"></a>前端模块化探索</h1><hr>
+<ul>
+<li>在<code>ES6</code>出现之前，<code>JS</code>先天是不具备模块化能力的。</li>
+<li>我们需要基于<code>JS</code>的原生土壤（<code>Object</code>，<code>Function</code>，<code>Cursor</code>…）去抽象和封装。</li>
+<li>JS是面向函数编程的。若无任何封装，基本遍地的全局函数。最突出的问题便是全局命名空间污染，命名冲突。</li>
+</ul>
+<p>那么，加一个命名空间好了。</p>
+<h2 id="命名空间模式-对象封装"><a href="#命名空间模式-对象封装" class="headerlink" title="命名空间模式-对象封装"></a>命名空间模式-对象封装</h2><p>我们把模块封装成一个对象，这个对象（保证命名唯一性）就相当于一个命名空间。</p>
+<p>比如，我们用 <code>Object</code> 来封装一个我们常用的日期处理函数库：</p>
+<pre><code class="language-js">/**************定义模块**********/
+var MyDateUtils = {
+  defaultFmt:&#39;yyyy-MM-dd&#39;,
+  // 格式化日期格式
+  dateFormat: function(date, _fmt) {
+    var fmt = _fmt || this.defaultFmt;
+    var o = {
+      &#39;M+&#39;: date.getMonth() + 1, // 月份
+      &#39;d+&#39;: date.getDate(), // 日
+      &#39;h+&#39;: date.getHours(), // 小时
+      &#39;m+&#39;: date.getMinutes(), // 分
+      &#39;s+&#39;: date.getSeconds(), // 秒
+      &#39;q+&#39;: Math.floor((date.getMonth() + 3) / 3), // 季度
+      S: date.getMilliseconds(), // 毫秒
+    };
+    if (/(y+)/.test(fmt)) { fmt = fmt.replace(RegExp.$1, (`${date.getFullYear()}`).substr(4 - RegExp.$1.length)); }
+    for (var k in o) {
+      if (new RegExp(`(${k})`).test(fmt)) { fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : ((`00${o[k]}`).substr((`${o[k]}`).length))); }
+    }
+    return fmt;
+  },
+  // 获取当前日期
+  getDateNow(fmt) {
+    return this.dateFormat(new Date(), fmt);
+  },
+  //其他API略...
+}</code></pre>
+<ul>
+<li>优点：模块增加了命名空间，大大降低了命名冲突的情况。</li>
+<li>缺点：外部可以随意修改对象内部成员。这种不可控的状态非常要命，属于很大的安全漏洞。</li>
+</ul>
+<pre><code class="language-js">// A同学正常使用
+MyDateUtils.getDateNow(); 
+// B同学修改内部成员为自己场景常用的格式，就会影响使用默认格式的A同学
+MyDateUtils.defaultFmt = &#39;MM-dd&#39;; </code></pre>
+<p>模块化满足情况：</p>
+<ul>
+<li>分解成模块，每个模块实现特定子功能。 ✅ 对象即模块</li>
+<li>模块封装具体细节，提供使用接口。 ❌ 全暴露，可读可写</li>
+<li>模块间互不影响。 ❌ 可随意篡改其他模块</li>
+<li>模块间依赖明确，可连接。 ❌ how?</li>
+</ul>
+<h2 id="函数封装"><a href="#函数封装" class="headerlink" title="函数封装"></a>函数封装</h2><p>对象封装明显不靠谱，还是得靠JS的一等公民：<code>Function</code>。我们知道，<code>JS</code>函数有自己独立的作用域。</p>
+<p>还是上面的日期函数库，我们尝试使用<code>Function</code>来封装，最大程度符合模块化特性可能是这样:</p>
+<pre><code class="language-js">/**************定义模块**********/
+var MyDateUtils = function (defaultFmt){
+  this.defaultFmt = defaultFmt || &#39;yyyy-MM-dd&#39;;
+};
+MyDateUtils.prototype.dateFormat = function(date, fmt) {
+  // 略...(同上)
+};
+MyDateUtils.prototype.getDateNow = function(fmt) {
+  return this.dateFormat(new Date(), fmt);
+}
+
+/**************使用模块**********/
+var newDateUtils = new MyDateUtils();
+var today = newDateUtils.getDateNow();</code></pre>
+<p>也可以使用<code>ES6</code>-<code>class</code>语法糖，这么定义：</p>
+<pre><code class="language-js">/**************定义模块**********/
+class MyDateUtils = {
+  constructor(defaultFmt){
+    this.defaultFmt = defaultFmt || &#39;yyyy-MM-dd&#39;;
+  };
+
+  dateFormat(date, fmt) {
+    // 略...(同上)
+  };
+
+  getDateNow (fmt) {
+    return this.dateFormat(new Date(), fmt);
+  }
+}
+
+/**************使用模块**********/
+var newDateUtils = new MyDateUtils();
+var today = newDateUtils.getDateNow();</code></pre>
+<p>再来看看模块化满足情况：</p>
+<ul>
+<li>分解成模块，每个模块实现特定子功能。 ✅ 函数对象即模块</li>
+<li>模块封装具体细节，提供使用接口。 ❌ 所有方法可访问，其实模块中往往存在很多子方法是不需要外部访问的，也毫无意义</li>
+<li>模块间互不影响。 ✅ 所有方法定义在 prototype 属性上才能防止其他模块复写。</li>
+<li>模块间依赖明确，可连接。 ❌ no way!</li>
+</ul>
+<p>如何才能只暴露部分接口，还能和外界取得联系？</p>
+<p><strong>闭包</strong></p>
+<ul>
+<li>闭包 就是能够读取其他函数内部变量的函数。</li>
+<li>由于在<code>Javascript</code>语言中，只有函数内部的子函数才能读取局部变量，因此可以把闭包简单理解成”定义在一个函数内部的函数”。</li>
+<li>所以在本质上，闭包就是将函数内部和函数外部连接起来的一座桥梁。</li>
+</ul>
+<h2 id="使用闭包-IIFE（立即执行函数）"><a href="#使用闭包-IIFE（立即执行函数）" class="headerlink" title="使用闭包-IIFE（立即执行函数）"></a>使用闭包-IIFE（立即执行函数）</h2><p>我们使用<code>IIFE</code>来封装前面的模块：</p>
+<pre><code class="language-js">/**************定义模块**********/
+var MyDateUtils = (function (){
+  let defaultFmt = &#39;yyyy-MM-dd&#39;;
+
+  function dateFormat(date, _fmt) {
+    // 略...(同上)
+  }
+  // 获取当前日期
+  function getDateNow(fmt) {
+    return this.dateFormat(new Date(), fmt);
+  }
+
+  return { 
+    getDateNow: getDateNow;
+  }
+})();</code></pre>
+<p>或者（流行方式）：</p>
+<pre><code class="language-js">/**************定义模块**********/
+;(function (){
+  let defaultFmt = &#39;yyyy-MM-dd&#39;;
+
+  function dateFormat(date, _fmt) {
+    // 略...(同上)
+  }
+  // 获取当前日期
+  function getDateNow(fmt) {
+    return this.dateFormat(new Date(), fmt);
+  }
+
+  window.MyDateUtils = { 
+    getDateNow: getDateNow;
+  }
+})();</code></pre>
+<pre><code class="language-js">/**************使用模块**********/
+MyDateUtils.getDateNow(); // 可以访问
+MyDateUtils.dateFormat(); // 不可以访问</code></pre>
+<p>再来看看模块化满足情况：</p>
+<ul>
+<li>分解成模块，每个模块实现特定子功能。 ✅ </li>
+<li>模块封装具体细节，提供使用接口。 ✅</li>
+<li>模块间互不影响。 ✅ </li>
+<li>模块间依赖明确，可连接。 ❌ </li>
+</ul>
+<p>问题：那么一个模块依赖另一个模块怎么办?</p>
+<p>办法：把依赖的模块作为立即执行函数的参数即可。</p>
+<pre><code class="language-js">/**************定义模块**********/
+;(function (_A,_B){
+
+  // 略...(同上) 这里便可以使用 ModuleA 和 ModuleB 暴露的方法
+
+  window.MyDateUtils = { 
+    getDateNow: getDateNow;
+  }
+})(ModuleA,ModuleB);</code></pre>
+<p>上面模块化方案也是后来一系列模块化框架和规范的基石。</p>
+<h1 id="模块化规范"><a href="#模块化规范" class="headerlink" title="模块化规范"></a>模块化规范</h1><hr>
+<p>前面都是原生的模块化探索。在此基础上，衍生了一系列模块化的库和规范：</p>
+<ul>
+<li><code>commonJS</code>：服务端<code>nodeJS</code>引入，同步加载。</li>
+<li><code>requireJS</code>：遵循 <code>AMD</code> 规范</li>
+<li><code>seaJS</code>： 遵循 <code>CMD</code> 规范</li>
+<li><code>ES6</code> 模块化</li>
+</ul>
+<h2 id="CommonJs"><a href="#CommonJs" class="headerlink" title="CommonJs"></a>CommonJs</h2><p>1）介绍</p>
+<ul>
+<li>由服务端 <code>nodeJS</code> 引入并发扬光大。</li>
+<li>同步加载，适用于服务端。</li>
+<li>客户端（浏览器端）<code>JS</code>一般是异步加载，不适用。</li>
+<li>模块加载的顺序，按照其在代码中出现的顺序。</li>
+<li>服务器端<code>Node</code>，模块的加载是运行时同步加载的；浏览器端<code>Node</code>，模块需要提前编译打包处理。</li>
+</ul>
+<p>2）语法</p>
+<ul>
+<li>定义模块：一个文件就是一个模块，拥有自己独立的作用域。</li>
+<li>暴露模块：<code>module.exports = value</code>或<code>exports.xxx = value</code>。</li>
+<li>引入模块：<code>require(xxx)</code>,如果是第三方模块，<code>xxx</code>为模块名；如果是自定义模块，<code>xxx</code>为模块文件路径。<code>require</code> 返回该模块的 <code>exports</code>对象。</li>
+</ul>
+<pre><code class="language-js">const webpack = require(&#39;webpack&#39;)
+const path = require(&#39;path&#39;)
+
+module.exports = env =&gt; {
+  let config = { };
+  //...
+  return config;
+}</code></pre>
+<h2 id="RequireJS-AMD"><a href="#RequireJS-AMD" class="headerlink" title="RequireJS(AMD)"></a>RequireJS(AMD)</h2><p>1) 介绍</p>
+<ul>
+<li><code>AMD</code> 即<code>Asynchronous Module Definition</code>，异步模块定义的意思。它是一个在浏览器端模块化开发的规范。</li>
+<li>浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用<code>AMD</code>规范。</li>
+<li><code>JS</code>原生不支持<code>AMD</code>规范，需要对应的工具库来做这件事。<code>requireJS</code>诞生，用于客户端的模块管理。</li>
+</ul>
+<p><code>requireJS</code> 主要解决两个问题：</p>
+<ul>
+<li>多个<code>js</code>文件可能有依赖关系，被依赖的文件需要早于依赖它的文件加载到浏览器</li>
+<li><code>js</code>加载的时候浏览器会停止页面渲染，加载文件越多，页面失去响应时间越长</li>
+</ul>
+<p>2）语法</p>
+<ul>
+<li>定义模块：<code>define(id?, [dependencies]?, factory)</code>;<ul>
+<li><code>id</code>: 可选，用来定义模块的标识，一般使用默认的脚本文件名（去掉拓展名）;</li>
+<li><code>dependencies</code>: 可选，如果有依赖，列出依赖的模块数组; </li>
+<li><code>factory</code>：工厂方法 如果是对象 则表示模块的返回。</li>
+</ul>
+</li>
+<li>暴露模块：通过在上面的 <code>factory</code> 工厂方法中 <code>return value</code>。</li>
+<li>引入模块：<code>require([dependencies], function(){})</code>;</li>
+</ul>
+<pre><code class="language-js">//定义没有依赖的模块
+define(function(){
+
+   return { ...模块对象/方法 }
+})
+
+define({ ...模块对象/方法 }) //模块是对象，直接暴露整个模块对象写法。</code></pre>
+<pre><code class="language-js">//定义有依赖的模块
+define([&#39;module1&#39;, &#39;module2&#39;], function(m1, m2){
+   return { ...模块对象/方法 }
+})</code></pre>
+<pre><code class="language-js">//引入模块
+require([&#39;module1&#39;, &#39;module2&#39;], function(m1, m2){
+   // 使用m1/m2
+})</code></pre>
+<blockquote>
+<p><code>require()</code>函数在加载依赖的函数的时候是异步加载的，这样浏览器不会失去响应，它指定的回调函数，只有前面的模块都加载成功后，才会运行，解决了依赖性的问题。</p>
+</blockquote>
+<h2 id="SeaJs-CMD"><a href="#SeaJs-CMD" class="headerlink" title="SeaJs(CMD)"></a>SeaJs(CMD)</h2><p>1) 介绍 </p>
+<ul>
+<li><code>CMD</code> 即<code>Common Module Definition</code>，通用模块定义的意思。它是一个在国内发展起来的模块化开发规范。</li>
+<li><code>seaJS</code>是 <code>CMD</code> 规范在浏览器端的实现。 </li>
+<li><code>seaJS</code> 要解决的问题和<code>requireJS</code>一样，只不过在模块定义方式和模块加载（可以说运行、解析）时机上有所不同。</li>
+</ul>
+<p>2）语法</p>
+<ul>
+<li>定义模块：<code>define(function(require, exports, module) {...})</code>。只有一个工厂方法。</li>
+<li>暴露模块：使用上面的工厂方法的<code>exports</code> 对象 <code>exports.doSomething = ...</code>。</li>
+<li>引入模块：使用上面的工厂方法的<code>require</code> 对象。还提供了异步引入的方法<code>require.async</code>.</li>
+</ul>
+<blockquote>
+<p>定义模块时其实也可以指定id和依赖，不常用，不推荐：<code>define(id?, dependencies?, function(require, exports, module) {...})</code></p>
+</blockquote>
+<pre><code class="language-js">// 定义模块moduleA
+define(function(require, exports, module) {
+  function fn1 () {
+    //...
+  }
+  function fn2 () {
+    //...
+  }
+  // 暴露模块内容
+  export.fn1 = fn1;
+});</code></pre>
+<pre><code class="language-js">// 引入模块(同步)
+define(function(require, exports, module) {
+   //引入依赖模块(同步)
+  var moduleA = require(&#39;./moduleA&#39;);
+  moduleA.fn1();
+});
+
+// 引入模块(异步)
+define(function(require, exports, module) {
+  require.async(&#39;./moduleA&#39;, function (mA) {
+    mA.fn1()
+  })
+});</code></pre>
+<h3 id="AMD与CMD区别"><a href="#AMD与CMD区别" class="headerlink" title="AMD与CMD区别"></a>AMD与CMD区别</h3><p>注意，<code>AMD</code> 和<code>CMD</code>加载模块都是异步的。他们最大的区别是对依赖模块的<strong>执行时机</strong>处理不同，注意不是加载的时机。</p>
+<ul>
+<li><p><code>AMD</code>依赖前置，<code>js</code>可以方便知道依赖模块是谁，立即加载，加载模块完成后就会<strong>执行</strong>该模块，所有模块都加载执行完后会进入<code>require</code>的回调函数，执行主逻辑，这样的效果就是依赖模块的执行顺序和书写顺序不一定一致，看网络速度，哪个先下载下来，哪个先执行，但是主逻辑一定在所有依赖加载完成后才执行。</p>
+</li>
+<li><p><code>CMD</code>就近依赖，需要使用把模块变为字符串解析一遍才知道依赖了那些模块（这也是很多人诟病<code>CMD</code>的一点，牺牲性能来带来开发的便利性，实际上解析模块用的时间短到可以忽略）。<code>CMD</code>加载完某个依赖模块后并不执行，只是下载而已，在所有依赖模块加载完成后进入主逻辑，遇到require语句的时候才执行对应的模块，这样模块的执行顺序和书写顺序是完全一致的。</p>
+</li>
+</ul>
+<blockquote>
+<p>两者各有优劣，很多人说 <code>AMD</code>用户体验好，因为没有延迟，依赖模块提前执行了，<code>CMD</code>性能好，因为只有用户需要的时候才执行的原因。</p>
+</blockquote>
+<h2 id="UMD"><a href="#UMD" class="headerlink" title="UMD"></a>UMD</h2><p><code>UMD</code> 叫做通用模块定义规范（<code>Universal Module Definition</code>）。随着大前端的趋势所诞生，它可以通过运行时或者编译时让同一个代码模块在使用 <code>CommonJs</code>、<code>CMD</code> 甚至是 <code>AMD</code> 的项目中运行。未来同一个 <code>JavaScript</code> 包运行在浏览器端、服务区端甚至是 <code>APP</code> 端都只需要遵守同一个写法就行了。</p>
+<p>它没有自己专有的规范，是集结了 <code>CommonJs</code>、<code>CMD</code>、<code>AMD</code> 的规范于一身，大体实现如下：</p>
+<pre><code class="language-js">((root, factory) =&gt; {
+    if (typeof define === &#39;function&#39; &amp;&amp; define.amd) {
+        //AMD
+        define([&#39;jquery&#39;], factory);
+    } else if (typeof exports === &#39;object&#39;) {
+        //CommonJS
+        var $ = requie(&#39;jquery&#39;);
+        module.exports = factory($);
+    } else {
+        root.testModule = factory(root.jQuery);
+    }
+})(this, ($) =&gt; {
+    //todo
+});</code></pre>
+<h2 id="ESM-ECMA-Script-Modules"><a href="#ESM-ECMA-Script-Modules" class="headerlink" title="ESM (ECMA Script Modules)"></a>ESM (ECMA Script Modules)</h2><p>1) 介绍</p>
+<p>前面讲到，<code>JS</code> 原生是不支持模块化的，必须借助其他抽象的工具库。<code>ES6</code> 的出现彻底改变了这种局面，对 <code>JS</code> 模块化方面进行了补充：</p>
+<ul>
+<li><code>export</code>: 用来暴露模块的 <code>API</code>，可以有多个输出。<code>export default</code>命令，为模块指定默认输出，其他模块加载该模块时，可以为该匿名函数指定任意名字。</li>
+<li><code>import</code>: 用于引入其他模块提供的功能。</li>
+</ul>
+<p>导出示例：</p>
+<pre><code class="language-js">//导出多个
+const obj1 = { ... }
+const obj2 = { ... }
+export { obj1, obj2 }
+//默认导出
+export default { str: &quot;abc&quot; }
+</code></pre>
+<p>导入示例：</p>
+<pre><code class="language-js">// 默认导出可以随意命名
+import str1 , { obj1 , obj2 } from &quot;A.js&quot;；
+// 导入多个api，命名需和导出一致
+import { obj1 , obj2 } from &quot;A.js&quot;；
+// 可设置别名
+import { obj1 as obj3 , obj2 } from &quot;A.js&quot;；</code></pre>
+<p><code>ESM</code> 运行机制与 <code>CommonJS</code> 不一样。<code>CommonJS</code> 模块输出的是一个值的拷贝；<code>ESM</code> 模块输出的是静态<strong>引用</strong>，并且不会缓存值，模块里面的变量绑定其所在的模块。<code>ESM</code>在编译时就能确定模块的依赖关系，以及输入和输出的变量，<code>Tree Shaking</code> 就是基于 <code>ESM</code> 来实现的。</p>
+<pre><code class="language-js">// lib.js
+export let counter = 3;
+export function incCounter() {
+  counter++;
+}
+// main.js
+import { counter, incCounter } from &#39;./lib&#39;;
+console.log(counter); // 3
+incCounter();
+console.log(counter); // 4</code></pre>
+<p>2）使用</p>
+<p>现在，基本上所有的主流浏览器版本都已经支持 <code>ESM</code>。但是浏览器对 <code>ES6</code> 语法的兼容还不够全面，我们需要使用 <code>Babel</code> 编译成浏览器都识别的 <code>ES5</code> 代码来使用。在实际项目中，我们通过打包构建工具（ 如 <code>webpack</code>,<code>rollup</code>） 来统一处理。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><hr>
+<p><a href="https://github.com/ljianshu/Blog/issues/48" target="_blank" rel="noopener">前端模块化详解</a><br><a href="https://www.cnblogs.com/dolphinX/p/4381855.html" target="_blank" rel="noopener">前端模块化</a><br><a href="https://github.com/seajs/seajs/issues/266" target="_blank" rel="noopener">SeaJs快速API</a><br><a href="https://cloud.tencent.com/developer/article/1425476?from=information.detail.requirejs%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" target="_blank" rel="noopener">简单实现一个RequireJS</a><br><a href="http://www.ruanyifeng.com/blog/2015/05/require.html" target="_blank" rel="noopener">Node.js require()源码解读</a><br><a href="https://zhuanlan.zhihu.com/p/402155045" target="_blank" rel="noopener">SystemJs探秘</a><br><a href="https://segmentfault.com/a/1190000039305322" target="_blank" rel="noopener">差点被SystemJs惊掉了下巴，解密模块加载黑魔法</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/14/React%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/" rel="next" title="React核心原理">
+                <i class="fa fa-chevron-left"></i> React核心原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/21/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" rel="prev" title="前端工程化">
+                前端工程化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是模块化"><span class="nav-number">2.</span> <span class="nav-text">什么是模块化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块化的好处"><span class="nav-number">3.</span> <span class="nav-text">模块化的好处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前端模块化探索"><span class="nav-number">4.</span> <span class="nav-text">前端模块化探索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间模式-对象封装"><span class="nav-number">4.1.</span> <span class="nav-text">命名空间模式-对象封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数封装"><span class="nav-number">4.2.</span> <span class="nav-text">函数封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用闭包-IIFE（立即执行函数）"><span class="nav-number">4.3.</span> <span class="nav-text">使用闭包-IIFE（立即执行函数）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块化规范"><span class="nav-number">5.</span> <span class="nav-text">模块化规范</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CommonJs"><span class="nav-number">5.1.</span> <span class="nav-text">CommonJs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RequireJS-AMD"><span class="nav-number">5.2.</span> <span class="nav-text">RequireJS(AMD)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SeaJs-CMD"><span class="nav-number">5.3.</span> <span class="nav-text">SeaJs(CMD)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD与CMD区别"><span class="nav-number">5.3.1.</span> <span class="nav-text">AMD与CMD区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UMD"><span class="nav-number">5.4.</span> <span class="nav-text">UMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ESM-ECMA-Script-Modules"><span class="nav-number">5.5.</span> <span class="nav-text">ESM (ECMA Script Modules)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

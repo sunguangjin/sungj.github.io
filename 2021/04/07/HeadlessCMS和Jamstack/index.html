@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是CMS CMS是 Content Management System 的缩写，意为 内容管理系统。 是一个完整的信息组织和管理的体系。它对同一类型的信息进行分类，且每一类信息都可以进行增删改查操作。此外，又采用了统一的用户和权限管理对信息的使用进行控制。内容管理系统普遍用于企业信息化建设和电子政务。 传统的 CMS 是将内容存储在数据库中，并使用一组Restful API，和对应的一组基于h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Headless CMS &amp; JAMStack">
+<meta property="og:url" content="http://www.mala520.life/2021/04/07/HeadlessCMS%E5%92%8CJamstack/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="什么是CMS CMS是 Content Management System 的缩写，意为 内容管理系统。 是一个完整的信息组织和管理的体系。它对同一类型的信息进行分类，且每一类信息都可以进行增删改查操作。此外，又采用了统一的用户和权限管理对信息的使用进行控制。内容管理系统普遍用于企业信息化建设和电子政务。 传统的 CMS 是将内容存储在数据库中，并使用一组Restful API，和对应的一组基于h">
+<meta property="article:published_time" content="2021-04-07T07:44:33.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.955Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/04/07/HeadlessCMS和Jamstack/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>Headless CMS & JAMStack | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/04/07/HeadlessCMS%E5%92%8CJamstack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Headless CMS & JAMStack</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-07T15:44:33+08:00">
+                2021-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是CMS"><a href="#什么是CMS" class="headerlink" title="什么是CMS"></a>什么是CMS</h1><hr>
+<p><code>CMS</code>是 <code>Content Management System</code> 的缩写，意为 <code>内容管理系统</code>。 是一个完整的信息组织和管理的体系。它对同一类型的信息进行分类，且每一类信息都可以进行增删改查操作。此外，又采用了统一的用户和权限管理对信息的使用进行控制。内容管理系统普遍用于企业信息化建设和电子政务。</p>
+<p>传统的 <code>CMS</code> 是将内容存储在数据库中，并使用一组<a href="http://restful.p2hp.com/" target="_blank" rel="noopener">Restful API</a>，和对应的一组基于<code>html</code>的 <strong>模板文件</strong> 来管理内容呈现的管理信息系统，比如 <code>WordPress</code>。</p>
+<blockquote>
+<p><a href="https://cn.wordpress.org/" target="_blank" rel="noopener"><code>WordPress</code></a>是一个开源的 <code>CMS</code>，允许用户构建 动态网站 和 博客。<code>WordPress</code>是网络上非常流行的博客系统，可以通过其后台管理系统，进行内容更新，自定义和管理网站。</p>
+</blockquote>
+<h1 id="什么是-Headless-CMS"><a href="#什么是-Headless-CMS" class="headerlink" title="什么是 Headless CMS"></a>什么是 Headless CMS</h1><hr>
+<p>简单地说，<code>Headless CMS</code>(后面简称<code>HCMS</code>)是一种内容与表现形式分离的<code>CMS</code>。</p>
+<p><code>HCMS</code> 通过 <code>API</code>提供结构化数据（如 <code>JSON</code>，无样式的<code>XML</code>）给开发者，开发者负责通过其他技术将内容展示在网站或者客户端等独立系统中。内容创建者仍然可以使用一个编辑接口(<code>editing interface</code>) 修改 <code>HCMS</code> 内容。</p>
+<p>传统的 <code>CMS</code> 前端(您在浏览器中看到的)和后端(数据库和软件层)是紧密耦合的。内容和它的呈现方式在同一套代码体系中。而 <code>HCMS</code> 负责内容管理，与显示内容的前端是分离的。即 <code>HCMS</code> 只输出 <code>API</code> ，不输出页面，这样可以让开发者能够用最好的技术来建立优越的用户体验。</p>
+<p>当你的内容是可用的结构化数据，任何客户端或应用程序(无论是<code>JAMStack</code>应用程序还是移动设备)都可以使用它。比如，你可以使用 <code>HCMS</code> 为 <code>Gatsby</code> 站点和其他内容通道提供<code>JSON</code>内容源。</p>
+<blockquote>
+<p><code>GatsbyJs</code> 是一个现代化的网站构建系统，拥有完整、丰富且开源的生态圈。它利用 <code>react</code> + <code>GraphQL</code> 产出多页面应用。通过插件，<code>Gatsby</code>可支持多种 <code>HCMS</code>服务，比如<code>Contentful</code>、<code>Ghost</code>和<code>Prismic</code>。<br>如果你使用<code>WordPress</code>，也没有必要切换。你可以使用 <code>WordPress</code> 的 <code>REST API</code> 作为 <code>HCMS</code> 服务，这样你就可以继续使用已经熟悉的 <code>WordPress</code> 编辑工具进行内容编辑。</p>
+</blockquote>
+<h1 id="什么是-JAMStack"><a href="#什么是-JAMStack" class="headerlink" title="什么是 JAMStack"></a>什么是 JAMStack</h1><hr>
+<p>既然 <code>HCMS</code> 只负责内容管理，那么前端便需要一套与之契合的 架构体系 来完成显示之责，这便是 <code>JAMStack</code> 。</p>
+<p><code>JAMStack</code> 是指使用<code>JavaScript</code>、<code>API</code>和<code>Markup</code>构建的技术堆栈，<code>JAM</code>是<code>JavaScript</code>、<code>API</code>和<code>Markup</code>的简称，<code>JAMstack</code>一种基于客户端<code>JavaScript</code>，可重用<code>API</code>和预构建<code>Markup</code>的现代<code>Web</code>开发架构，需要符合下面三个标准：</p>
+<ul>
+<li><code>JavaScript</code>：请求/响应周期中的任何动态编程都由<code>JavaScript</code>处理，完全在客户端上运行。这可以是任何前端框架/库，甚至是轻量<code>JavaScript</code>。</li>
+<li><code>API</code>：所有服务器端进程或数据库操作都被抽象为可重用的<code>API</code>，使用<code>JavaScript</code>通过<code>HTTPS</code>访问。这些可以是定制的或利用第三方服务。</li>
+<li><code>Markup</code>：模板化标记应该在部署时预先构建，通常使用内容站点的站点生成器或<code>Web</code>应用程序的构建工具。</li>
+</ul>
+<p><code>JAMStack</code> <strong>核心原则</strong>是 <strong>预渲染</strong> 和 <strong>解耦</strong>。</p>
+<ul>
+<li><p>预渲染(<code>pre-rendering</code>)： 通过 <code>JAMStack</code>，整个前端在构建过程中被预构建成高度优化的静态页面和资源。</p>
+<ul>
+<li>这意味着，你甚至可以跳过<code>web</code>服务器，选择 对象存储服务(<code>OSS</code>) 和 内容分发网络 (<code>CDN</code>) 托管你的站点。</li>
+<li>目前已经有很多流行的 静态站点生成器（<code>Static Site Generation</code> 简称 <code>SSG</code>），比如<code>NextJS</code>、<code>Gatsby</code>、<code>Hugo</code>、<code>Jekyll</code>、<code>Eleventy</code>等。</li>
+</ul>
+</li>
+<li><p>解耦(<code>decoupling</code>)：与服务端分离。不需要使用 数据库 或 服务器端编程语言。</p>
+<ul>
+<li>与之对应的后端服务是一系列返回<code>JSON</code>或<code>XML</code>内容的 <code>API</code>。这个 <code>API</code>可以是托管的 数据存储、<code>HCMS</code> 或 自定义应用程序。</li>
+<li><code>JAMStack</code> 站点可以在构建时使用这些服务，也可以在运行时通过 <code>JavaScript</code> 直接从浏览器使用这些服务。</li>
+<li><a href="https://github.com/stackbit/sourcebit" target="_blank" rel="noopener"><code>Sourcebit</code></a> 通过从任何第三方资源中提取数据来帮助开发人员构建数据驱动的<code>JAMstack</code>站点。</li>
+</ul>
+</li>
+</ul>
+<p>很明显，<code>JAMStack</code> 和 <code>HCMS</code> 是高度契合的。</p>
+<blockquote>
+<p>对象存储服务（<code>Object Storage Service，OSS</code>）是一种海量、安全、低成本、高可靠的云存储服务，适合存放任意类型的文件。</p>
+</blockquote>
+<h1 id="JAMStack-优势"><a href="#JAMStack-优势" class="headerlink" title="JAMStack 优势"></a>JAMStack 优势</h1><hr>
+<ul>
+<li><p>速度: 没有数据库层 和 软件服务层导致的开销。因此，它们的渲染和加载速度比传统的一体化架构的站点更快。</p>
+</li>
+<li><p>托管灵活性: 由于是 静态文件，<code>JAMStack</code>站点可以托管在任何地方。您可以使用传统的 <code>web</code>服务器软件，如<code>Apache</code>或<code>Nginx</code>。为了获得最佳的性能和安全性，您可以使用 <code>OSS</code> 和 <code>CDN</code>，如<code>Netlify</code>、<code>Render</code>或<code>AWS</code>的 <code>S3</code>和 <code>Cloudfront</code>。</p>
+</li>
+<li><p>更好的开发体验: 前端开发人员无需了解 服务器端语言 就可以构建站点。后端开发人员可以专注于<code>Api</code>构建。解耦的开发团队可以并行工作，允许每个团队专注于他们最擅长的工作。使用第三方<code>CMS</code>服务还意味着你的开发-运营团队不必管理单独的内容栈。</p>
+</li>
+<li><p>更好的安全性: 没有数据库和软件层意味着 <code>JAMStack</code> 站点不容易受到 <code>SQL</code> 注入或 服务器端代码注入攻击。页面是预构建(<code>pre-build</code>)的，因此不会面临服务器端包含注入攻击的风险。在<code>CDN</code>上托管站点可以免受服务攻击。</p>
+</li>
+</ul>
+<h1 id="JAMStack-最佳实践"><a href="#JAMStack-最佳实践" class="headerlink" title="JAMStack 最佳实践"></a>JAMStack 最佳实践</h1><hr>
+<ul>
+<li><p>整个项目放<code>CDN</code>上</p>
+<ul>
+<li>因为<code>JAMStack</code>项目不依赖服务器端代码，所以它们可以分布式而不是生活在单一服务器上。直接放<code>CDN</code>上提供服务，可以释放出无可匹敌的速度和性能。带来更好的用户体验。</li>
+</ul>
+</li>
+<li><p>使用现代构建工具</p>
+<ul>
+<li>利用现代构建工具的生态圈。这是一个快速发展的空间，你会希望今天能够使用明天的<code>Web</code>标准，而不是等待明天的浏览器。比如目前用到的 <code>Babel</code>、<code>PostCSS</code>、<code>Webpack</code>。</li>
+</ul>
+</li>
+<li><p>自动构建</p>
+<ul>
+<li>因为<code>JAMStack</code> 的 <code>markup</code> 是预构建的，所以在你运行另一个构建之前，内容更改不会上线。将这个过程自动化会减少挫败感。你可以使用<code>webhooks</code>自己来完成，或者使用包含 自动服务 的发布平台。</li>
+</ul>
+</li>
+<li><p>原子部署</p>
+<ul>
+<li>当 <code>JAMStack</code> 项目发展到足够大大，新的改变可能需要重新部署数百个文件。一次性上传这些文件这一进程完成前，会造成信息不一致的状态。你可以使用一个允许你进行 “原子部署(<code>Atomic Deploys</code>) “ 的系统来避免这种情况，在这个系统中，在所有更改的文件被上传之前，任何更改都不会上线。</li>
+</ul>
+</li>
+<li><p>即时缓存失效</p>
+<ul>
+<li>当从构建到部署的周期成为一种常态时，你需要明白，当部署上线时，就真的在线上了。需要确保你的 <code>CDN</code> 做好 即时缓存失效 处理。</li>
+</ul>
+</li>
+<li><p>一切尽在 <code>Git</code>中</p>
+<ul>
+<li>有了<code>JAMStack</code>项目，任何人都应该能够进行<code>git</code>克隆，用标准的程序（比如<code>npm install</code>）安装所需的依赖项，然后就可以在本地运行整个项目。无需克隆数据库，无需复杂的安装。这减少了贡献者的摩擦，也简化了测试工作流程。</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>Jamstack</code> 本质是一种增强的静态网站，它的出现很大程度上得益于各大云厂商提供的云上能力，包括更容易管控的 <code>CDN/DNS</code>、<code>Serverless Function</code>、<code>DevOps</code> 工具等等。</p>
+<p><code>Jamstack</code> 适合一些内容更新不太频繁的网站（比如新闻、电商、文档）。它不适合论坛，聊天室，金融信息……等高度动态化的网站。目前最大用用武之地还是在 <code>HCMS</code>， <code>Headless Commerce</code>（无头电商）这类领域。</p>
+<h1 id="参考-amp-拓展资料"><a href="#参考-amp-拓展资料" class="headerlink" title="参考&amp;拓展资料"></a>参考&amp;拓展资料</h1><hr>
+<p><a href="https://www.gatsbyjs.cn/docs/glossary/headless-cms/" target="_blank" rel="noopener">gatsbyJs文档</a><br><a href="https://www.gatsbyjs.cn/" target="_blank" rel="noopener">gatsbyJs官网</a><br><a href="https://www.gatsbyjs.com/plugins" target="_blank" rel="noopener">gatsbyJs plugins Library</a><br><a href="https://jamstack.com/" target="_blank" rel="noopener">JAMStack</a><br><a href="https://graphql.cn/" target="_blank" rel="noopener">GraphQL官网</a><br><a href="https://blog.csdn.net/Chad97/article/details/104030298" target="_blank" rel="noopener">Gatsby精粹，面向未来的blog</a><br><a href="https://vercel.com/blog/nextjs-server-side-rendering-vs-static-generation" target="_blank" rel="noopener">Next.js: Server-side Rendering vs. Static Generation</a><br><a href="https://www.stackbit.com/blog/jamstack-nextjs-sourcebit/" target="_blank" rel="noopener">Bringing Next.js to the JAMstack</a><a href="https://cloud.tencent.com/developer/article/1439913" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1439913</a>)<br><a href="https://zhuanlan.zhihu.com/p/281085404" target="_blank" rel="noopener">Jamstack，下一代Web建站技术栈？</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/30/JS%E4%B9%8B%E9%98%B2%E6%8A%96%E8%8A%82%E6%B5%81/" rel="next" title="JS之防抖节流">
+                <i class="fa fa-chevron-left"></i> JS之防抖节流
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/07/06/ReactJS%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90/" rel="prev" title="《ReactJS性能剖析》（译）">
+                《ReactJS性能剖析》（译） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是CMS"><span class="nav-number">1.</span> <span class="nav-text">什么是CMS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-Headless-CMS"><span class="nav-number">2.</span> <span class="nav-text">什么是 Headless CMS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-JAMStack"><span class="nav-number">3.</span> <span class="nav-text">什么是 JAMStack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAMStack-优势"><span class="nav-number">4.</span> <span class="nav-text">JAMStack 优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAMStack-最佳实践"><span class="nav-number">5.</span> <span class="nav-text">JAMStack 最佳实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考-amp-拓展资料"><span class="nav-number">7.</span> <span class="nav-text">参考&amp;拓展资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

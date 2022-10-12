@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="微服务," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="微前端资料我认为比较好的微前端思想技术体系文献资料:参考资料：https:&#x2F;&#x2F;github.com&#x2F;xitu&#x2F;gold-miner&#x2F;blob&#x2F;master&#x2F;TODO1&#x2F;micro-frontends-1.md原文资料：https:&#x2F;&#x2F;martinfowler.com&#x2F;articles&#x2F;micro-frontends.html文章大量引用了上述文献资料的第一部分，对许多翻译生硬的地方加以润色，难理解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微前端入门Micro-frontends">
+<meta property="og:url" content="http://www.mala520.life/2020/01/19/micro-service/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="微前端资料我认为比较好的微前端思想技术体系文献资料:参考资料：https:&#x2F;&#x2F;github.com&#x2F;xitu&#x2F;gold-miner&#x2F;blob&#x2F;master&#x2F;TODO1&#x2F;micro-frontends-1.md原文资料：https:&#x2F;&#x2F;martinfowler.com&#x2F;articles&#x2F;micro-frontends.html文章大量引用了上述文献资料的第一部分，对许多翻译生硬的地方加以润色，难理解">
+<meta property="og:image" content="https://martinfowler.com/articles/micro-frontends/deployment.png">
+<meta property="og:image" content="https://martinfowler.com/articles/micro-frontends/horizontal.png">
+<meta property="og:image" content="http://www.mala520.life/2020/01/19/micro-service/%E5%BE%AE%E5%89%8D%E7%AB%AF.png">
+<meta property="article:published_time" content="2020-01-19T08:59:37.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.990Z">
+<meta property="article:author" content="祁连">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://martinfowler.com/articles/micro-frontends/deployment.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/01/19/micro-service/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>微前端入门Micro-frontends | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/01/19/micro-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微前端入门Micro-frontends</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-19T16:59:37+08:00">
+                2020-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="微前端资料"><a href="#微前端资料" class="headerlink" title="微前端资料"></a>微前端资料</h2><p>我认为比较好的<strong>微前端</strong>思想技术体系文献资料:<br>参考资料：<a href="https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md" target="_blank" rel="noopener">https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md</a><br>原文资料：<a href="https://martinfowler.com/articles/micro-frontends.html" target="_blank" rel="noopener">https://martinfowler.com/articles/micro-frontends.html</a><br>文章大量引用了上述文献资料的第一部分，对许多翻译生硬的地方加以润色，难理解的点增加注释，并穿插加入一些个人观点。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>众所周知，前端的世界瞬息万变。新的语言，框架库，思想层出不穷，让人应接不暇。其中许多了解一下即可，但是对去现在比较火热的“微前端（MircroFrontends）”,还是值得去了解和研究一下的。大家对于前端的不断探索研究甚至创造，我觉得无非两个目的。一是尝试拓展前端的边界（创造更多可能）；二是前端已有领域的不断优化（效率，维护性，质量，管理成本）。很明显，微前端是后者。那接下来，我们了解一下什么是微前端，探讨一下它如何解决和优化前端领域一些问题的。</p>
+<h2 id="什么是微前端"><a href="#什么是微前端" class="headerlink" title="什么是微前端"></a>什么是微前端</h2><p>微前端首先是一种（管理）思想。将前端整体<strong>分解</strong>为小而简单模块的一种模式。这些块可以独立开发、测试和部署。<br>与此同时，我们仍然需要把模块<strong>聚合</strong>为一个产品出现在客户面前。我们将这种技术也称为微前端。<br>所以微前端是一种管理思想和集成技术结合的产物，我们将其定义为：</p>
+<blockquote>
+<p>一种将多个可独立交付的小型前端应用聚合为一个整体的架构风格</p>
+</blockquote>
+<p>简而言之，微前端都是将巨大的东西分成更小、更易于管理的小部分，然后明确它们之间的依赖关系。我们的技术选择、代码库、团队以及发布流程都应该能够彼此独立地运行和开发，不需要过多的协调。我认为好的微前端要做好两件事情（微前端也分两步）：</p>
+<ul>
+<li>分解（业务层面）：保证业务的合理拆分，并理清它们直接的依赖交互关系。</li>
+<li>聚合（技术层面）：架构层面，要在技术上做到很好的聚合，保证彼此独立，不相互污染，又能合理通信。</li>
+</ul>
+<p>使用场景主要有：</p>
+<ul>
+<li>拆分巨型应用，使应用变得更加可维护。</li>
+<li>兼容历史应用，实现增量开发。</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>体积小、易拼合且易于维护的代码库</li>
+<li>更具扩展性的互相解耦且独立的团队</li>
+<li>和以前相比能采用增量的方式，更易于对前端的某些部分进行升级、更新甚至重写</li>
+</ul>
+<h3 id="增量升级，逐步翻新。"><a href="#增量升级，逐步翻新。" class="headerlink" title="增量升级，逐步翻新。"></a>增量升级，逐步翻新。</h3><p>  很多公司都普遍存在一个历史问题：过时的技术栈，赶工完成的代码质量，五花八门的代码风格。随着员工的更迭，新功能的不断堆积，后人维<br>护起来，看不懂，改不动，只想重写的情况日益严重。这个时候，你才明白，长江后浪推前浪，前浪原来是被后浪咒死在沙滩上的。如果这个时候，你发现这居然还是一个巨石应用……后浪也想在沙滩上自杀了。<br>  当然了，喜欢折腾的前端没那么脆弱，当然还是要解决这个问题。我相信，这个时候就已经诞生了微前端，或者说应用了微前端的管理思想-细<br>分：随着新的功能，将业务逐步在多个新应用中重构翻新。当然，也有在原应用中或者在一个新应用中想办法逐步翻新，这基本上是重蹈覆辙。</p>
+<h3 id="简单、解耦的代码库"><a href="#简单、解耦的代码库" class="headerlink" title="简单、解耦的代码库"></a>简单、解耦的代码库</h3><p>每个单独的微前端项目的源代码库，会远远小于一个单体前端项目的源代码库。这些小的代码库将会更易于开发。更值得一提的是，我们避免了不相关联的组件之间无意造成的不适当的耦合。通过增强应用程序的<a href="https://martinfowler.com/bliki/BoundedContext.html" target="_blank" rel="noopener">边界</a>来减少这种意外耦合的情况的出现（领域驱动设计(DDD)中抽象的限界上下文（BoundedContext）概念，不懂也不用太纠结）。</p>
+<p>当然了，一个独立的、高级的架构方式（例如微前端），不是用来取代规范整洁的优秀老代码的。我们不是想要逃避代码优化和代码质量提升。相反，我们降低做出错误决策的可能，增加正确决策的几率，从而使我们Falling Into The Pit of Success<a href="https://blog.codinghorror.com/falling-into-the-pit-of-success/" target="_blank" rel="noopener">进入成功之坑</a>（该思想大致的意思是说设计者要通过精心设计的系统或者API，让用户做正确的事变的容易，而不过于为容易犯错而苦恼。用户犯错，那就是设计者的错）。微前端会促使您明确并慎重地了解数据和事件如何在应用程序的不同部分之间传递（跨应用通信），这本是我们（微前端架构设计师）早就应该开始做的事情！</p>
+<h3 id="独立部署"><a href="#独立部署" class="headerlink" title="独立部署"></a>独立部署</h3><p>与微服务一样，微前端的独立可部署性是关键。它减少了部署的范围，从而降低了相关风险。无论您的前端代码在何处托管，每个微前端都应该有自己的连续交付通道，该通道可以构建、测试并将其一直部署到生产环境中。我们应当能够在不考虑其他代码库或者是通道的情况下来部署每个微服务。<br>做到即使原来的单体项目是固定的按照季度手动发布版本，或者其他团队提交了未完成的或者是有问题的代码到他们的主分支上，也不会对当前项目产生影响。如果一个微前端项目已准备好投入生产，它应该具备这种能力，而决定权就在构建并且维护它的团队手中。</p>
+<p><img src="https://martinfowler.com/articles/micro-frontends/deployment.png" alt="图示：三个彼此独立的应用从源代码控制开始，经过构建、测试直至部署到生产环境"></p>
+<p>图 2 : 每个微前端都独立的部署到生产环境上</p>
+<h3 id="自主的团队"><a href="#自主的团队" class="headerlink" title="自主的团队"></a>自主的团队</h3><p>将我们的代码库和发布周期分离的更高阶的好处，是使我们拥有了完全独立的团队，可以参与到自己产品的构思、生产及后续的过程。每个团队都拥有为客户提供价值所需的全部资源，这就使得他们可以快速且有效地行动。为了达到这个目的，我们的团队需要<strong>根据业务功能纵向地划分，而不是根据技术种类</strong>。一种简单的方法是根据最终用户将看到的内容来分割产品，因此每个微前端都封装了应用程序的单个页面，并由一个团队全权负责。与根据技术种类或“横向”关注点（如样式、表单或验证）来组成团队相比，这会使得团队工作更有凝聚力。</p>
+<p><img src="https://martinfowler.com/articles/micro-frontends/horizontal.png" alt="图示：根据三个应用构成三个团队，提醒大家不要根据“样式”分队"></p>
+<p>图 3：每个应用都由一个团队负责</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><h3 id="负载体积"><a href="#负载体积" class="headerlink" title="负载体积"></a>负载体积</h3><p>独立构建，会造成公共依赖的重复，增加了用户所需下载依赖的体积。<br>一种解决方案是将我们编译后代码的常见依赖外置(如下代码)。一旦我们沿着这条路走下去，我们将重新引入一些微前端之间构建过程的耦合。现在它们之间有着一个隐含的合约：“我们都必须使用这些依赖的明确版本”。如果其中一个依赖产生重大改动，我们可能最终需要一个大的协调升级工作以及一次性的同步发版。这是我们使用微前端最初想要避免的一切。</p>
+<p>但并不全是坏消息。首先，即便我们对于重复的依赖不采取任何措施，每个单独页面仍可能比我们构建整个前端更快地加载。原因是通过独立编译每个页面，我们有效地以我们自己的形式实现了代码分割。在传统的前端中，应用中的任何页面加载完成时，我们通常会一次性下载所有页面的源码和依赖。通过独立构建，任何单独的页面加载将只会下载那个页面的源码和依赖。这可能导致更快的首页加载，但随后的导航速度会变慢，因为用户必须在每个页面上重新下载相同的依赖。如果我们严格地不用不必要的依赖使我们的微前端膨胀，或者我们知道用户在应用中通常访问的一两个页面，即便有重复依赖，我们也很可能在性能方面达到净增益。</p>
+<p>在前一段有很多“可能”和“也许”，表明了每个应用通常都有它们自己独特的性能特征。如果你想确切地知道特定的变化会造成什么性能影响，只能靠实际测量，而且最好是在生产环境中。我们见过很多团队仅仅为了下载数兆大小的高清图像或者对一个运行非常慢的数据库进行昂贵的查询额外多写几千字节的 JavaScript 代码。因此，尽管考虑每个架构决策的性能影响很重要，但请确保你知道真正的瓶颈在哪里。</p>
+<pre><code class="language-javascript">  &lt;body&gt;
+    &lt;noscript&gt;
+      You need to enable JavaScript to run this app.
+    &lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react-dom.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;</code></pre>
+<h3 id="环境差异"><a href="#环境差异" class="headerlink" title="环境差异"></a>环境差异</h3><p>我们应该能够开发一个单一的微前端，而无需考虑其他团队正在开发的所有其它微前端。我们可能甚至应该在“独立”模式下，在空白页面上运行我们的微前端，而不是运行在将在生产环境中承载微前端的容器应用内部。这可以使开发变得更加简单，特别是当真正的容器是一个复杂的遗留代码库的时候，而通常情况下我们使用微前端来逐步从旧世界迁移到新世界。但是，在与生产环境完全不同的环境中开发存在风险。如果我们的开发时容器与生产容器的行为不同，那么我们可能会发现我们的微前端被破坏，或者在我们部署到生产环境时表现不同。特别值得关注的是可能由容器或其他微前端带来的全局样式。</p>
+<p>这里的解决方案与我们不得不担心环境差异的任何其他情况没有什么不同。如果我们在一个与生产环境不同的本地环境开发，我们需要<strong>确保定期将我们的微前端集成和部署到像生产环境的环境中，并且我们应该在这些环境中进行测试（手动以及自动化）以尽早发现集成问题</strong>。这不会完全解决问题，但最终这是一个取舍：简化开发环境的生产力提升是否值得冒集成出问题的风险？答案取决于项目！</p>
+<h3 id="运维复杂度"><a href="#运维复杂度" class="headerlink" title="运维复杂度"></a>运维复杂度</h3><p>最后的缺点是与微服务直接平行的缺点。作为一个更加分散的架构，微前端将不可避免地导致需要管理更多的东西 —— 更多的存储库，更多的工具，更多的构建/部署管道，更多的服务器，更多的域等等。因此，在采用这样的架构之前，你应该考虑几个问题：</p>
+<ul>
+<li>你是否有足够的自动化可行地提供以及管理额外所需的基础设施？</li>
+<li>你的前端开发、测试和发布进程是否会扩展到许多应用中？</li>
+<li>你是否对围绕工具和开发的实践变得更加分散且不易控制的决策感到满意？</li>
+<li>你将如何确保你的多个独立前端代码库中的最低代码质量，一致性或代码管理？<br>我们可能会另写一篇文章讨论这些主题。我们希望提出的主要观点是，当你选择微前端时，根据定义，你选择创建许多小东西而不是一个整体。你应该考虑你是否有采用这种方法所需的技术和组织成熟度，从而不造成混乱。</li>
+</ul>
+<h2 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h2><img src="/2020/01/19/micro-service/%E5%BE%AE%E5%89%8D%E7%AB%AF.png" class="" title="微前端技术栈">
+
+<p>主要难点在于<strong>集成方式</strong>（公共依赖）和<strong>跨应用通信</strong>。有兴趣可以研读文章开始的参考资料2-4章节。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/09/React-Hoc/" rel="next" title="React 高阶组件（HOC）">
+                <i class="fa fa-chevron-left"></i> React 高阶组件（HOC）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/09/webpack%E5%9F%BA%E7%A1%80%E5%AE%9E%E8%B7%B5/" rel="prev" title="webpack基础实践">
+                webpack基础实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微前端资料"><span class="nav-number">1.</span> <span class="nav-text">微前端资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">2.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是微前端"><span class="nav-number">3.</span> <span class="nav-text">什么是微前端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">4.</span> <span class="nav-text">优点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增量升级，逐步翻新。"><span class="nav-number">4.1.</span> <span class="nav-text">增量升级，逐步翻新。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单、解耦的代码库"><span class="nav-number">4.2.</span> <span class="nav-text">简单、解耦的代码库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#独立部署"><span class="nav-number">4.3.</span> <span class="nav-text">独立部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自主的团队"><span class="nav-number">4.4.</span> <span class="nav-text">自主的团队</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">5.</span> <span class="nav-text">缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负载体积"><span class="nav-number">5.1.</span> <span class="nav-text">负载体积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境差异"><span class="nav-number">5.2.</span> <span class="nav-text">环境差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运维复杂度"><span class="nav-number">5.3.</span> <span class="nav-text">运维复杂度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术点"><span class="nav-number">6.</span> <span class="nav-text">技术点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

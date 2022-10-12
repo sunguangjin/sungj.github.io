@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="兼容性," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是记录一些自己在工作中实际遇到和解决的一些兼容性问题。 【safari】window.open无效window.open被广告商滥用，严重影响用户的使用，Safari安全机制将其默认拦截。 &amp;nbsp;&amp;nbsp;解决方案 window.location.assign() 新开页面（add一个 history） window.location.replace（或改变 href） 替换当前页">
+<meta property="og:type" content="article">
+<meta property="og:title" content="兼容问题笔记">
+<meta property="og:url" content="http://www.mala520.life/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="本文是记录一些自己在工作中实际遇到和解决的一些兼容性问题。 【safari】window.open无效window.open被广告商滥用，严重影响用户的使用，Safari安全机制将其默认拦截。 &amp;nbsp;&amp;nbsp;解决方案 window.location.assign() 新开页面（add一个 history） window.location.replace（或改变 href） 替换当前页">
+<meta property="og:image" content="http://www.mala520.life/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/wkWebview1.png">
+<meta property="og:image" content="http://www.mala520.life/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/redirect.png">
+<meta property="article:published_time" content="2020-02-25T10:42:35.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.973Z">
+<meta property="article:author" content="祁连">
+<meta property="article:tag" content="兼容性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/wkWebview1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/02/25/兼容笔记2/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>兼容问题笔记 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">兼容问题笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-25T18:42:35+08:00">
+                2020-02-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%BC%E5%AE%B9%E6%80%A7/" itemprop="url" rel="index">
+                    <span itemprop="name">兼容性</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是记录一些自己在工作中实际遇到和解决的一些兼容性问题。</p>
+<h1 id="【safari】window-open无效"><a href="#【safari】window-open无效" class="headerlink" title="【safari】window.open无效"></a>【safari】window.open无效</h1><p>window.open被广告商滥用，严重影响用户的使用，Safari安全机制将其默认拦截。</p>
+<h3 id="nbsp-nbsp-解决方案"><a href="#nbsp-nbsp-解决方案" class="headerlink" title="&nbsp;&nbsp;解决方案"></a>&nbsp;&nbsp;解决方案</h3><ul>
+<li><strong>window.location.assign()</strong> 新开页面（add一个 history）</li>
+<li><strong>window.location.replace（或改变 href）</strong> 替换当前页</li>
+</ul>
+<hr>
+<h1 id="【Android】物理返回键-H5监听拦截"><a href="#【Android】物理返回键-H5监听拦截" class="headerlink" title="【Android】物理返回键 H5监听拦截"></a>【Android】物理返回键 H5监听拦截</h1><h3 id="拦截场景"><a href="#拦截场景" class="headerlink" title="拦截场景"></a>拦截场景</h3><p>网页本身有返回按钮，有特殊返回逻辑。<br>用户为了方便，会使用安卓手机自带的物理返回键，页面就会按照你浏览器<strong>history</strong>栈存储的路径来一层层返回。<br>网页本身设计期望的返回逻辑没有执行，被破坏。</p>
+<h3 id="pushState方法"><a href="#pushState方法" class="headerlink" title="pushState方法"></a>pushState方法</h3><p>  <strong>window.history.back()</strong>：移动到上一个访问页面，等同于浏览器的后退键。<br>  <strong>window.history.forward()</strong>：移动到下一个访问页面，等同于浏览器的前进键。<br>  <strong>window.history.go(num)</strong>：接受一个整数作为参数，移动到该整数指定的页面，比如go(1)相当于forward()，go(-1)相当于back()。<br>  <strong>window.history.pushState()</strong>：HTML5新增，在页面中创建一个 history 实体。直接添加到历史记录中。<br>  <strong>window.history.replaceState()</strong>：HTML5新增，用来在浏览历史中修改记录。</p>
+<p>  <strong>window.history.pushState(state, title, utl)</strong><br>    <strong>state</strong>：一个与指定网址相关的状态对象，popstate事件触发时，该对象会传入回调函数。如果不需要这个对象，此处可以填null。<br>    <strong>title</strong>：新页面的标题，但是所有浏览器目前都忽略这个值，因此这里可以填null。<br>    <strong>url</strong>：新的网址，必须与当前页面处在同一个域。浏览器的地址栏将显示这个网址。<br>    <strong><em>注：pushState方法不会触发页面刷新，只是导致history对象发生变化，地址栏会有反应。</em></strong></p>
+<h3 id="popstate事件"><a href="#popstate事件" class="headerlink" title="popstate事件"></a>popstate事件</h3><ol>
+<li>当活动历史记录条目更改时，将触发<strong>popstate</strong>事件。</li>
+<li>调用<strong>history.pushState()</strong>或<strong>history.replaceState()</strong>不会触发<strong>popstate</strong>事件。只有在做出浏览器动作时，才会触发该事件，如用户点击浏览器的回退按钮（或者在JS代码中调用<strong>history.back()</strong>或者<strong>history.forward()</strong>方法）。</li>
+<li>不同的浏览器在加载页面时处理<strong>popstate</strong>事件的形式存在差异。页面加载时<strong>Chrome</strong>和<strong>Safari</strong>通常会触发(emit)<strong>popstate</strong>事件，但<strong>Firefox</strong>则不会。</li>
+</ol>
+<h3 id="拦截原理："><a href="#拦截原理：" class="headerlink" title="拦截原理："></a>拦截原理：</h3><p>利用<strong>pushState</strong>方法和他不会触发<strong>popstate</strong>事件的特点<em>（安卓物理返回键会）</em>。</p>
+<ol>
+<li><strong>页面A</strong>，先调用<strong>pushState()</strong>，创建一个历史<strong>（B1）</strong>，页面不会刷新。</li>
+<li>监听<strong>popstate</strong>事件。</li>
+<li>物理返回，回到A（拦截目的达到）。再次返回就会到A的上一个页面，所以需要4如下。</li>
+<li>此时触发<strong>popstate</strong>事件，再处理方法中再次调用<strong>pushState()</strong>，创建一个历史<strong>（B2）</strong>。</li>
+<li>下次物理返回，总是在<strong>A</strong>页面，如此循环</li>
+</ol>
+<pre><code class="language-javascript">  window.history.pushState(null, null, &quot;#&quot;);
+  window.addEventListener(&quot;popstate&quot;, function(e) {
+    window.history.pushState(null, null, &quot;#&quot;);
+    // 拦截了物理返回 ，同时也拦截了浏览器返回，history（back forward go）返回
+  })</code></pre>
+<h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><ol>
+<li>如果项目本身使用了<strong>pushState</strong>，则历史记录会有瑕疵（多了一个历史）</li>
+<li>浏览器的后退按钮点击以及调用<strong>history.back()</strong>也会被当成按下了返回键</li>
+</ol>
+<hr>
+<h1 id="【iOS】页面返回不刷新"><a href="#【iOS】页面返回不刷新" class="headerlink" title="【iOS】页面返回不刷新"></a>【iOS】页面返回不刷新</h1><h3 id="场景-转盘抽奖"><a href="#场景-转盘抽奖" class="headerlink" title="场景-转盘抽奖"></a>场景-转盘抽奖</h3><ol>
+<li>页面<strong>A</strong>点击抽奖，转盘转动，同时调用抽奖接口。</li>
+<li>接口返回401，跳页面<strong>B</strong>登录，登录成功，或点击返回按钮，返回页面<strong>A</strong>。</li>
+<li>页面<strong>A</strong>转盘依然在转动,期望是已经停止转动。</li>
+</ol>
+<h3 id="解决方案一"><a href="#解决方案一" class="headerlink" title="解决方案一"></a>解决方案一</h3><p>页面在<strong>非激活状态（hidden）</strong>的时候，触发<strong>visibilitychange</strong>事件，注入停转逻辑。</p>
+<pre><code class="language-javascript">  const hiddenProperty = &#39;hidden&#39; in document ? &#39;hidden&#39; :    
+      &#39;webkitHidden&#39; in document ? &#39;webkitHidden&#39; :    
+      &#39;mozHidden&#39; in document ? &#39;mozHidden&#39; :    
+      null;
+  const visibilityChangeEvent = hiddenProperty.replace(/hidden/i, &#39;visibilitychange&#39;);
+  const onVisibilityChange = function(){
+    if (document[hiddenProperty]) {    
+      console.log(&#39;页面非激活&#39;);
+      // 转盘停止
+      if (that.turning) {
+        that.stopTurning()
+      }
+    }
+  }
+  document.addEventListener(visibilityChangeEvent, onVisibilityChange);</code></pre>
+<h3 id="解决方案二（来自网友，未亲自验证）"><a href="#解决方案二（来自网友，未亲自验证）" class="headerlink" title="解决方案二（来自网友，未亲自验证）"></a>解决方案二（来自网友，未亲自验证）</h3><p><strong>window.onpageshow事件</strong> ：在每次加载页面时都会触发，类似于 <strong>onload</strong> 事件，但是<strong>onload</strong> 事件在页面第一次加载时触发，在页面从浏览器缓存中读取时不触发。</p>
+<pre><code class="language-javascript">...
+isIOS &amp;&amp;
+window.onpageshow = function(event) {
+  if (event.persisted) {
+      window.location.reload()
+  }
+};</code></pre>
+<hr>
+<h1 id="【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移"><a href="#【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移" class="headerlink" title="【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移"></a>【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移</h1><ul>
+<li>页面无滚动条的情况存在该问题，有滚动条正常</li>
+<li>input/textarea触发软键盘，输入完成失焦后出现</li>
+</ul>
+<p>解决方案：基类或者AppContainer中监听全局<strong>blur</strong>事件</p>
+<pre><code class="language-javascript">isIOS &amp;&amp; 
+document.addEventListener(&#39;blur&#39;, event =&gt; {
+  // 当页面没出现滚动条时才执行，因为有滚动条时，不会出现这问题
+  // input textarea 标签才执行，因为 a 等标签也会触发 blur 事件
+  if (
+    document.documentElement.offsetHeight &lt;= document.documentElement.clientHeight 
+    &amp;&amp; [&#39;input&#39;, &#39;textarea&#39;].includes(event.target.localName)
+  ) {
+    document.body.scrollIntoView 
+    ? document.body.scrollIntoView() 
+    : window.scrollTo(0,0) // 回顶部
+  }
+}, true ) // blur事件不冒泡，切记在捕获阶段执行</code></pre>
+<hr>
+<h1 id="【Wkwebview】软键盘遮挡input"><a href="#【Wkwebview】软键盘遮挡input" class="headerlink" title="【Wkwebview】软键盘遮挡input"></a>【Wkwebview】软键盘遮挡input</h1><h3 id="出现场景"><a href="#出现场景" class="headerlink" title="出现场景"></a>出现场景</h3><p>弹出Dialog（fixed在页面底部），input密码输入框自动聚焦，调出软键盘，Dialog未上移被软件盘遮挡。<br>历史代码，UIwebview正常。APP升级WKwebview出现的兼容性问题。</p>
+<img src="/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/wkWebview1.png" class="" title="表现">
+
+<p>Dialog 核心精简代码：</p>
+<pre><code class="language-jsx">  // 封装的滑入动画ui组件，css3（animation transform）
+  import Transform from &#39;../Transform/Transform&#39;
+  import Mask from &#39;../Mask/Mask&#39; // 遮罩蒙层ui组件
+  ...
+  return (
+    &lt;div
+      className={classNames(&#39;ActionDialog&#39;, className)}
+    &gt;
+      &lt;Mask className={this.state.maskStatus} /&gt;
+      &lt;Transform {...this.props}&gt;
+        &lt;div className=&#39;body&#39;&gt;
+          &lt;div className=&#39;title line-bottom&#39;&gt;
+            &lt;i className=&#39;iconfont iconClose stat_closeTransform&#39; onClick={this.onClose} /&gt;
+            {title}
+          &lt;/div&gt;
+          &lt;div className=&#39;content&#39;&gt;
+            &lt;NumberInput
+              labelName=&quot;please input password &quot;
+              showBotton={true}
+              className=&quot;password-input&quot;
+              inputChangeCallback={(text, flag) =&gt; {
+                ...
+              }}
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Transform&gt;
+    &lt;/div&gt;
+  )</code></pre>
+<p>NumberInput 核心精简代码：</p>
+<pre><code class="language-jsx">  ...
+  componentDidMount() {
+    this.tradingPwdHideInput.focus()
+  }
+  onFocus() {
+    this.setState({
+      focus: true
+    })  
+  }
+  onBlur() {
+    this.setState({
+      focus: false
+    })
+  }
+  ...
+  render() {
+    const { focus } = this.state
+    const { labelName, errMsg } = this.props
+    let arryDigits = [...&#39;123456&#39;]
+
+    return (
+      &lt;div className=&#39;NumberInput&#39;&gt;
+        {labelName}
+        &lt;input
+          type=&#39;tel&#39;
+          id=&#39;tradingPwdHideInput&#39;
+          ref={ref =&gt; {
+            this.tradingPwdHideInput = ref
+          }}
+          onClick={() =&gt; {
+            this.tradingPwdHideInput.focus()
+          }}
+          onChange={this.tradingPwdChange.bind(this)}
+          onBlur={() =&gt; {
+            this.onBlur()
+          }}
+          onFocus={() =&gt; {
+            this.onFocus()
+          }}
+        /&gt;
+        &lt;ul className={classNames(&#39;numberbox&#39;, focus ? &#39;focus&#39; : null)}&gt;
+          {arryDigits.map((value, index) =&gt; {
+            return (
+              &lt;li className={classNames({ border: focus })} key={index}&gt;
+                &lt;i className=&#39;passWord&#39;&gt;{this.tradingpwd.charAt(index)}&lt;/i&gt; 
+              &lt;/li&gt;
+            )
+          })}
+        &lt;/ul&gt;
+        &lt;div className=&quot;input-bottom&quot;&gt;
+          &lt;div className=&quot;err-msg&quot;&gt;{errMsg}&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    )
+  }</code></pre>
+<p>主要css：</p>
+<pre><code class="language-css">/*--------ActionDialog--------------*/
+.ActionDialog {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw; 
+  height: 100vh; /*注意这里*/
+  z-index: 11;
+
+  .animationEnd{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 60%;
+    z-index: 12;
+  }
+  .content {
+    width: 100%;
+    height: 100%;
+  }
+  .body {
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+  }
+}
+/*--------Transform--------------*/
+@keyframes down-in {
+  from {transform: translateY(-100%);}
+  to {transform: translateY(0%);}
+}
+@keyframes down-out {
+  from {transform: translateY(0%);}
+  to {transform: translateY(100%);}
+}
+.down-in {
+   animation:down-in .4s
+}
+.down-out {
+   animation:down-out .4s;
+}
+/*---------------Mask--------------------*/
+.Mask {
+  position: fixed;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+/*---------------NumberInput--------------------*/
+.NumberInput {
+  overflow: hidden;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 1px; /*no*/
+  width: 100%;
+  background: #fff;
+
+  input {
+    position: absolute;
+    left: 0; /*no*/
+    z-index: 1;
+    width: 80%;
+    display: block;
+    overflow: hidden;
+    padding: 0 !important;
+    background-clip: padding-box;
+    font-family: Courier, monospace;
+    opacity: 0.01;
+    border: 0 none !important;
+    box-sizing: content-box !important;
+    outline: none;
+    -webkit-appearance: none;
+    /*解决ios光标问题 */
+    color: transparent;
+    text-indent: -100px;
+    -webkit-transform: scale(2);
+  }
+  .numberbox {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: block;
+    width: 100%; /*no*/
+    height: 50px;/*no*/
+    font-size: 24px; /*no*/
+    border: 1px solid $color-input-border; /*no*/
+    background-color: $color-bg;
+    background-clip: padding-box;
+    overflow: hidden;
+    li {
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      box-flex: 1;
+      position: relative;
+      width: 17%;
+      line-height: 50px;/*no*/
+      margin-right: -1px; /*no*/
+      border-right: 1px solid $color-input-border; /*no*/
+      overflow: hidden;
+      text-align: center;
+    }
+    .tradingInputshow {
+      visibility: visible;
+    }
+    .tradingInputhide {
+      visibility: hidden;
+    }
+    .numberboxItem {
+      display: inline-block;
+      width: 14px; /*no*/
+      line-height: 50px;/*no*/
+      font-style: normal;
+      text-align: center;
+      overflow: hidden;
+    }
+    .passWord {
+      line-height: 44px; /*no*/
+      font-style: normal;
+    }
+    .numberboxItem:empty {
+      width: 12px; /*no*/
+      height: 12px; /*no*/
+      border-radius: 12px; /*no*/
+      background-clip: padding-box;
+      background-color: $color-input-text;
+    }
+  }
+  .focus {
+    border: 1px solid $color-input-border-focus; /*no*/
+  }
+  .border {
+    border-right: 1px solid $color-input-border-focus !important;/*no*/
+  }
+}</code></pre>
+<p>开始怀疑是Dialog弹出后自动聚焦，虚拟键盘弹出，由于Dialog有一个CSS3滑入动画（0.4s）导致。但发现手动点击input触发也有同样的问题，此时Dialog已经完全展示。<br>后续解决办法如下：</p>
+<h3 id="解决办法一"><a href="#解决办法一" class="headerlink" title="解决办法一"></a>解决办法一</h3><ul>
+<li><code>Iphone7 iOS 13.1.2</code> 表现为<code>Dialog</code>不上移被遮挡</li>
+<li><code>Iphone8 iOS 11.1.0</code>  <code>iphone xs 12.4.1</code> 表现为<code>Dialog</code>上移250+，超出可视区域。<pre><code class="language-javascript">onFocus() {
+  if (Platform.getOS().name === &#39;iOS&#39;) {
+    // 200其实是虚拟键盘的高度，网上建议用ScrollHeight,但是Dialog上移会太厉害
+    document.scrollingElement.scrollTop = 200;
+  }
+  ...
+}
+onBlur() {
+  if (Platform.getOS().name === &#39;iOS&#39;) {
+    // 失焦以后必须设为0，否则input会停留在上移以后的位置下不来
+    // 副作用：Dialog关闭以后，页面也回到顶部
+    // 如果要保留原来滚动位置，需要在Dialog前后增加scrollTop存储赋值逻辑
+    document.scrollingElement.scrollTop = 0;
+  }
+  ...
+}</code></pre>
+<a href="">why scrollingElement</a></li>
+</ul>
+<h3 id="解决办法二（iphoneX-ios11-1-1）"><a href="#解决办法二（iphoneX-ios11-1-1）" class="headerlink" title="解决办法二（iphoneX ios11.1.1）"></a>解决办法二（iphoneX ios11.1.1）</h3><ol>
+<li><strong>iphoneX ios11.1.1</strong>机器，上述解决办法一无效，发现根本无法设置<strong>document.documentElement.scrollTop</strong></li>
+<li>发现原来的Dialog顶层DIV设置了 <strong>height：100vh</strong> 样式， 删除后正常。</li>
+</ol>
+<hr>
+<h1 id="IOS-页面重定向-哈希丢失"><a href="#IOS-页面重定向-哈希丢失" class="headerlink" title="[IOS] 页面重定向 哈希丢失"></a>[IOS] 页面重定向 哈希丢失</h1><ul>
+<li>场景：iOS手机( 包括微信，safari浏览器.chrome浏览器) 都出现。安卓手机都正常。</li>
+<li>表象：访问公司短链，重定向到对应页面的长链的时候，丢失哈希。应该到详情页，结果到列表页（默认路由）。</li>
+<li>原因：生成短链的长链URl使用了http，短链是https。页面重定向的时候会出现二次重定向（短链 &gt; http 长链 &gt; https 长链）。第二次重定向，哈希会丢失。</li>
+<li>解决办法：<code>长链URl</code>使用<code>https</code>重新生成短链。网上看到别人解决该办法是通过哈希前面加<code>/</code>。自己测试，不成功。</li>
+<li>根本原因：<code>ios</code>的<code>HSTS</code>安全机制？</li>
+</ul>
+<img src="/2020/02/25/%E5%85%BC%E5%AE%B9%E7%AC%94%E8%AE%B02/redirect.png" class="" title="二次重定向">
+
+<pre><code class="language-javascript">http://{domain}/path/knowledge/#/detail?id=101 🔴 
+http://{domain}/path/knowledge?locale=en_us/#/detail?id=101 🔴 
+https://{domain}/path/knowledge?locale=en_us#/detail?id=101 ✅ </code></pre>
+<p><a href="https://www.jianshu.com/p/ac1c192f91ff" target="_blank" rel="noopener">参考资料，上述场景验证无效</a></p>
+<h1 id="Wkwebview-a链接无法跳转"><a href="#Wkwebview-a链接无法跳转" class="headerlink" title="[Wkwebview] a链接无法跳转"></a>[Wkwebview] a链接无法跳转</h1><ul>
+<li>原因：<code>target=&#39;_blank&#39;</code></li>
+<li>解决：删除 <code>target</code></li>
+<li><code>window.open(url)</code> 同样无法跳转，改用 <code>window.location.assign(url)</code></li>
+</ul>
+<p><a href="https://www.jianshu.com/p/ac8ec4a0c424" target="_blank" rel="noopener">参考资料</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%85%BC%E5%AE%B9%E6%80%A7/" rel="tag"># 兼容性</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/25/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="next" title="常用命令">
+                <i class="fa fa-chevron-left"></i> 常用命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/03/Git-Hooks-Husky/" rel="prev" title="Git Hooks & Husky">
+                Git Hooks & Husky <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#【safari】window-open无效"><span class="nav-number">1.</span> <span class="nav-text">【safari】window.open无效</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nbsp-nbsp-解决方案"><span class="nav-number">1.0.1.</span> <span class="nav-text">&amp;nbsp;&amp;nbsp;解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#【Android】物理返回键-H5监听拦截"><span class="nav-number">2.</span> <span class="nav-text">【Android】物理返回键 H5监听拦截</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截场景"><span class="nav-number">2.0.1.</span> <span class="nav-text">拦截场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pushState方法"><span class="nav-number">2.0.2.</span> <span class="nav-text">pushState方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#popstate事件"><span class="nav-number">2.0.3.</span> <span class="nav-text">popstate事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截原理："><span class="nav-number">2.0.4.</span> <span class="nav-text">拦截原理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺陷"><span class="nav-number">2.0.5.</span> <span class="nav-text">缺陷</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#【iOS】页面返回不刷新"><span class="nav-number">3.</span> <span class="nav-text">【iOS】页面返回不刷新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景-转盘抽奖"><span class="nav-number">3.0.1.</span> <span class="nav-text">场景-转盘抽奖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案一"><span class="nav-number">3.0.2.</span> <span class="nav-text">解决方案一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案二（来自网友，未亲自验证）"><span class="nav-number">3.0.3.</span> <span class="nav-text">解决方案二（来自网友，未亲自验证）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移"><span class="nav-number">4.</span> <span class="nav-text">【Wkwebview】虚拟键盘将页面顶出视窗，收起后页面未下移</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#【Wkwebview】软键盘遮挡input"><span class="nav-number">5.</span> <span class="nav-text">【Wkwebview】软键盘遮挡input</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#出现场景"><span class="nav-number">5.0.1.</span> <span class="nav-text">出现场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决办法一"><span class="nav-number">5.0.2.</span> <span class="nav-text">解决办法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决办法二（iphoneX-ios11-1-1）"><span class="nav-number">5.0.3.</span> <span class="nav-text">解决办法二（iphoneX ios11.1.1）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IOS-页面重定向-哈希丢失"><span class="nav-number">6.</span> <span class="nav-text">[IOS] 页面重定向 哈希丢失</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Wkwebview-a链接无法跳转"><span class="nav-number">7.</span> <span class="nav-text">[Wkwebview] a链接无法跳转</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

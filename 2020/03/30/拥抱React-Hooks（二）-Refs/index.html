@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="hooks," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Why &amp; When Refs 在典型的 React 数据流中，DOM 元素的修改都是通过 M-V 的形式重新渲染。M 主要是组件的本地 state ，以及父组件传递给子组件的 props。但是，在某些情况下，你需要在典型数据流之外，手动使用&#x2F;操作 DOM：  管理焦点，媒体播放，文本选择，触发强制动画等。 集成第三方 DOM 库。  这个时候，就不要用类似 document.getEle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱React-Hooks（二）- useRef">
+<meta property="og:url" content="http://www.mala520.life/2020/03/30/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%BA%8C%EF%BC%89-Refs/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="Why &amp; When Refs 在典型的 React 数据流中，DOM 元素的修改都是通过 M-V 的形式重新渲染。M 主要是组件的本地 state ，以及父组件传递给子组件的 props。但是，在某些情况下，你需要在典型数据流之外，手动使用&#x2F;操作 DOM：  管理焦点，媒体播放，文本选择，触发强制动画等。 集成第三方 DOM 库。  这个时候，就不要用类似 document.getEle">
+<meta property="article:published_time" content="2020-03-30T11:53:19.000Z">
+<meta property="article:modified_time" content="2022-10-10T13:55:30.029Z">
+<meta property="article:author" content="祁连">
+<meta property="article:tag" content="hooks">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/03/30/拥抱React-Hooks（二）-Refs/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>拥抱React-Hooks（二）- useRef | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/03/30/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%BA%8C%EF%BC%89-Refs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拥抱React-Hooks（二）- useRef</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-30T19:53:19+08:00">
+                2020-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Why-amp-When-Refs"><a href="#Why-amp-When-Refs" class="headerlink" title="Why &amp; When Refs"></a>Why &amp; When Refs</h1><hr>
+<p>在典型的 <code>React</code> 数据流中，<code>DOM</code> 元素的修改都是通过 <code>M-V</code> 的形式重新渲染。<code>M</code> 主要是组件的本地 <code>state</code> ，以及父组件传递给子组件的 <code>props</code>。<br>但是，在某些情况下，你需要在典型数据流之外，手动使用/操作 <code>DOM</code>：</p>
+<ul>
+<li>管理焦点，媒体播放，文本选择，触发强制动画等。</li>
+<li>集成第三方 <code>DOM</code> 库。</li>
+</ul>
+<p>这个时候，就不要用类似 <code>document.getElementById()</code> 这种原生方式了。<code>React</code> 提供了 <code>Refs</code> 这样一种方式，来访问 <code>DOM</code> 节点或在 <code>render</code> 方法中创建的 <code>React</code> 元素。</p>
+<p>另外，<code>refs</code> 还可用于创建一个可变对象（mutable object），并且修改它不会触发组件更新。</p>
+<p>但是，一定不能滥用 <code>Refs</code>。避免使用 <code>refs</code> 来做任何可以通过<strong>声明式渲染</strong>（Declarative，DOM随状态（数据）更新而更新）来完成的事情。</p>
+<h1 id="Class-组件中的-Refs"><a href="#Class-组件中的-Refs" class="headerlink" title="Class 组件中的 Refs"></a>Class 组件中的 Refs</h1><hr>
+<p>在类组件中，目前有三种方式来创建和使用Refs：</p>
+<ul>
+<li><code>String类Refs</code>: 官方表示会弃用的，过时的 <code>API</code>，还不支持函数组件。所以<strong>别再用了</strong>。</li>
+<li><code>回调Refs</code>：将 回调函数 作为 <code>ref</code> 的一种方式。</li>
+<li><code>React.createRef</code>: 这是 <code>React@16.3</code> 版本引入的 顶层 <code>API</code>。</li>
+</ul>
+<h2 id="String类refs"><a href="#String类refs" class="headerlink" title="String类refs"></a>String类refs</h2><p>命名一个 <code>string</code> 作为元素的<code>ref</code>属性，然后通过 <code>this.refs[string]</code> 的形式访问。我们来看一个媒体播放的示例：</p>
+<pre><code class="language-jsx">import React from &#39;react&#39;;
+class VideoPlay extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount () {
+    // 使用refs
+    this.refs.myVideo.play()
+  }
+  render() {
+    // 创建refs
+    return (
+      &lt;video 
+        ref=&#39;myVideo&#39; 
+        src=&quot;https://media.w3.org/2010/05/sintel/trailer.mp4&quot; 
+        playsinline=&quot;&quot; 
+      /&gt;
+    );
+  }
+}</code></pre>
+<p>过时 <code>API</code>，了解一下即可。再次强调：<strong>不要再这样使用</strong>。</p>
+<blockquote>
+<p>备注：本篇文章的示例验证，都是使用 <code>React 16.12.0</code> 版本。</p>
+</blockquote>
+<h2 id="回调Refs"><a href="#回调Refs" class="headerlink" title="回调Refs"></a>回调Refs</h2><p>你可以传递一个函数作为 <code>ref</code>。这个函数中接受 <code>React</code> 组件实例或 <code>DOM</code> 元素作为参数，以便它们能在其他地方被存储和访问。<br><code>React</code> 在组件挂载时，会调用 <code>ref</code> 回调函数并传入 <code>DOM</code> 元素，当卸载时调用它并传入 <code>null</code>。在 <code>componentDidMount</code> 或 <code>componentDidUpdate</code> 触发前，<code>React</code> 会保证 <code>ref</code> 一定是最新的。</p>
+<p>上面的例子用 <code>回调Refs</code> 实现如下：</p>
+<pre><code class="language-jsx">import React from &#39;react&#39;;
+class VideoPlay extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount () {
+    // 使用refs
+    this.myVideo.play()
+  }
+  render() {
+    // 创建refs
+    return (
+      &lt;video 
+        ref={ (elem) =&gt; { this.myVideo = elem } }
+        src=&quot;https://media.w3.org/2010/05/sintel/trailer.mp4&quot; 
+        playsinline=&quot;&quot; 
+      /&gt;
+    );
+  }
+}
+</code></pre>
+<h2 id="React-createRef"><a href="#React-createRef" class="headerlink" title="React.createRef"></a>React.createRef</h2><p><code>React 16.3</code> 版本新增的这个顶层 <code>API</code>，用于创建 <code>ref</code>。组件挂载时，会把 <code>DOM</code> 元素或组件实例传给 <code>ref</code> 的 <code>current</code> 属性，并在组件卸载时置为 <code>null</code> 。<code>ref</code> 会在 <code>componentDidMount</code> 或 <code>componentDidUpdate</code> 生命周期钩子触发前更新。</p>
+<p><code>ref</code> 的值根据它所赋予的节点的类型有所不同：</p>
+<ul>
+<li>当 <code>ref</code> 属性用于 <code>DOM</code> 元素时，<code>ref</code> 接收底层 <code>DOM</code> 元素作为其 <code>current</code> 属性 ：</li>
+</ul>
+<pre><code class="language-jsx">import React from &#39;react&#39;;
+class APP extends React.Component {
+  constructor(props) {
+    super(props);
+    // 创建一个 ref 来存储 textInput 的 DOM 元素
+    this.textInput = React.createRef();
+  }
+
+  focusTextInput = () =&gt; {
+    // 直接使用原生 API 使 text 输入框获得焦点
+    // 注意：我们通过 &quot;current&quot; 来访问 DOM 节点
+    this.textInput.current.focus();
+  }
+
+  render() {
+    // 告诉 React 我们想把 &lt;input&gt; ref 关联到
+    // 构造器里创建的 `textInput` 上
+    return (
+      &lt;div&gt;
+        &lt;input
+          type=&quot;text&quot;
+          ref={this.textInput} /&gt;
+        &lt;input
+          type=&quot;button&quot;
+          value=&quot;Focus the text input&quot;
+          onClick={this.focusTextInput}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+export default APP;</code></pre>
+<ul>
+<li>当 <code>ref</code> 属性用于自定义 <code>class</code> 子组件时，<code>ref</code> 对象接收 组件的挂载实例 作为其 <code>current</code> 属性。</li>
+</ul>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+class APP extends React.Component {
+  constructor(props) {
+    super(props);
+    // 创建一个 ref 来存储 子组件的实例
+    this.textInput = React.createRef();
+  }
+
+  focusTextInput = () =&gt; {
+    // 注意：这里 “ref” 的 &quot;current&quot; 是子组件的实例 
+    // 所以可以调用实例的 “setValue” 方法
+    this.textInput.current.setValue(&quot;hello&quot;);
+  };
+
+  render() {
+    // 告诉 React 我们想把 &lt;input&gt; ref 关联到
+    // 构造器里创建的 `textInput` 上
+    return (
+      &lt;div&gt;
+        &lt;InputText ref={this.textInput} /&gt;
+        &lt;input
+          type=&quot;button&quot;
+          value=&quot;Focus the text input&quot;
+          onClick={this.focusTextInput}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+// 注意 仅在 InputText 组件声明为 class 的时候有用
+class InputText extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: &quot;&quot;
+    };
+  }
+  // 演示用的实例方法，没现实意义
+  setValue = value =&gt; {
+    this.setState({ value });
+  };
+  render() {
+    return &lt;input type=&quot;text&quot; value={this.state.value} /&gt;;
+  }
+}
+export default APP;
+</code></pre>
+<p>如果子组件通过 <code>import InputText from &quot;./InputText&quot;</code> 的方式引入，<code>InputText</code> 就是子组件的实例。那这种 <code>refs</code> 作用于子组件的使用方式意义何在？可能用 <code>refs</code> 显得更语义化，规范化。比如使用了多个 <code>InputText</code> 的情况。</p>
+<blockquote>
+<p>注意： 你不能在函数组件上像这样使用 <code>ref</code> 属性，因为函数组件没有实例。不过可以通过forwardRef转发refs使用，这个后面会讲到。</p>
+</blockquote>
+<h1 id="函数组件中的-Refs"><a href="#函数组件中的-Refs" class="headerlink" title="函数组件中的 Refs"></a>函数组件中的 Refs</h1><hr>
+<p>首先，我们思考这样一个问题：类组件中三种 <code>refs</code> 的使用方式能否在函数组件中应用。我们来逐个分析一下。</p>
+<p>首先，<code>String类refs</code>。不能！官方明确表示不支持函数组件，也是过时 <code>API</code>, Just forget about it。</p>
+<p>其次，我们在函数组件中应用一下 <code>回调refs</code>，比如写一个自动聚焦的 <code>input</code>组件：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &quot;react&quot;;
+
+function App() {
+  const [value, setValue] = useState(&quot;hellow hooks&quot;);
+  let inputRef = null;
+
+  console.log(inputRef);// 日志A
+  useEffect(() =&gt; {
+    console.log(inputRef); //日志B
+    inputRef.focus();
+  });
+
+  function inputHandler(val) {
+    setValue(val.target.value);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;input
+        type=&quot;text&quot;
+        value={value}
+        ref={elem =&gt; {
+          inputRef = elem;
+        }}
+        onChange={inputHandler}
+      /&gt;
+    &lt;/&gt;
+  );
+}
+export default App;</code></pre>
+<ul>
+<li><p>上面是一个简单的 <code>input</code> 输入组件。</p>
+</li>
+<li><p>通过 <code>回调refs</code> 创建一个 <code>ref</code>（ 对应 <code>input</code>元素） 赋值给 <code>inputRef</code> 变量。</p>
+</li>
+<li><p>使用 <code>useEffect</code> 实现自动 <code>focus</code>功能。这里没有加依赖项 <code>[]</code> 是想看看组件重新渲染以后，<code>refs</code>的变化。</p>
+</li>
+<li><p>发现功能一切正常。每次渲染，日志A 为 <code>null</code>，日志B 为 <code>&lt;input type=&quot;text&quot; value=&quot;hellow hooks&quot;&gt;&lt;/input&gt;</code>(其中 <code>value</code> 是当前最新值)。</p>
+</li>
+</ul>
+<p>以上，我们完全可以得出一个结论：至少在函数组件内部，<code>回调refs</code> 完全可用。但是从<code>日志A</code>和<code>日志B</code>看出，每次渲染都会通过<code>回调refs</code> 的方式重新创建一个 <code>ref</code> 赋值给 <code>inputRef</code> 变量。明显存在性能问题。</p>
+<p>让我们再试试<code>createRef</code>，还是上面的例子：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect } from &quot;react&quot;;
+
+function App() {
+  const [value, setValue] = useState(&quot;hellow hooks&quot;);
+  //创建 refs
+  const inputRef = React.createRef();
+  // 日志A
+  console.log(inputRef.current || null) 
+  useEffect(() =&gt; {
+    // 日志B
+    console.log(inputRef.current);
+    inputRef.current.focus();
+  });
+
+  function inputHandler(val) {
+    setValue(val.target.value);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;input type=&quot;text&quot; value={value} ref={inputRef} onChange={inputHandler} /&gt;
+    &lt;/&gt;
+  );
+}
+export default App;</code></pre>
+<ul>
+<li>使用 <code>createRef</code> 创建一个 <code>inputRef</code>，直接赋予 <code>input</code> 的 <code>ref</code> 属性。比 <code>回调refs</code> 优美一些。</li>
+<li>功能正常。日志跟<code>回调refs</code> 一样。</li>
+</ul>
+<p>结论：和 <code>回调refs</code> 一样 <code>react.createRef</code> 同样可以在函数组件内部使用。当然也有同样的性能问题。</p>
+<blockquote>
+<p>网上有看到<a href="https://juejin.im/post/5e5c5f6a6fb9a07cad3ba383" target="_blank" rel="noopener">文章</a>说在函数组件内部，使用 <code>react.createRef</code> 永远获取不到 <code>refs</code> 。这和我的验证不符，可能是由于 <code>React</code> 版本差异。</p>
+</blockquote>
+<p>这里有一点需要说明，上面的两个示例之所以有性能问题，是因为我们在函数组件中使用了 <code>hooks</code>。而我们使用的两种 <code>refs</code> 并没有 <code>hooks</code> 特性。所以，我们需要更好的选择。</p>
+<h1 id="useRef-hooks"><a href="#useRef-hooks" class="headerlink" title="useRef hooks"></a>useRef hooks</h1><hr>
+<p>更好的选择那就是 <code>useRef hooks</code>，我们将要学习的新的 <code>React Hooks</code>，也是今天的主角。<br>和<code>createRef</code>相比，就是改用  <code>useRef</code> 这个 <code>hooks API</code> 来创建 <code>ref</code>，使用上并无差别。</p>
+<p>还是同样的示例：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect, useRef } from &quot;react&quot;;
+
+function App() {
+  const [value, setValue] = useState(&quot;hellow hooks&quot;);
+  //创建 refs 只有这里有修改
+  const inputRef = useRef();
+
+  // 日志A
+  console.log(inputRef.current) 
+  useEffect(() =&gt; {
+    // 日志B
+    console.log(inputRef.current);
+    inputRef.current.focus();
+  });
+
+  function inputHandler(val) {
+    setValue(val.target.value);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;input type=&quot;text&quot; value={value} ref={inputRef} onChange={inputHandler} /&gt;
+    &lt;/&gt;
+  );
+}
+export default App;</code></pre>
+<ul>
+<li><strong>API</strong>：和 <code>createRef</code> 非常类似。<code>useRef</code> 也可以接受一个参数作为 <code>ref</code> 的 <code>current</code>值。有个细微区别是 <code>createRef</code> 的 <code>current</code> 默认值是 <code>null</code>，而 <code>useRef</code> 中默认是 <code>undefined</code>。</li>
+<li><strong>性能</strong>：重新渲染时，<code>inputRef</code> 不会再被初始化。<code>日志A</code> 和 <code>日志B</code> 都打印 <code>&lt;input type=&quot;text&quot; value=&quot;Hello Reac&quot;&gt;&lt;/input&gt;</code>，并且其中 <code>value</code> 是当前最新值。</li>
+<li>原理：和 <code>useState</code> <code>useEffect</code> 一样，每个组件都有一个 “内存单元”，首次渲染的时候初始化，把<code>Hooks</code>的数据按顺序存入各个内存单元格，重新渲染的时候再按顺序依次从单元格读取。</li>
+</ul>
+<h1 id="暴露-Ref-给父组件"><a href="#暴露-Ref-给父组件" class="headerlink" title="暴露 Ref 给父组件"></a>暴露 Ref 给父组件</h1><p>在实际复杂业务场景中，你可能希望在父组件中引用子节点的 <code>DOM</code> 节点。也就是我们不光需要 <code>Ref</code>，还要把 <code>Ref</code> 的控制权也交给父组件。</p>
+<blockquote>
+<p>官方不建议如此，因为它会打破组件的封装，逻辑分散。所以我们要慎用，然后该用还得用。</p>
+</blockquote>
+<p>当你决定如此，这里有三种办法：</p>
+<ul>
+<li>ref属性传递: 支持<strong>所有</strong> <code>React</code> 版本，不支持函数子组件。<strong>不推荐</strong></li>
+<li>props传递: 支持<strong>所有</strong> <code>React</code> 版本，也支持函数子组件。</li>
+<li>转发refs: 支持 <strong>React16.3</strong>及以上版本。也支持函数子组件。</li>
+</ul>
+<blockquote>
+<p>父组件是类组件还是函数组件，只决定你是用<code>createRef</code> 还是 <code>useRef</code> 创建 <code>refs</code>。</p>
+</blockquote>
+<h2 id="ref属性传递"><a href="#ref属性传递" class="headerlink" title="ref属性传递"></a>ref属性传递</h2><p>前面在介绍 <code>createRef</code> 的时候有提到：当 <code>ref</code> 属性用于自定义 <code>class</code> 子组件时，<code>ref</code> 对象接收<strong>组件的挂载实例</strong> 作为其 <code>current</code> 属性。</p>
+<p>注意了，我们获取到的是子组件的实例，而不是具体的 <code>DOM</code> 元素。这个时候，你想操作子组件，还需要在子组件也创建 <code>ref</code>, 并把相关操作封装成一个方法供父组件调用。这也是不推荐这种方式的原因。</p>
+<p>比如在某些场景，我们想在父组件让子组件中的 <code>input</code> 输入框聚焦:</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+
+class APP extends React.Component {
+  constructor(props) {
+    super(props);
+    // 创建一个 ref 来存储 子组件的实例
+    this.inputText = React.createRef();
+  }
+  // 按钮事件处理中，实现聚焦。
+  // 你也可以在 componentDidMount 中处理，实现自动聚焦。
+  focusInputText = () =&gt; {
+    // 注意：这里 “ref” 的 &quot;current&quot; 是子组件的实例 
+    // 只能通过调用实例的 doFocus 方法达到控制目的
+    this.inputText.current.doFocus();
+    // 更不优雅的方式如下
+    this.inputText.current.inputRef.current.focus();
+  };
+
+  render() {
+    return (
+      &lt;&gt;
+        &lt;InputText ref={this.inputText} /&gt;
+        &lt;input
+          type=&quot;button&quot;
+          value=&quot;Focus the text input&quot;
+          onClick={this.focusInputText}
+        /&gt;
+      &lt;/&gt;
+    );
+  }
+}
+// 注意 仅在 InputText 组件声明为 class 的时候有用
+class InputText extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: &quot;&quot;
+    };
+    // 子组件也需要创建一个ref
+    this.inputRef = React.createRef();
+  }
+  // 提供一个给父组件调用的方法
+  doFocus = () =&gt; {
+    this.inputRef.current.focus();
+  };
+  render() {
+    return &lt;input type=&quot;text&quot; value={this.state.value} ref={this.inputRef} /&gt;;
+  }
+}
+export default APP;</code></pre>
+<p>缺点很明显：</p>
+<ul>
+<li>不支持函数子组件，很致命。</li>
+<li>父子组件都需要创建 <code>refs</code>，性能不佳。</li>
+</ul>
+<h2 id="props传递"><a href="#props传递" class="headerlink" title="props传递"></a>props传递</h2><p>顾名思义，既然 <code>ref</code> 属性作用于子组件，是返回整个组件实例。那么我们可以通过 <code>props</code> 传递 <code>refs</code>。你只需要给它起一个独一无二的名字。</p>
+<p>上面的示例修改后是这样的：</p>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+class APP extends React.Component {
+  constructor(props) {
+    super(props);
+    // 创建一个 ref 来存储 子组件的实例
+    this.inputRef = React.createRef();
+  }
+  // 按钮事件处理中，实现聚焦。
+  focusInputText = () =&gt; {
+    // 注意：这里 “ref” 的 &quot;current&quot; 在子组件挂载的时候 已经指向 input 元素
+    this.inputRef.current.focus();
+  };
+
+  render() {
+    return (
+      &lt;&gt;
+        &lt;InputText inputRef={this.inputRef} /&gt;
+        &lt;input
+          type=&quot;button&quot;
+          value=&quot;Focus the text input&quot;
+          onClick={this.focusInputText}
+        /&gt;
+      &lt;/&gt;
+    );
+  }
+}
+// 注意 这里用函数组件也同样可以
+class InputText extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: &quot;&quot;
+    };
+    // ref 通过参数获取
+    this.inputRef = props.inputRef;
+  }
+  render() {
+    return &lt;input type=&quot;text&quot; value={this.state.value} ref={this.inputRef} /&gt;;
+  }
+}
+export default APP;</code></pre>
+<p>复制上述代码到 <code>codesandbox</code> 验证，功能ok。发现没有，代码相对于 “ref属性”，精简优雅了许多。而且，也支持函数组件。</p>
+<p>我们用 函数组件 + <code>hooks</code> 来实现上述示例，并且使用 <code>useEffect</code> 实现自动<code>focus</code>：</p>
+<pre><code class="language-jsx">import React, { useState, useEffect, useRef } from &#39;react&#39;;
+const App = () =&gt; {
+  const [greeting, setGreeting] = useState(&#39;Hello React!&#39;);
+  const ref = useRef();
+  useEffect(() =&gt; ref.current.focus(), []);
+  const handleChange = event =&gt; setGreeting(event.target.value);
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{greeting}&lt;/h1&gt;
+      &lt;Input value={greeting} handleChange={handleChange} inputRef={ref} /&gt;
+    &lt;/div&gt;
+  );
+};
+const Input = ({ value, handleChange, inputRef }) =&gt; (
+  &lt;input
+    type=&quot;text&quot;
+    value={value}
+    onChange={handleChange}
+    ref={inputRef}
+  /&gt;
+);
+export default App;
+</code></pre>
+<h2 id="转发refs-forwardRef"><a href="#转发refs-forwardRef" class="headerlink" title="转发refs - forwardRef"></a>转发refs - forwardRef</h2><ul>
+<li><p><code>Ref转发</code> 是通过 <code>React</code> 提供的一个顶层 <code>API</code> - <code>forwardRef</code> 来实现。</p>
+</li>
+<li><p><code>forwardRef</code> 通过包装子组件的形式，允许子组件能接收 <code>ref</code> 作为第二个参数，并将其向下传递（换句话说，“转发” 它）给子组件。</p>
+</li>
+<li><p>前面提到过，将 <code>ref</code> 作为子组件的 <code>JSX</code> 属性，是没法把 <code>ref</code> 传递下去。函数组件不支持，类组件也只能获取到子组件的实例。现在通过 <code>forwardRef</code> 包装即可实现。</p>
+<p>请看示例：</p>
+</li>
+</ul>
+<pre><code class="language-jsx">import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+} from &#39;react&#39;;
+import PropTypes from &#39;prop-types&#39;;
+const App = () =&gt; {
+  const [greeting, setGreeting] = useState(&#39;Hello React!&#39;);
+  const handleChange = event =&gt; setGreeting(event.target.value);
+  const ref = useRef();
+  useEffect(() =&gt; ref.current.focus(), []);
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{greeting}&lt;/h1&gt;
+      &lt;Input value={greeting} handleChange={handleChange} ref={ref} /&gt;
+    &lt;/div&gt;
+  );
+};
+const Input = forwardRef(({ value, handleChange }, ref) =&gt; (
+  &lt;input
+    type=&quot;text&quot;
+    value={value}
+    onChange={handleChange}
+    ref={ref}
+  /&gt;
+));
+Input.propTypes = {
+  value: PropTypes.string.isRequired,
+};
+Input.defaultProps = {
+  headline: &#39;Hello Component&#39;,
+};
+export default App;</code></pre>
+<p>以下是对上述示例发生情况的逐步解释：</p>
+<ul>
+<li>我们通过调用 <code>React.useRef</code> 创建了一个 <code>ref</code> 并将其赋值给 <code>ref</code> 变量。</li>
+<li>我们通过指定 <code>ref</code> 为 <code>JSX</code> 属性，将其向下传递给 <code>&lt;Input ref={ref}&gt;</code>。</li>
+<li><code>React</code> 传递 <code>ref</code> 给 <code>forwardRef</code> 内函数 <code>(props, ref) =&gt; ...</code>，作为其第二个参数。</li>
+<li>我们向下转发该 <code>ref</code> 参数到 <code>&lt;input ref={ref}&gt;</code>，将其指定为 <code>JSX 属性</code>。</li>
+<li>当 <code>ref</code> 挂载完成，<code>ref.current</code> 将指向 <code>&lt;input/&gt;</code> <code>DOM</code> 节点。</li>
+</ul>
+<h3 id="forwardRef-useImperativeHandle"><a href="#forwardRef-useImperativeHandle" class="headerlink" title="forwardRef + useImperativeHandle"></a>forwardRef + useImperativeHandle</h3><p>我们通过 forwardRef 进行 refs转发，并配合 useImperativeHandle hooks，可以将函数子组件的指定元素和方法暴露给父组件使用。这在很多稍复杂的业务场景非常有用。</p>
+<p>API 可抽象为: <code>useImperativeHandle(refParam, arrowFunction, [depsArr])</code> </p>
+<ul>
+<li><code>refParam</code>: 必须。通过 <code>forwardRef</code>转发的父组件传递的 <code>ref</code>，也就是<code>forwardRef</code>里函数的第二个参数。</li>
+<li><code>arrowFunction</code>: 必须。回调函数，该函数返回的对象将暴露给父组件访问。</li>
+<li><code>depsArr</code>: 非必须。一个依赖项数组。当依赖项改变的时候会重新调用 <code>arrowFunction</code>。</li>
+</ul>
+<p>我们改一下上面的示例，让父组件可以直接调用子组件的方法来聚焦子组件中的 <code>input</code>。</p>
+<pre><code class="language-jsx">import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle
+} from &#39;react&#39;;
+
+const App = () =&gt; {
+  const [greeting, setGreeting] = useState(&#39;Hello React!&#39;);
+  const handleChange = event =&gt; setGreeting(event.target.value);
+  const ref = useRef();
+
+  useEffect(() =&gt; ref.current.doFocus(), []);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{greeting}&lt;/h1&gt;
+      &lt;Input value={greeting} handleChange={handleChange} ref={ref} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+const Input = forwardRef( ({ value, handleChange }, ref) =&gt; {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () =&gt; ({ doFocus }), []);
+
+  const doFocus = () =&gt; {
+    inputRef.current.focus();
+  }
+
+  return (
+    &lt;input
+      type=&quot;text&quot;
+      value={value}
+      onChange={handleChange}
+      ref={inputRef}
+    /&gt;
+  )
+});
+
+export default App;</code></pre>
+<h1 id="可变对象"><a href="#可变对象" class="headerlink" title="可变对象"></a>可变对象</h1><p>前面提到，<code>refs</code> 不光可以用于引用和操作<code>Dom</code>，还可以用于创建可变对象。<br>我们在函数组件中使用<code>useRef hook</code>  来创建一个看看：</p>
+<pre><code class="language-jsx">import React, { useState, useRef } from &quot;react&quot;;
+function App() {
+  const valRef = useRef(0);// React.createRef don&#39;t work
+  let normalVal = 0;
+  const [, setChange] = useState();
+  return (
+    &lt;div style={{ padding: "100px 200px" }}&gt;
+      refValue: {valRef.current} | 
+      normalValue: {normalVal}
+      &lt;button
+        onClick={() =&gt; {
+          valRef.current += 80;
+          normalVal += 1;
+          setChange({});
+        }}
+      &gt;
+        +
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+export default App;</code></pre>
+<ul>
+<li>可变对象的改变，不会触发组件的重新渲染。所以示例增加调用了 <code>setChange({})</code> 来触发组件重新渲染，来展示可变对象的变化。</li>
+<li>点击 <code>+</code> 号，你会发现 <code>refValue</code> 会不断递增，而 <code>normalValue</code> 始终为0.</li>
+<li>这是一个有趣的功能，暂时还不知道会在哪些场景会用到它。了解一下即可。</li>
+</ul>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><p>所谓的最佳实践，也就是对一些规则的总结：</p>
+<ul>
+<li>尽量在必要的时候使用<code>refs</code>，除了个别需要手动获取/操作Dom的场景：管理焦点，媒体播放，文本选择，触发强制动画，集成第三方 DOM 库等。</li>
+<li>不要再使用<code>String类refs</code>，类似 <code>this.refs.XX</code> 这种形式。</li>
+<li>类组件中：<code>React16.3</code> 及以上版本建议使用<code>React.createRef</code> 这个<code>API</code>，低版本使用<code>回调refs</code>。</li>
+<li>函数组件中：为性能考虑，建议都使用 <code>useRef</code> 这个 <code>hook</code>。即便它无状态，无副作用。</li>
+<li>对于 <code>refs</code> 在父子组件间传递的情况，慎用但该用还得用，然后首推 <code>refs转发</code>，其次 <code>props传递</code>。</li>
+</ul>
+<hr>
+<p><strong>参考资料</strong><br><a href="https://zh-hans.reactjs.org/docs/refs-and-the-dom.html" target="_blank" rel="noopener">官网-refs</a><br><a href="https://zh-hans.reactjs.org/docs/forwarding-refs.html" target="_blank" rel="noopener">官网-refs转发</a><br><a href="https://zh-hans.reactjs.org/docs/lifting-state-up.html" target="_blank" rel="noopener">官网-状态提升</a><br><a href="https://www.robinwieruch.de/react-function-component" target="_blank" rel="noopener">React Function Components</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hooks/" rel="tag"># hooks</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/18/%E6%8B%A5%E6%8A%B1React-Hooks/" rel="next" title="拥抱 React Hooks （一）基础">
+                <i class="fa fa-chevron-left"></i> 拥抱 React Hooks （一）基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/09/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%B8%89%EF%BC%89-Context/" rel="prev" title="拥抱React-Hooks（三）- useContext">
+                拥抱React-Hooks（三）- useContext <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-amp-When-Refs"><span class="nav-number">1.</span> <span class="nav-text">Why &amp; When Refs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Class-组件中的-Refs"><span class="nav-number">2.</span> <span class="nav-text">Class 组件中的 Refs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#String类refs"><span class="nav-number">2.1.</span> <span class="nav-text">String类refs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回调Refs"><span class="nav-number">2.2.</span> <span class="nav-text">回调Refs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-createRef"><span class="nav-number">2.3.</span> <span class="nav-text">React.createRef</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数组件中的-Refs"><span class="nav-number">3.</span> <span class="nav-text">函数组件中的 Refs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useRef-hooks"><span class="nav-number">4.</span> <span class="nav-text">useRef hooks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#暴露-Ref-给父组件"><span class="nav-number">5.</span> <span class="nav-text">暴露 Ref 给父组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ref属性传递"><span class="nav-number">5.1.</span> <span class="nav-text">ref属性传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#props传递"><span class="nav-number">5.2.</span> <span class="nav-text">props传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转发refs-forwardRef"><span class="nav-number">5.3.</span> <span class="nav-text">转发refs - forwardRef</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#forwardRef-useImperativeHandle"><span class="nav-number">5.3.1.</span> <span class="nav-text">forwardRef + useImperativeHandle</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可变对象"><span class="nav-number">6.</span> <span class="nav-text">可变对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">7.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

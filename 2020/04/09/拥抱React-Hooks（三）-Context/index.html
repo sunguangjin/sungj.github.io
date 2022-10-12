@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="hooks," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Prop Drilling 问题  当 React 应用趋于复杂，往往会形成深层组件树。 父子组件通过 props 传递参数来通信。 React 是单向数据流。  基于上述三点，就容易产生这样的问题：父组件要逐层把一些 props 传递给目标子组件，而中间子组件并不关心这些props，却要负责透传这些 props ，还要确保中间不出问题。 这就是 React 中 Prop Drilling 问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱React-Hooks（三）- useContext">
+<meta property="og:url" content="http://www.mala520.life/2020/04/09/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%B8%89%EF%BC%89-Context/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="Prop Drilling 问题  当 React 应用趋于复杂，往往会形成深层组件树。 父子组件通过 props 传递参数来通信。 React 是单向数据流。  基于上述三点，就容易产生这样的问题：父组件要逐层把一些 props 传递给目标子组件，而中间子组件并不关心这些props，却要负责透传这些 props ，还要确保中间不出问题。 这就是 React 中 Prop Drilling 问题。">
+<meta property="article:published_time" content="2020-04-09T06:22:43.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.976Z">
+<meta property="article:author" content="祁连">
+<meta property="article:tag" content="hooks">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/04/09/拥抱React-Hooks（三）-Context/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>拥抱React-Hooks（三）- useContext | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/04/09/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%B8%89%EF%BC%89-Context/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拥抱React-Hooks（三）- useContext</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-09T14:22:43+08:00">
+                2020-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Prop-Drilling-问题"><a href="#Prop-Drilling-问题" class="headerlink" title="Prop Drilling 问题"></a>Prop Drilling 问题</h1><hr>
+<ul>
+<li>当 <code>React</code> 应用趋于复杂，往往会形成深层组件树。</li>
+<li>父子组件通过 <code>props</code> 传递参数来通信。</li>
+<li><code>React</code> 是单向数据流。</li>
+</ul>
+<p>基于上述三点，就容易产生这样的问题：父组件要逐层把一些 <code>props</code> 传递给目标子组件，而中间子组件并不关心这些<code>props</code>，却要负责透传这些 <code>props</code> ，还要确保中间不出问题。</p>
+<p>这就是 <code>React</code> 中 <code>Prop Drilling</code> 问题。</p>
+<pre><code class="language-jsx">          +----------------+
+          |                |
+          |        A       |
+          |        |Props  |
+          |        v       |
+          |                |
+          +--------+-------+
+                   |
+         +---------+-----------+
+         |                     |
+         |                     |
++--------+-------+    +--------+-------+
+|                |    |                |
+|                |    |        +       |
+|       B        |    |        |Props  |
+|                |    |        v       |
+|                |    |                |
++----------------+    +--------+-------+
+                               |
+                      +--------+-------+
+                      |                |
+                      |        +       |
+                      |        |Props  |
+                      |        v       |
+                      |                |
+                      +--------+-------+
+                               |
+                      +--------+-------+
+                      |                |
+                      |        +       |
+                      |        |Props  |
+                      |        C       |
+                      |                |
+                      +----------------+</code></pre>
+<hr>
+<h1 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h1><hr>
+<p><code>React 16.3.0</code> 中引入了 <code>Context</code> 系列 <code>API</code>。用于共享那些对于一个组件树而言是 “全局” 的 <code>state</code>。可用于解决 <code>prop drilling</code> 问题。但会导致组件复用性降低，忌滥用。</p>
+<p><code>Context</code> 的设计基于 <code>Provider-Consumer</code> 模式，包含一系列 <code>API</code>。</p>
+<h2 id="基础-API"><a href="#基础-API" class="headerlink" title="基础 API"></a>基础 API</h2><ul>
+<li><code>React.createContext(defaultValue)</code> : 创建一个 <code>Context</code> 对象。</li>
+<li><code>Context.Provider</code> : 你创建的 <code>Context</code> 对象的组件，用于 初始化 共享数据的组件。</li>
+<li><code>Context.Consumer</code>: 你创建的 <code>Context</code> 对象的组件，用于 获取 共享数据的组件。</li>
+</ul>
+<p>我们来通过示例来看一下这些 <code>API</code> ：</p>
+<pre><code class="language-jsx">// ./MyContext.jsx
+import React from &quot;react&quot;;
+// 创建 context 对象
+const MyContext = React.createContext(&quot;hello&quot;);
+// Devtools 中显示用
+MyContext.displayName = &#39;MyDisplayName&#39;;
+export default MyContext</code></pre>
+<pre><code class="language-jsx">import React from &quot;react&quot;;
+// 引入 context 对象
+import MyContext from &quot;./MyContext&quot;;
+// 父组件（Provider）
+// 使用 context 对象的 Provider 组件共享数据
+const A = () =&gt; (
+  &lt;&gt;
+    &lt;MyContext.Provider value=&quot;hello context&quot;&gt;
+      &lt;B /&gt;
+    &lt;/MyContext.Provider&gt;
+    &lt;DD/&gt;
+  &lt;/&gt;
+);
+// B C 为 中间组件 
+const B = () =&gt; &lt;C /&gt;;
+const C = () =&gt; &lt;D /&gt;;
+// 目标子组件 - D
+// 使用 context 对象的 Consumer 组件获取共享数据 
+const D = () =&gt; (
+  &lt;MyContext.Consumer&gt;
+    {value =&gt; &lt;input type=&quot;text&quot; value={value} /&gt;}
+  &lt;/MyContext.Consumer&gt;
+);
+// 没有被 Provider 组件包裹的子组件 - DD
+// value 的值为 `hello` 即context创建时的默认值
+const DD= () =&gt; (
+  &lt;MyContext.Consumer&gt;
+    {value =&gt; &lt;input type=&quot;text&quot; value={value} /&gt;}
+  &lt;/MyContext.Consumer&gt;
+);
+export default A;
+</code></pre>
+<ul>
+<li>使用 <code>React.createContext(&quot;hello&quot;)</code> 创建了一个 <code>context</code> 对象 - <code>MyContext</code> 。</li>
+<li>使用 <code>MyContext</code> 对象的 <code>Provider</code> 组件来共享数据。数据赋值给 <code>value</code> 属性，可以是复杂数据。被<code>Provider</code> 组件包裹的子组件链才能获取 <code>value</code> 中数据。</li>
+<li>使用 <code>MyContext</code> 对象的 <code>Consumer</code> 组件来<strong>获取</strong>共享数据。获取数据是通过内部的一个回调函数，回调函数的参数就是共享的数据。</li>
+<li><code>DD</code> 子组件没有在 <code>Provider</code> 包裹的组件链中，使用<code>Consumer</code> 组件只能获取到定义 <code>context</code> 时候的默认值 - <code>hello</code>。</li>
+</ul>
+<pre><code class="language-jsx">          +----------------+
+          |                |
+          |       A        |
+          |                |
+          |     Provide    |
+          |     Context    |
+          +--------+-------+
+                   |
+         +---------+-----------+
+         |                     |
+         |                     |
++--------+-------+    +--------+-------+
+|                |    |                |
+|                |    |                |
+|       DD       |    |        B       |
+|                |    |                |
+|                |    |                |
++----------------+    +--------+-------+
+                               |
+                      +--------+-------+
+                      |                |
+                      |                |
+                      |        C       |
+                      |                |
+                      |                |
+                      +--------+-------+
+                               |
+                      +--------+-------+
+                      |                |
+                      |        D       |
+                      |                |
+                      |     Consume    |
+                      |     Context    |
+                      +----------------+</code></pre>
+<p>其他须知：</p>
+<ul>
+<li>多个 <code>Provider</code> 也可以嵌套使用，里层的会覆盖外层的数据。</li>
+<li>当 <code>Provider</code> 的 <code>value</code> 值发生变化时，它内部的所有 <code>Consume</code> 组件都会重新渲染。且都不受制于<code>shouldComponentUpdate</code> 函数。</li>
+</ul>
+<h2 id="Class-contextType"><a href="#Class-contextType" class="headerlink" title="Class.contextType"></a>Class.contextType</h2><p>这是一种<strong>仅</strong>支持 <code>class组件</code>的，更灵活的一种消费<strong>单个</strong> <code>context</code> 的 <code>API</code>：</p>
+<pre><code class="language-jsx">class MyClass extends React.Component {
+  componentDidMount() {
+    let value = this.context;
+    /* 在组件挂载完成后，使用 MyContext 组件的值来执行一些有副作用的操作 */
+  }
+  componentDidUpdate() {
+    let value = this.context;
+    /* ... */
+  }
+  componentWillUnmount() {
+    let value = this.context;
+    /* ... */
+  }
+  render() {
+    let value = this.context;
+    /* 基于 MyContext 组件的值进行渲染 */
+  }
+}
+MyClass.contextType = MyContext;</code></pre>
+<p>挂载在 <code>class</code> 上的 <code>contextType</code> 属性会被重赋值为一个由 <code>React.createContext()</code> 创建的 <code>Context</code> 对象。这能让你使用 <code>this.context</code> 来消费最近 <code>Context</code> 上的那个值。你可以在任何生命周期中访问到它，包括 <code>render</code> 函数中。</p>
+<h2 id="复杂场景"><a href="#复杂场景" class="headerlink" title="复杂场景"></a>复杂场景</h2><ul>
+<li>动态 &amp; 可更新 <code>Context</code></li>
+<li>多个 <code>Context</code></li>
+</ul>
+<h3 id="动态-amp-可更新-Context"><a href="#动态-amp-可更新-Context" class="headerlink" title="动态 &amp; 可更新 Context"></a>动态 &amp; 可更新 Context</h3><p>对于复杂交互的深层嵌套组件树，其 <code>Prop Drilling</code> 问题可能更严重 - 数据双向传递。即父组件把初始数据通过 <code>props</code> 层层传递到目标子组件。目标子组件会改变数据，再通过 <code>callback</code> 层层传递给父组件来统一提交。</p>
+<p>对于这种个别情况，你也不想因此引入 <code>redux</code>。那么，你可以通过 <code>Context</code> 来解决。<code>Context</code> 可以是动态的，可更新的。</p>
+<p>来看下面示例：</p>
+<pre><code class="language-jsx">// 创建context 
+// 确保传递给 createContext 的默认值数据结构是调用的组件（consumers）所能匹配的！
+export default MyContext = React.createContext({
+  value: &#39;hello&#39;,
+  setValue: () =&gt; {},
+});</code></pre>
+<pre><code class="language-jsx">// 父组件
+import React from &quot;react&quot;;
+import MyContext from &quot;./MyContext&quot;;
+class A extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.setValue = newValue =&gt; {
+      this.setState({ value: newValue });
+    };
+    // State 也包含了更新函数，因此它会被传递进 context provider。
+    this.state = {
+      value: &quot;Hello context&quot;,
+      setValue: this.setValue
+    };
+  }
+  render() {
+    return (
+      &lt;&gt;
+        &lt;MyContext.Provider value={this.state}&gt;
+          &lt;B /&gt;
+        &lt;/MyContext.Provider&gt;
+        &lt;p&gt;{this.state.value}&lt;/p&gt;
+      &lt;/&gt;
+    );
+  }
+}
+// B C 为 中间组件
+const B = () =&gt; &lt;C /&gt;;
+const C = () =&gt; &lt;D /&gt;;
+// 目标子组件 - D
+// 使用 context 对象的 Consumer 组件获取共享数据,通过更新函数更新数据
+const D = () =&gt; (
+  &lt;MyContext.Consumer&gt;
+    {({ value, setValue }) =&gt; (
+      &lt;input
+        type=&quot;text&quot;
+        value={value}
+        onChange={e =&gt; {
+          setValue(e.target.value);
+        }}
+      /&gt;
+    )}
+  &lt;/MyContext.Consumer&gt;
+);
+
+export default A;
+</code></pre>
+<p>我们把父组件本地 <code>state</code>，和用于更新 <code>state</code> 的函数作为一个对象，赋于 <code>provider</code> 的 <code>value</code>。目标子组件可以读取父组件共享的动态数据，并在数据改变的时候更新它。这相当于把修改后数据回传给了父组件。 </p>
+<h3 id="多个-Context"><a href="#多个-Context" class="headerlink" title="多个 Context"></a>多个 Context</h3><p>当共享数据较多，不同的子组件需要的数据也不一样。我们可以考虑创建多个 <code>context</code>。而其中某个组件需要不止一个 <code>context</code> 共享数据的时候，它可以消费多个 <code>context</code>: </p>
+<pre><code class="language-jsx">// 一个组件通过Consumer组件嵌套，消费多个 context 👇
+function Content() {
+  return (
+    &lt;ThemeContext.Consumer&gt;
+      {theme =&gt; (
+        &lt;UserContext.Consumer&gt;
+          {user =&gt; (
+            &lt;ProfilePage user={user} theme={theme} /&gt;
+          )}
+        &lt;/UserContext.Consumer&gt;
+      )}
+    &lt;/ThemeContext.Consumer&gt;
+  );
+}</code></pre>
+<hr>
+<h1 id="useContext-hook"><a href="#useContext-hook" class="headerlink" title="useContext hook"></a>useContext hook</h1><hr>
+<p>既然 <code>React Context</code> 的 <code>API</code> 也可以在函数组件中使用，为什么还需要 <code>useContext Hook</code> 呢？<br>前面我们了解到，子组件要消费 <code>context</code> 需要通过 <code>Consumer</code> 组件包装。要消费多个 <code>context</code>，还需要嵌套 <code>Consumer</code> 组件。<code>useContext Hook</code> 只是新增了一种方式，让你在函数组件中更方便，更优雅的消费 <code>context</code>。创建 和 <code>Provider</code> 方式不变。</p>
+<p>前面 动态&amp;更新<code>context</code> 的示例，目标子组件使用 <code>useContext Hook</code> 消费 <code>context</code> 代码如下：</p>
+<pre><code class="language-jsx">//
+// 目标子组件 - D
+// 直接使用 useContext 消费共享数据, 并通过更新函数更新数据。
+const D = () =&gt; (
+  const { value, setValue } = React.useContext(MyContext)
+  return (
+    &lt;input
+      type=&quot;text&quot;
+      value={value}
+      onChange={e =&gt; {
+        setValue(e.target.value);
+      }}
+    /&gt;
+  )
+);</code></pre>
+<p>可读性更高了，还可很方便的消费多个 <code>context</code>，这是 <code>class组件</code> 的 <code>contextType</code> 所不能的。</p>
+<hr>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zh-hans.reactjs.org/docs/context.html" target="_blank" rel="noopener">官网-Context</a><br><a href="https://www.robinwieruch.de/react-context" target="_blank" rel="noopener">React Context</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hooks/" rel="tag"># hooks</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/30/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%BA%8C%EF%BC%89-Refs/" rel="next" title="拥抱React-Hooks（二）- useRef">
+                <i class="fa fa-chevron-left"></i> 拥抱React-Hooks（二）- useRef
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/13/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E5%9B%9B%EF%BC%89-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="prev" title="拥抱React-Hooks（四）- 性能优化">
+                拥抱React-Hooks（四）- 性能优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Prop-Drilling-问题"><span class="nav-number">1.</span> <span class="nav-text">Prop Drilling 问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Context"><span class="nav-number">2.</span> <span class="nav-text">Context</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础-API"><span class="nav-number">2.1.</span> <span class="nav-text">基础 API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class-contextType"><span class="nav-number">2.2.</span> <span class="nav-text">Class.contextType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂场景"><span class="nav-number">2.3.</span> <span class="nav-text">复杂场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态-amp-可更新-Context"><span class="nav-number">2.3.1.</span> <span class="nav-text">动态 &amp; 可更新 Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个-Context"><span class="nav-number">2.3.2.</span> <span class="nav-text">多个 Context</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#useContext-hook"><span class="nav-number">3.</span> <span class="nav-text">useContext hook</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="数组的定义  数组是一种使用 整数 作为键(integer-key-ed) 属性 和长度 (length) 属性之间关联的特殊对象。 Array 对象是 JS 专门用于构造数组的全局对象。 可以通过 字面量表达式 和 Array 构造函数 定义数组。   &#x2F;&#x2F; 字面量表达式 var arr1 &#x3D; []; &#x2F;&#x2F; 空数组 var arr2 &#x3D; [1, &quot;2&quot;, false]; va">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS之数组基础">
+<meta property="og:url" content="http://www.mala520.life/2015/03/31/JS%E4%B9%8B%E6%95%B0%E7%BB%84%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="数组的定义  数组是一种使用 整数 作为键(integer-key-ed) 属性 和长度 (length) 属性之间关联的特殊对象。 Array 对象是 JS 专门用于构造数组的全局对象。 可以通过 字面量表达式 和 Array 构造函数 定义数组。   &#x2F;&#x2F; 字面量表达式 var arr1 &#x3D; []; &#x2F;&#x2F; 空数组 var arr2 &#x3D; [1, &quot;2&quot;, false]; va">
+<meta property="article:published_time" content="2015-03-31T09:24:48.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.955Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2015/03/31/JS之数组基础/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>JS之数组基础 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2015/03/31/JS%E4%B9%8B%E6%95%B0%E7%BB%84%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS之数组基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-31T17:24:48+08:00">
+                2015-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数组的定义"><a href="#数组的定义" class="headerlink" title="数组的定义"></a>数组的定义</h1><hr>
+<ul>
+<li><strong>数组</strong>是一种使用 整数 作为键(<code>integer-key-ed</code>) 属性 和长度 (<code>lengt</code>h) 属性之间关联的特殊对象。</li>
+<li><code>Array</code> 对象是 <code>JS</code> 专门用于构造数组的全局对象。</li>
+<li>可以通过 <strong>字面量表达式</strong> 和 <strong><code>Array</code> 构造函数</strong> 定义数组。</li>
+</ul>
+<pre><code class="language-js">
+// 字面量表达式
+var arr1 = []; // 空数组
+var arr2 = [1, &quot;2&quot;, false];
+var arr3 = [3];  // 长度为1，元素只有3的数组
+
+// Array构造函数
+var arr4 = new Array(); // 空数组
+var arr5 = new Array(1,&quot;2&quot;, false);
+var arr6 = new Array(3);  // 初始化为一个长度为 3 的 空数组 [empty × 3]</code></pre>
+<h1 id="数组的方法"><a href="#数组的方法" class="headerlink" title="数组的方法"></a>数组的方法</h1><hr>
+<ul>
+<li><p><code>fill()</code>: 数组填充</p>
+<ul>
+<li>参数 <code>(value[, start[, end]])</code>。将数组 <code>start</code>(默认开始) 到 <code>end</code>(默认结束) 索引值替换或填充为 <code>value</code>。</li>
+</ul>
+<pre><code class="language-js">  // 创建一个10*10的二维数组，所有值填充为0
+  let arr = new Array(10).fill(null).map(() =&gt; new Array(10).fill(0));</code></pre>
+</li>
+<li><p><code>join()</code>: 将数组的元素组起一个字符串。</p>
+<ul>
+<li>参数 （<code>separator</code>），以 <code>separator</code> 为分隔符，省略的话则用默认用 <code>,</code> 为分隔符。<pre><code class="language-js">var arr = [1,2,3];
+console.log(arr.join()); // 1,2,3
+console.log(arr.join(&quot;-&quot;)); // 1-2-3
+console.log(arr); // [1, 2, 3]（原数组不变）</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>push()</code>和 <code>pop()</code>: </p>
+<ul>
+<li><code>push()</code> 将在数组 尾部 添加一个或多个元素，并返回修改后数组的长度。</li>
+<li><code>pop()</code> 将移除数组尾部的第一个元素，并返回这个元素。<pre><code class="language-js">var arr = [&quot;Lily&quot;,&quot;lucy&quot;,&quot;Tom&quot;];
+var count = arr.push(&quot;Jack&quot;,&quot;Sean&quot;);
+console.log(count); // 5
+console.log(arr); // [&quot;Lily&quot;, &quot;lucy&quot;, &quot;Tom&quot;, &quot;Jack&quot;, &quot;Sean&quot;]
+var item = arr.pop();
+console.log(item); // Sean
+console.log(arr); // [&quot;Lily&quot;, &quot;lucy&quot;, &quot;Tom&quot;, &quot;Jack&quot;]</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>shift()</code> 和 <code>unshift()</code> : </p>
+<ul>
+<li><code>shift()</code> 将删除数组头部的第一个元素，并返回删除元素的值。如果数组为空则返回 <code>undefined</code>。</li>
+<li><code>unshift()</code> 将一个或多个元素添加到原数组开头，并返回修改后数组的长度。</li>
+</ul>
+<pre><code class="language-js">  var arr = [&quot;Lily&quot;,&quot;lucy&quot;,&quot;Tom&quot;];
+  var count = arr.unshift(&quot;Jack&quot;,&quot;Sean&quot;);
+  console.log(count); // 5
+  console.log(arr); //[&quot;Jack&quot;, &quot;Sean&quot;, &quot;Lily&quot;, &quot;lucy&quot;, &quot;Tom&quot;]
+  var item = arr.shift();
+  console.log(item); // Jack
+  console.log(arr); // [&quot;Sean&quot;, &quot;Lily&quot;, &quot;lucy&quot;, &quot;Tom&quot;]</code></pre>
+</li>
+<li><p><code>sort()</code> : 数组项排序，默认升序排列。</p>
+<ul>
+<li><p>无参：将每个数组项 toString() 以后比较。即使数组中的每一项都是数值，sort()方法比较的也是字符串。</p>
+</li>
+<li><p>有参：支持接收一个比较函数作为参数。比较函数有两个参数<code>(a, b)</code>，通过返回 <code>-1</code>（<code>a</code>排前面）, <code>0</code>（顺序不变）, <code>1</code>（<code>b</code>排前面）来决定顺序。</p>
+<pre><code class="language-js">var arr1 = [&quot;a&quot;, &quot;d&quot;, &quot;c&quot;, &quot;b&quot;];
+console.log(arr1.sort()); // [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+arr2 = [13, 24, 51, 3];
+console.log(arr2.sort()); // [13, 24, 3, 51]
+
+arr2 = [13, 24, 51, 3];
+console.log(arr2.sort((a, b) =&gt; a - b)); // [3, 13, 24, 51]</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>reverse()</code>: 将原数组项的顺序反转并返回，意味着原数组也会被改变。</p>
+<pre><code class="language-js">  var arr = [13, 24, 51, 3];
+  console.log(arr.reverse()); //[3, 51, 24, 13]
+  console.log(arr); //[3, 51, 24, 13](原数组改变)</code></pre>
+</li>
+<li><p><code>concat()</code>: 用于连接两个或多个数组。不会改变现有的数组，返回一个新的数组。</p>
+<pre><code class="language-js">  var arr = [1,3,5,7];
+  var arrCopy = arr.concat(9,[11,13]);
+  console.log(arrCopy); //[1, 3, 5, 7, 9, 11, 13]
+  console.log(arr); // [1, 3, 5, 7](原数组未被修改)</code></pre>
+</li>
+<li><p><code>slice()</code>: 将原数组的 <code>[begin, end)</code>范围元素生成一个新的数组返回。可以接受一或两个参数，即要截取的 起始索引 和 结束索引。</p>
+<ul>
+<li>负参：参数为负数，则表示 从后往前 的位置索引，索引相当于是 <code>length + begin/end</code>( <code>length</code> 是数组长度)。</li>
+<li>无参：相当于生成原数组的浅拷贝。</li>
+<li>不会改变原数组，而是返回一个新的数组。<pre><code class="language-js">var arr = [1,3,5,7,9,11];
+var arrCopy = arr.slice(1);
+var arrCopy2 = arr.slice(1,4);
+var arrCopy3 = arr.slice(1,-2);
+var arrCopy4 = arr.slice(-4,-1);
+console.log(arr); //[1, 3, 5, 7, 9, 11](原数组没变)
+console.log(arrCopy); //[3, 5, 7, 9, 11]
+console.log(arrCopy2); //[3, 5, 7]
+console.log(arrCopy3); //[3, 5, 7]
+console.log(arrCopy4); //[5, 7, 9]</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>splice()</code>: 可以实现数组元素的 删除、插入和替换。</p>
+<ul>
+<li>删除：双参数 <code>(index, n)</code>, 将从<code>index</code>索引 位置开始删除 <code>n</code>个 元素。</li>
+<li>插入：3个及以上参数<code>(index, n, ...data)</code>; 其中<code>n === 0</code>,相当于在<code>index</code>索引位置插入<code>...data</code>。</li>
+<li>替换：同上，但是 <code>n !== 0</code>。就相当于把<code>index</code>索引开始的<code>n</code>个元素替换为<code>...data</code>。<pre><code class="language-js">var arr = [1,3,5,7,9,11];
+var arrRemoved = arr.splice(0,2);
+console.log(arr); //[5, 7, 9, 11]
+console.log(arrRemoved); //[1, 3]
+var arrRemoved2 = arr.splice(2,0,4,6);
+console.log(arr); // [5, 7, 4, 6, 9, 11]
+console.log(arrRemoved2); // []
+var arrRemoved3 = arr.splice(1,1,2,4);
+console.log(arr); // [5, 2, 4, 4, 6, 9, 11]
+console.log(arrRemoved3); //[7]</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>indexOf()</code> 和 <code>lastIndexOf()</code>: </p>
+<ul>
+<li><code>indexOf()</code>: 查找数组中某元素(第一个参数)首次出现的索引值，没有则返回 <code>-1</code>。</li>
+<li><code>lastIndexOf()</code>: 查找数组中某元素(第一个参数)最后出现的索引值，没有则返回 <code>-1</code>。</li>
+<li>第二个参数都表示开始查找的索引，默认是 <code>0</code>，从第一个开始。<pre><code class="language-js">var arr = [1,3,5,7,7,5,3,1];
+console.log(arr.indexOf(5)); //2
+console.log(arr.lastIndexOf(5)); //5
+console.log(arr.indexOf(5,2)); //2
+console.log(arr.lastIndexOf(5,4)); //2
+console.log(arr.indexOf(&quot;5&quot;)); //-1</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>forEach()</code>: 对数组进行遍历循环。</p>
+<ul>
+<li>对数组中的每一项运行处理函数。处理函数有两个参数，分别是 当前数组项 和 索引值。</li>
+<li>这个方法没有返回值。<pre><code class="language-js">var arr = [1, 2, 3, 4, 5];
+arr.forEach(function(x, index, a){
+console.log(x + &#39;|&#39; + index + &#39;|&#39; + (a === arr));
+});
+// 输出为：
+// 1|0|true
+// 2|1|true
+// 3|2|true
+// 4|3|true
+// 5|4|true</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>map()</code>: 对数组中的每一项运行给定函数，然后将每次函数调用的结果组成新的数组返回。</p>
+<pre><code class="language-js">  var arr = [1, 2, 3, 4, 5];
+  var arr2 = arr.map(function(item){
+  return item*item;
+  });
+  console.log(arr2); //[1, 4, 9, 16, 25]</code></pre>
+</li>
+<li><p><code>filter()</code>: “过滤”功能，将数组中的每一项运行给定函数，返回满足过滤条件组成的数组。</p>
+<pre><code class="language-js">  var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  var arr2 = arr.filter(function(x, index) {
+  return index % 3 === 0 || x &gt;= 8;
+  }); 
+  console.log(arr2); //[1, 4, 7, 8, 9, 10]</code></pre>
+</li>
+<li><p><code>every()</code>: 将数组中的每一项运行给定函数，只有所有项都满足条件，才会返回true。</p>
+<pre><code class="language-js">  var arr = [1, 2, 3, 4, 5];
+  var arr2 = arr.every(function(x) {
+  return x &lt; 10;
+  }); 
+  console.log(arr2); //true
+  var arr3 = arr.every(function(x) {
+  return x &lt; 3;
+  }); 
+  console.log(arr3); // false</code></pre>
+</li>
+<li><p><code>some()</code>: 将数组中的每一项运行给定函数，只要有一项满足条件，就会返回true。</p>
+<pre><code class="language-js">  var arr = [1, 2, 3, 4, 5];
+  var arr2 = arr.some(function(x) {
+  return x &lt; 3;
+  }); 
+  console.log(arr2); //true
+  var arr3 = arr.some(function(x) {
+  return x &lt; 1;
+  }); 
+  console.log(arr3); // false</code></pre>
+</li>
+<li><p><code>reduce()</code> 和 <code>reduceRight()</code>: 用于数组项的迭代</p>
+<ul>
+<li><code>reduce()</code>方法从数组的第一项开始，逐个遍历到最后。而 <code>reduceRight()</code> 则从数组的最后一项开始，向前遍历到第一项。</li>
+<li>两个参数：一个在每一项上调用的函数和作为归并基础的初始值（可选）。</li>
+<li>调用函数接收 4 个参数：前一个值 ( 初始值 或者 前面迭代返回的结果值 )、当前值、项的索引 和 数组对象。<pre><code class="language-js">var values = [1,2,3,4,5];
+var sum = values.reduceRight(function(prev, cur, index, array){
+return prev + cur;
+},10);
+console.log(sum); //25</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="类数组"><a href="#类数组" class="headerlink" title="类数组"></a>类数组</h1><hr>
+<ul>
+<li><p>类数组定义</p>
+<ul>
+<li>拥有 <code>length</code> 属性，其它属性（索引）为非负整数（对象中的索引会被当做字符串来处理）的一个<strong>对象</strong>。</li>
+<li><code>typeof</code> 是 <code>object</code>，不具有数组所具有的方法。</li>
+<li><code>JS</code> 中常见的 类数组 有 <code>arguments</code> 对象和 <code>DOM</code> 方法的返回结果，比如 <code>document.getElementsByTagName()</code>。</li>
+</ul>
+</li>
+<li><p>类数组判断</p>
+<pre><code class="language-js">function isLikeArray(o) {
+  if (typeof o === &#39;object&#39; &amp;&amp; isFinite(o.length) &amp;&amp;  o.length &gt;= 0 &amp;&amp; o.length &lt; 4294967296){
+      // 4294967296: 2^32
+      return true
+  } else {
+      return false
+  }
+}</code></pre>
+<blockquote>
+<p>全局 <code>isFinite()</code> 函数用来判断被传入的参数值是否为一个有限数值（<code>finite number</code>）。在必要情况下，参数会首先转为一个数值。</p>
+</blockquote>
+</li>
+<li><p>类数组转换为数组</p>
+<ul>
+<li>方法1: <code>args = Array.prototype.slice.call(arguments);</code>, 借助数组的<code>slice()</code> 方法。</li>
+<li>方法2: <code>Array.from(arguments)</code>,  <code>ES6</code>新增方法。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>数组转换为数组后可以直接调用数组具有的方法。</p>
+</blockquote>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><hr>
+<p><a href="https://www.cnblogs.com/obel/p/7016414.html" target="_blank" rel="noopener">JS数组方法大全</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2007/04/02/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/" rel="next" title="浏览器缓存策略">
+                <i class="fa fa-chevron-left"></i> 浏览器缓存策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/21/promiss%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/" rel="prev" title="promiss原理及应用">
+                promiss原理及应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数组的定义"><span class="nav-number">1.</span> <span class="nav-text">数组的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组的方法"><span class="nav-number">2.</span> <span class="nav-text">数组的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类数组"><span class="nav-number">3.</span> <span class="nav-text">类数组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

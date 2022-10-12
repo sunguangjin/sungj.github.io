@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="8 种基本数据类型  Number: 数值类型。范围是±(253-1)；特殊值有Infinity(正无穷，其实是大过最大值), -Infinity（负无穷，其实是小过最小值）和 NaN（非数值）。 String: 字符串类型。 Object:  对象类型。 Boolean: 布尔类型 true or false null: 特殊的对象，表示空，已定义未赋值。 undefined: 未定义 BigI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS 基础知识碎片">
+<meta property="og:url" content="http://www.mala520.life/2018/08/21/js-%E5%9F%BA%E7%A1%80%E7%A2%8E%E7%89%87/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="8 种基本数据类型  Number: 数值类型。范围是±(253-1)；特殊值有Infinity(正无穷，其实是大过最大值), -Infinity（负无穷，其实是小过最小值）和 NaN（非数值）。 String: 字符串类型。 Object:  对象类型。 Boolean: 布尔类型 true or false null: 特殊的对象，表示空，已定义未赋值。 undefined: 未定义 BigI">
+<meta property="article:published_time" content="2018-08-21T09:11:51.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:59:42.442Z">
+<meta property="article:author" content="祁连">
+<meta property="article:tag" content="JS">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2018/08/21/js-基础碎片/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>JS 基础知识碎片 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2018/08/21/js-%E5%9F%BA%E7%A1%80%E7%A2%8E%E7%89%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS 基础知识碎片</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-21T17:11:51+08:00">
+                2018-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="8-种基本数据类型"><a href="#8-种基本数据类型" class="headerlink" title="8 种基本数据类型"></a>8 种基本数据类型</h1><hr>
+<ul>
+<li><code>Number</code>: 数值类型。范围是<code>±(253-1)</code>；特殊值有<code>Infinity</code>(正无穷，其实是大过最大值), <code>-Infinity</code>（负无穷，其实是小过最小值）和 <code>NaN</code>（非数值）。</li>
+<li><code>String</code>: 字符串类型。</li>
+<li><code>Object</code>:  对象类型。</li>
+<li><code>Boolean</code>: 布尔类型 true or false</li>
+<li><code>null</code>: 特殊的对象，表示空，已定义未赋值。</li>
+<li><code>undefined</code>: 未定义</li>
+<li><code>BigInt</code>: 表示任意长度的整数。通过在数值末尾加 <code>n</code>来定义，比如 <code>const bigInt = 1234567890123456789012345678901234567890n;</code></li>
+<li><code>Symbols</code>: 生成唯一标示符。</li>
+</ul>
+<p><code>typeof</code> 用于检测变量的数据类型：</p>
+<ul>
+<li>两种使用方式: <code>typeof x</code> or <code>typeof(x)</code>。</li>
+<li>返回类型的字符串, 比如 <code>&quot;string&quot;</code>。</li>
+<li><code>typeof null</code> 返回 <code>&quot;object&quot;</code> <code>null</code> 被认为是一个 特殊 的对象( 空对象 )。</li>
+</ul>
+<blockquote>
+<p><code>BigInt</code> 注意兼容性： <code>Firefox/Chrome/Edge/Safari</code>都已支持, <code>IE</code>尚不支持。</p>
+</blockquote>
+<h1 id="作用域（scope）之声明提前（hoisting）"><a href="#作用域（scope）之声明提前（hoisting）" class="headerlink" title="作用域（scope）之声明提前（hoisting）"></a>作用域（scope）之声明提前（hoisting）</h1><ul>
+<li><code>js</code> 只有函数作用域，没有块级作用域。</li>
+<li><code>js</code> 的函数作用域是指在函数内声明的所有变量在函数体内始终是可见的。</li>
+<li>这意味这变量在函数体内声明之前就已经可用，这个特性被非正式的称为声明提前（<code>hoisting</code>）。</li>
+</ul>
+<pre><code class="language-javascript">var scope = &quot;global&quot;
+function f() {
+  console.log(scope);  // 输出 undefined 而非 global
+  var scope = &quot;local&quot;;
+  console.log(scope);  // 输出 local
+}</code></pre>
+<p>上述函数相当于</p>
+<pre><code class="language-javascript">
+function f() {
+  var scope;  // 自动的 声明提前
+  console.log(scope);
+  scope = &quot;local&quot;;
+  console.log(scope);
+}</code></pre>
+<hr>
+<h1 id="toString-和-valueOf"><a href="#toString-和-valueOf" class="headerlink" title="toString() 和 valueOf()"></a>toString() 和 valueOf()</h1><ul>
+<li>所有的对象继承了两个转换方法：<code>toString()</code> 和 <code>valueOf()</code>。</li>
+<li><code>toString()</code> 不同的对象类型表现不同，比如数组返回逗号拼接的字符串，日期类型返回一个可读的日期事件字符串等。</li>
+<li><code>valueOf()</code> 如果对象存在原始值，就返回原始值。对象是复合值，大多数时候无法真正表示为一个原始值，就返回其本身。</li>
+</ul>
+<pre><code class="language-javascript">[1,2,3].toString();  // &quot;1,2,3&quot;
+new Date(2010,0,1).toString();  // &quot;Fri Jan 01 2010 00:00:00 GMT+0800 (中国标准时间)&quot;
+new Date(2010,0,1).valueOf();  // 1262275200000</code></pre>
+<hr>
+<h1 id="in-运算符"><a href="#in-运算符" class="headerlink" title="in 运算符"></a>in 运算符</h1><pre><code class="language-javascript">var obj = { x: 1, y: 2 }
+&quot;x&quot; in obj; // =&gt; true
+&quot;z&quot; in obj; // =&gt; false
+&quot;toString&quot; in obj; // =&gt; true: 所有对象继承了toString()方法</code></pre>
+<hr>
+<h1 id="instanceof-运算符"><a href="#instanceof-运算符" class="headerlink" title="instanceof 运算符"></a>instanceof 运算符</h1><ul>
+<li><code>A instanceof B</code> : 左操作数<code>A</code>为一个对象，右操作数<code>B</code>标示对象的类型。</li>
+<li>如果<code>A</code>是<code>B</code>的实例就返回<code>true</code>，否则返回<code>false</code>。</li>
+</ul>
+<pre><code class="language-javascript">var d = new Date();
+d instanceof Date;     // =&gt; true
+d instanceof Object;   // =&gt; true : 所有对象都是 Object 的实例
+d instanceof Number;   // =&gt; false
+var a = [1, 2, 3];
+a instanceof Array;    // =&gt; true
+a instanceof Object;   // =&gt; true
+function f() { };
+f instanceOf Function;  // =&gt; true</code></pre>
+<hr>
+<h1 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h1><ul>
+<li><code>对象直接量</code> ：常用方式。</li>
+</ul>
+<pre><code class="language-javascript">var empty = {};       // 空对象
+var point = {x: 0, y: 0};
+var book = {
+  &quot;main title&quot;: &quot;Javascropt&quot;, // 属性名有空格必须使用字符串表示
+  &quot;sub-title&quot;: &quot;The Definitive Guide&quot;,  // 属性名有连字符必须使用字符串表示
+  for: &quot;all audiences&quot;
+}
+</code></pre>
+<ul>
+<li><code>new</code>：new运算符创建并初始化一个新对象，new后面跟随一个函数调用，这个函数其实是一个构造函数（constructor）。</li>
+</ul>
+<pre><code class="language-javascript">var empty = new Object();       // 同 {}
+var point = new Object({x: 0, y: 0});
+var a = new Array(); // 同 []
+var b = new Date();</code></pre>
+<ul>
+<li><code>Object.create(proto, propertiesObject)</code>：<code>ES6</code>定义的方法，它创建一个对象.其中<code>proto</code>（必须参数）是这个对象的原型。<br><code>propertiesObject</code>是可选参数，作用就是给新对象添加新属性以及描述器。具体可参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties" target="_blank" rel="noopener">Object.defineProperties() - mdn</a> 的第二个参数。新添加的属性是新对象自身具有的属性也就是通过<code>hasOwnProperty()</code> 方法可以获取到的属性，</li>
+</ul>
+<pre><code class="language-javascript">// 创建一个没有原型的对象
+var o1 = Object.create(null);  
+// 同 {} 和 new Object()
+var o2 = Object.create(Object.prototype); 
+o2.a = 1;
+// o3._propo_ = o2 继承了o2, 也继承了o2的属性a；增加了属性 b=1;
+var o3 = Object.create(o2, {b: { vaue: 1, writable: true}}); 
+o3; // print {b:1} ：自🈶️属性
+o3.a; // print 1: 获取对象的属性，如果自有属性没有，会继续在对象继承的原型链中（o3&gt;o2&gt;Object.prototype）查找。</code></pre>
+<p>自己实现一个 <code>Object.create()</code>:</p>
+<pre><code class="language-javascript">Object.myCreate = function (obj, properties)  {
+  var F = function ()  {}
+  F.prototype = obj
+  if (properties) {
+     Object.defineProperties(F, properties)
+  }
+  return new F()
+}
+
+Object.myCreate({}, {a: {value: 1}})     // {a: 1}</code></pre>
+<hr>
+<h1 id="对象动态属性"><a href="#对象动态属性" class="headerlink" title="对象动态属性"></a>对象动态属性</h1><pre><code class="language-javascript">// 设置
+var selfProp = &#39;other&#39;;
+var index = 1;
+var book={
+  &quot;main title&quot;: &quot;&quot;, // 属性名有空格必须使用字符串表示
+  &quot;sub-title&quot;: &quot;&quot;,  // 属性名有连字符必须使用字符串表示
+  auther: &quot;&quot;,
+  [selfProp + index]: &quot;&quot;   // 动态属性通过 [] 设置。 
+}
+// 读取 
+var auther = book.auther;
+var title = book[&quot;main title&quot;]; // 属性名有空格，连字符的属性通过 [] 获取。
+var other = book[selfProp + index]; // 动态属性通过 [] 获取。
+</code></pre>
+<hr>
+<h1 id="删除属性"><a href="#删除属性" class="headerlink" title="删除属性"></a>删除属性</h1><ul>
+<li><code>delete</code>只能删除自由属性，无法删除继承属性。</li>
+<li><code>delete</code>无法删除通过<code>var</code>定义的全局变量。</li>
+</ul>
+<pre><code class="language-javascript">delete book.auther;              // true
+delete book[&quot;main title&quot;];       // true
+var obj = Object.create({x: 1}); 
+delete obj.x;                    // true 但是并没有删除继承属性x。
+var global1 = 1;                 // 定义全局变量，用var
+this.global2 = 2;                // 定义全局变量
+delete global1;                  // 无法删除
+delete global2;                  // 可删除</code></pre>
+<hr>
+<h1 id="检测属性的几种方式"><a href="#检测属性的几种方式" class="headerlink" title="检测属性的几种方式"></a>检测属性的几种方式</h1><ul>
+<li><code>in</code> 运算符</li>
+<li><code>.property !== undefined</code>的形式</li>
+<li><code>hasOwnProperty()</code> （ 只能检测自有属性 ）</li>
+</ul>
+<hr>
+<h1 id="枚举对象属性"><a href="#枚举对象属性" class="headerlink" title="枚举对象属性"></a>枚举对象属性</h1><ul>
+<li>for/in 运算符: 可枚举自有属性和继承属性</li>
+<li>Object.keys(obj)：只能枚举自有属性</li>
+</ul>
+<hr>
+<h1 id="Object对象常用方法"><a href="#Object对象常用方法" class="headerlink" title="Object对象常用方法"></a>Object对象常用方法</h1><ul>
+<li>Object.assign();</li>
+<li>Object.create();</li>
+<li>Object.keys();</li>
+<li>Object.values();</li>
+<li>Object.defineProperty();</li>
+<li>Object.entries();</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" rel="noopener">其他-MDN</a></li>
+</ul>
+<hr>
+<h1 id="对象原型判断"><a href="#对象原型判断" class="headerlink" title="对象原型判断"></a>对象原型判断</h1><ul>
+<li><code>isPrototypeOf</code>方法(推荐)</li>
+<li><code>_proto_</code>属性</li>
+</ul>
+<pre><code class="language-javascript">var obj = {};
+var newObj = Object.create(obj);
+obj.isPrototypeOf(newObj);  // true
+newObj._proto_ === obj; // true</code></pre>
+<hr>
+<h1 id="获取对象类属性（class-attribute）"><a href="#获取对象类属性（class-attribute）" class="headerlink" title="获取对象类属性（class attribute）"></a>获取对象类属性（class attribute）</h1><ul>
+<li><code>typeof</code> 操作符:</li>
+</ul>
+<pre><code class="language-javascript">typeof null;         // =&gt; &quot;object&quot;
+typeof undefined;    // =&gt; &quot;undefined&quot;
+typeof true;         // =&gt; &quot;boolean&quot;
+typeof 100;          // =&gt; &quot;number&quot;  NaN也是
+typeof &quot;abc&quot;;        // =&gt; &quot;string&quot;
+typeof function(){}; // =&gt; &quot;function&quot;
+typeof 任意内置对象；  // =&gt; &quot;&quot;object</code></pre>
+<ul>
+<li>利用<code>Object.prototype.toString()</code> 返回 <code>[object class]</code>的特性，实现一下方法：</li>
+</ul>
+<pre><code class="language-javascript">function classof(0) {
+  if (o === null) return &#39;null&#39;;
+  if(o === undefined) return &#39;undefined&#39;;
+  return Object.prototype.toString.call(o).slice(8,-1);
+}
+
+classof(1); // =&gt; &#39;Number&#39;
+classof(&quot;&quot;); // =&gt; &#39;String&#39;
+classof(false); // =&gt; &#39;Boolean&#39;
+classof({}); // =&gt; &#39;Object&#39;
+classof([]); // =&gt; &#39;Array&#39;
+classof(/./); // =&gt; &#39;Regexp&#39;
+classof(new Date()); // =&gt; &#39;Date&#39;
+classof(Window); // =&gt; &#39;Window&#39;
+function f() {};
+classof(new f()); // =&gt; &#39;Object&#39;</code></pre>
+<hr>
+<h1 id="数组须知"><a href="#数组须知" class="headerlink" title="数组须知"></a>数组须知</h1><ul>
+<li>数组索引必须为非负整数（非负整数的字符串也可以）。使用其他类型来索引数组，只能作为数组的属性。</li>
+</ul>
+<pre><code class="language-javascript">var a = new Array(10) // =&gt; length = 10 
+a[&quot;1000&quot;] = 1; // =&gt; length = 1001  ( [0,1,...1000] )
+a[-1] = -1; // =&gt; length 不变，数组多一个“-1”属性</code></pre>
+<ul>
+<li>数组也是对象，可以使用对象的各种方法和操作。</li>
+</ul>
+<pre><code class="language-javascript">//eg
+var a = new Array(10)
+Object.defineproperty(a,&#39;length&#39;,{writable: false}) // 让数组length不可变</code></pre>
+<ul>
+<li><code>delete</code> 不会改变数组的<code>length</code>，只是让某个 索引位 没有值。</li>
+</ul>
+<h1 id="Get-Post-请求须知"><a href="#Get-Post-请求须知" class="headerlink" title="Get/Post 请求须知"></a>Get/Post 请求须知</h1><ul>
+<li>请求数据大小的限制并不是HTTP协议限制，而是浏览器的限制。</li>
+<li>get适合查找数据，post适合添加/修改数据。所以在缓存策略上，get请求可以被缓存，post请求不会被缓存。</li>
+</ul>
+<h1 id="为什么频繁调用-element-getboundingclientrect-可能引发重绘-回流？"><a href="#为什么频繁调用-element-getboundingclientrect-可能引发重绘-回流？" class="headerlink" title="为什么频繁调用 element.getboundingclientrect() 可能引发重绘/回流？"></a>为什么频繁调用 element.getboundingclientrect() 可能引发重绘/回流？</h1><p>浏览器都会优化重绘和回流的操作。浏览器会把所有会引起回流、重绘的Dom操作放入一个队列中，等队列中的操作到了一定的数量或者到了一定的时间间隔，浏览器就会flush队列，进行一个批处理。这样就会让多次的回流、重绘变成一次回流重绘。</p>
+<p>另外，当我们取一些属性值时（offsetWidth、clientWidth、width）等，只为了取到正确的值，浏览器可能提前执行 flush 队列，即便是队列里的操作不影响所取的值。</p>
+<h1 id="ES6-定义对象方法时，还可以省去-function-关键字。"><a href="#ES6-定义对象方法时，还可以省去-function-关键字。" class="headerlink" title="ES6 定义对象方法时，还可以省去 function 关键字。"></a>ES6 定义对象方法时，还可以省去 function 关键字。</h1><pre><code class="language-js">{
+  reducers: {
+    add() {}  // 等同于 add: function() {}
+  },
+  effects: {
+    *addRemote() {}  // 等同于 addRemote: function*() {}
+  },
+}</code></pre>
+<h1 id="Set集合-amp-Map字典"><a href="#Set集合-amp-Map字典" class="headerlink" title="Set集合 &amp; Map字典"></a>Set集合 &amp; Map字典</h1><p>Set 操作方法：</p>
+<ul>
+<li>add(value)：新增，相当于 array里的push。</li>
+<li>delete(value)：存在即删除集合中value。</li>
+<li>has(value)：判断集合中是否存在 value。</li>
+<li>clear()：清空集合。</li>
+</ul>
+<p>Map 操作方法：</p>
+<ul>
+<li><p>set(key, value)：向字典中添加新元素。</p>
+</li>
+<li><p>get(key)：通过键查找特定的数值并返回。</p>
+</li>
+<li><p>has(key)：判断字典中是否存在键key。</p>
+</li>
+<li><p>delete(key)：通过键 key 从字典中移除对应的数据。</p>
+</li>
+<li><p>clear()：将这个字典中的所有元素删除。</p>
+</li>
+<li><p>共同点：集合、字典 可以储存不重复的值。</p>
+</li>
+<li><p>不同点：集合 是以 <code>[value, value]</code>的形式储存元素，字典 是以 <code>[key, value]</code> 的形式储存</p>
+</li>
+</ul>
+<h1 id="页面加载多个JS的处理过程"><a href="#页面加载多个JS的处理过程" class="headerlink" title="页面加载多个JS的处理过程"></a>页面加载多个JS的处理过程</h1><p>step 1. 读入第一个代码块。</p>
+<p>step 2. 做语法分析，有错则报语法错误（比如括号不匹配等），并跳转到step5。</p>
+<p>step 3. 对var变量和function定义做“预编译处理”（永远不会报错的，因为只解析正确的声明）。</p>
+<p>step 4. 执行代码段，有错则报错（比如变量未定义）。</p>
+<p>step 5. 如果还有下一个代码段，则读入下一个代码段，重复step2。</p>
+<p>step6. 结束。</p>
+<h1 id="HTTPS加密为啥需要CA认证"><a href="#HTTPS加密为啥需要CA认证" class="headerlink" title="HTTPS加密为啥需要CA认证"></a>HTTPS加密为啥需要CA认证</h1><p>方案一：对称加密</p>
+<p>加密解密使用同一个密钥。<br>存在密钥协商的问题（客户端和服务器同步密钥的时候很容易被截获）。</p>
+<p>方案二：非对称加密</p>
+<p>公钥/私钥互为锁和钥匙。如果 公钥 在服务器发送给客户端时被窃取。那么服务器私钥加密的内容会被坏人解密。不过，客户端发送的公钥加密过的数据，坏人没有私钥没法解密。另外，非对称加密性能是很差的，因为支持双向加解密，复杂度和密钥长度都需要很大，否则容易被暴力破解。</p>
+<p>方案三：改进方案</p>
+<ul>
+<li>方案：客户端获取公钥后生成对称密钥，然后用公钥加密后给服务器，服务器用私钥解密得到对称密钥，后续就进行对称加密即可。</li>
+<li>问题：如果坏人一开始就窃听了公钥，然后发送假的公钥（当然坏人有对应的私钥）给客户端。那么客户端发给服务器的对称密钥会被第三方解密，然后第三方用真的公钥加密给服务器。这样，后续的通信中，第三方就能获取所有的信息，毕竟得到了对称密钥。</li>
+</ul>
+<p>为了做到绝对的安全，CA认证（数字证书+数字签名）诞生。具体流程如下：</p>
+<ol>
+<li><p>服务器需要提交服务器站点的信息如域名、公司名称、公钥等给CA机构去申请和购买数字证书。CA机构就是数字证书颁发的权威机构，负责颁发证书以及验证证书的合法性。</p>
+</li>
+<li><p>CA机构在给服务器颁发证书的时候，除了<strong>数字证书</strong>，还会根据 <code>数字证书 + hash算法（MD5）</code>计算出<strong>摘要</strong>，CA机构自己的私钥对摘要进行加密形成<strong>数字签名</strong>一并发给服务器。</p>
+</li>
+<li><p>服务器在与客户端通信的时候，就会将数字证书和数字签名出示给客户端。客户端也能拿到浏览器内置的CA机构的公钥。</p>
+</li>
+<li><p>客户端使用CA公钥解密数字签名得到摘要，再通过 <code>数字证书 + hash算法</code>计算出摘要。如果两个摘要一致，那就证书有效，否则证书被篡改。因为CA机构的私钥坏人得不到。</p>
+</li>
+<li><p>客户端生成对称密钥，用从证书拿到服务器的 公钥 加密后发给服务器，服务器用 私钥 解密拿到密钥。因为客户端拿到的肯定是服务器正确的公钥，所以没有方案三存在的问题。</p>
+</li>
+<li><p>密钥协商完成，对称加密传输数据。</p>
+</li>
+</ol>
+<h1 id="数组解构赋值交换元素"><a href="#数组解构赋值交换元素" class="headerlink" title="数组解构赋值交换元素"></a>数组解构赋值交换元素</h1><p>等号的左右两边模式相同，就会将右边的值赋给左边的变量。</p>
+<pre><code class="language-js">[array[index1],array[index2]] = [array[index2],array[index1]];</code></pre>
+<h1 id="JSBridge-原理"><a href="#JSBridge-原理" class="headerlink" title="JSBridge 原理"></a>JSBridge 原理</h1><ul>
+<li>JavaScript 调用 Native 推荐使用 注入 API 的方式。通过 WebView 提供的接口，Native 向 JavaScript 的 Context（window）中注入对象或者方法，让 JavaScript 调用时，直接执行相应的 Native 代码逻辑，达到 JavaScript 调用 Native 的目的。</li>
+<li>Native 调用 JavaScript 则直接执行拼接好的 JavaScript 代码即可。</li>
+</ul>
+<pre><code class="language-js">//js具体实现：
+(function () {
+    var id = 0,
+        callbacks = {},
+        registerFuncs = {};
+
+    window.JSBridge = {
+        // 调用 Native
+        invoke: function(bridgeName, callback, data) {
+            // 判断环境，获取不同的 nativeBridge
+            var thisId = id ++; // 获取唯一 id
+            callbacks[thisId] = callback; // 存储 Callback
+            nativeBridge.postMessage({
+                bridgeName: bridgeName,
+                data: data || {},
+                callbackId: thisId // 传到 Native 端
+            });
+        },
+        receiveMessage: function(msg) {
+            var bridgeName = msg.bridgeName,
+                data = msg.data || {},
+                callbackId = msg.callbackId, // Native 将 callbackId 原封不动传回
+                responstId = msg.responstId;
+            // 具体逻辑
+            // bridgeName 和 callbackId 不会同时存在
+            if (callbackId) {
+                if (callbacks[callbackId]) { // 找到相应句柄
+                    callbacks[callbackId](msg.data); // 执行调用
+                }
+            } elseif (bridgeName) {
+                if (registerFuncs[bridgeName]) { // 通过 bridgeName 找到句柄
+                    var ret = {},
+                        flag = false;
+                    registerFuncs[bridgeName].forEach(function(callback) =&gt; {
+                        callback(data, function(r) {
+                            flag = true;
+                            ret = Object.assign(ret, r);
+                        });
+                    });
+                    if (flag) {
+                        nativeBridge.postMessage({ // 回调 Native
+                            responstId: responstId,
+                            ret: ret
+                        });
+                    }
+                }
+            }
+        },
+        register: function(bridgeName, callback) {
+            if (!registerFuncs[bridgeName])  {
+                registerFuncs[bridgeName] = [];
+            }
+            registerFuncs[bridgeName].push(callback); // 存储回调
+        }
+    };
+})();
+//作者：嫖桑 https://juejin.cn/post/6844903585268891662</code></pre>
+<h1 id="语音播报"><a href="#语音播报" class="headerlink" title="语音播报"></a>语音播报</h1><pre><code class="language-js">function  voiceAnnouncements(str){
+//百度
+    var  url = &quot;http://tts.baidu.com/text2audio?lan=zh&amp;ie=UTF-8&amp;text=&quot; + encodeURI(str); // baidu
+    var  n = new  Audio(url);
+    n.src = url;
+    n.play();
+}
+voiceAnnouncements(&#39;你好，今天吃的什么？&#39;)</code></pre>
+<h1 id="静态作用域-和-闭包"><a href="#静态作用域-和-闭包" class="headerlink" title="静态作用域 和 闭包"></a>静态作用域 和 闭包</h1><ul>
+<li>因为JavaScript是静态作用域的，所以它内部环境中需要的变量在编译时就确定了，运行时不会改变；</li>
+<li>又因为JavaScript中，函数是一等公民，可以被调用，可以作为参数传递，可以赋值给变量，也可以作为函数返回值，所以它的运行时环境很容易变化；</li>
+<li>当函数作为另一个函数（外层函数）的返回值返回时，其外层函数中的变量已经从调用栈弹出，但是我们必须让内部函数可以访问到它需要的变量，因此运行时的环境和定义时的作用域之间就产生矛盾；</li>
+<li>所以我们把内部环境中需要的变量，打包交给内层函数（闭包函数），它就可以随时访问这些变量了，就形成了闭包。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JS/" rel="tag"># JS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/25/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" rel="next" title="跨域问题">
+                <i class="fa fa-chevron-left"></i> 跨域问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/05/React%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB/" rel="prev" title="React技术体系">
+                React技术体系 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#8-种基本数据类型"><span class="nav-number">1.</span> <span class="nav-text">8 种基本数据类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#作用域（scope）之声明提前（hoisting）"><span class="nav-number">2.</span> <span class="nav-text">作用域（scope）之声明提前（hoisting）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#toString-和-valueOf"><span class="nav-number">3.</span> <span class="nav-text">toString() 和 valueOf()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#in-运算符"><span class="nav-number">4.</span> <span class="nav-text">in 运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#instanceof-运算符"><span class="nav-number">5.</span> <span class="nav-text">instanceof 运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建对象"><span class="nav-number">6.</span> <span class="nav-text">创建对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象动态属性"><span class="nav-number">7.</span> <span class="nav-text">对象动态属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除属性"><span class="nav-number">8.</span> <span class="nav-text">删除属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#检测属性的几种方式"><span class="nav-number">9.</span> <span class="nav-text">检测属性的几种方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#枚举对象属性"><span class="nav-number">10.</span> <span class="nav-text">枚举对象属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Object对象常用方法"><span class="nav-number">11.</span> <span class="nav-text">Object对象常用方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象原型判断"><span class="nav-number">12.</span> <span class="nav-text">对象原型判断</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取对象类属性（class-attribute）"><span class="nav-number">13.</span> <span class="nav-text">获取对象类属性（class attribute）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组须知"><span class="nav-number">14.</span> <span class="nav-text">数组须知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Get-Post-请求须知"><span class="nav-number">15.</span> <span class="nav-text">Get&#x2F;Post 请求须知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么频繁调用-element-getboundingclientrect-可能引发重绘-回流？"><span class="nav-number">16.</span> <span class="nav-text">为什么频繁调用 element.getboundingclientrect() 可能引发重绘&#x2F;回流？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ES6-定义对象方法时，还可以省去-function-关键字。"><span class="nav-number">17.</span> <span class="nav-text">ES6 定义对象方法时，还可以省去 function 关键字。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Set集合-amp-Map字典"><span class="nav-number">18.</span> <span class="nav-text">Set集合 &amp; Map字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#页面加载多个JS的处理过程"><span class="nav-number">19.</span> <span class="nav-text">页面加载多个JS的处理过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTPS加密为啥需要CA认证"><span class="nav-number">20.</span> <span class="nav-text">HTTPS加密为啥需要CA认证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组解构赋值交换元素"><span class="nav-number">21.</span> <span class="nav-text">数组解构赋值交换元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSBridge-原理"><span class="nav-number">22.</span> <span class="nav-text">JSBridge 原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语音播报"><span class="nav-number">23.</span> <span class="nav-text">语音播报</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#静态作用域-和-闭包"><span class="nav-number">24.</span> <span class="nav-text">静态作用域 和 闭包</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

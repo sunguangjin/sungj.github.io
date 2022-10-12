@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Nodejs 的出现让前端具备了服务端的能力，还有一个特别重要的用途是用来开发很多提升效率的 CLI 工具，比如初始化项目的 脚手架，项目打包运行的工具库等。CLI 是 Command-Line Interface 的缩写，命令行界面的意思。 基于Nodejs开发CLI工具，首先就离不开 Commander 库。它是  Nodejs 进行 CLI 开发的完整解决方案。 Commander安装 np">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Nodejs 开发 cli 工具) - Commander">
+<meta property="og:url" content="http://www.mala520.life/2020/05/13/Nodejs%E5%B7%A5%E5%85%B7-Commander/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="Nodejs 的出现让前端具备了服务端的能力，还有一个特别重要的用途是用来开发很多提升效率的 CLI 工具，比如初始化项目的 脚手架，项目打包运行的工具库等。CLI 是 Command-Line Interface 的缩写，命令行界面的意思。 基于Nodejs开发CLI工具，首先就离不开 Commander 库。它是  Nodejs 进行 CLI 开发的完整解决方案。 Commander安装 np">
+<meta property="article:published_time" content="2020-05-13T03:00:43.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.956Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2020/05/13/Nodejs工具-Commander/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>(Nodejs 开发 cli 工具) - Commander | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/05/13/Nodejs%E5%B7%A5%E5%85%B7-Commander/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">(Nodejs 开发 cli 工具) - Commander</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-13T11:00:43+08:00">
+                2020-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Nodejs/" itemprop="url" rel="index">
+                    <span itemprop="name">Nodejs</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>Nodejs</code> 的出现让前端具备了服务端的能力，还有一个特别重要的用途是用来开发很多提升效率的 <code>CLI</code> 工具，比如初始化项目的 <code>脚手架</code>，项目打包运行的工具库等。<code>CLI</code> 是 <code>Command-Line Interface</code> 的缩写，命令行界面的意思。</p>
+<p>基于<code>Nodejs</code>开发<code>CLI</code>工具，首先就离不开 <code>Commander</code> 库。它是  <code>Nodejs</code> 进行 <code>CLI</code> 开发的完整解决方案。</p>
+<h1 id="Commander安装"><a href="#Commander安装" class="headerlink" title="Commander安装"></a><code>Commander</code>安装</h1><pre><code class="language-js">
+npm install commander@5.0.0
+</code></pre>
+<blockquote>
+<p>注意： 本文基于 <code>commander@5.0.0</code> 版本。</p>
+</blockquote>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>常规方式：</p>
+<pre><code class="language-js">const program  = require(&#39;commander&#39;);</code></pre>
+<p>复杂程序中，<code>Commander</code> 可能通过多样化的方式使用，可以通过创建本地 <code>Commander</code>的方式使用：</p>
+<pre><code class="language-js">// 方式A
+const Command  = require(&#39;commander&#39;);
+const program = new Command();
+
+// 方式B 
+// 5.0.0 版本新增
+const { createCommand } = require(&#39;commander&#39;);
+const program = createCommand();</code></pre>
+<h1 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h1><pre><code class="language-js">
+const program = require(&#39;commander&#39;);
+// 写死版本
+program.version(&#39;0.0.1&#39;);
+</code></pre>
+<pre><code class="language-js">
+const program = require(&#39;commander&#39;);
+// 动态读取 package 的版本
+program.version(require(&#39;../package&#39;).version);
+</code></pre>
+<blockquote>
+<p>可以通过 <code>$ comd-cli -V</code> 显示版本号。</p>
+</blockquote>
+<h1 id="options"><a href="#options" class="headerlink" title="options"></a>options</h1><p><code>option()</code> 方法用于 定义 <code>Commander</code> 的参数选项 <code>options</code>。</p>
+<h2 id="基本API："><a href="#基本API：" class="headerlink" title="基本API："></a>基本API：</h2><pre><code class="language-js">program.option(&#39;-n, -name&#39;, &#39;description&#39;)</code></pre>
+<ul>
+<li><code>n</code>: 参数名称的短标示（<code>flag</code>），用单个字符表示。</li>
+<li><code>name</code>: 参数名称。</li>
+<li><code>n</code> 和 <code>name</code>之间除了用 <code>,</code>，还可以用 <code>空格</code> 或者 <code>|</code> 分割。</li>
+<li><code>description</code>: 参数描述。</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-js">const program = require(&#39;commander&#39;);
+
+program
+  .option(&#39;-d, --debug&#39;, &#39;debugging&#39;)
+  .option(&#39;-s, --small&#39;, &#39;small size&#39;)
+  .parse(process.argv);
+console.log(program.opts());
+
+//执行日志如下👇
+$ comd-cli
+ { debug: undefined, small: undefined}
+$ comd-cli -d
+ { debug: true, small: undefined}
+$ comd-cli -ds
+ { debug: true, small: true}</code></pre>
+<ul>
+<li><code>program.opts()</code> 获取命令所有参数信息。</li>
+<li>不带对应标示，参数的默认值是 <code>undefined</code>。</li>
+<li>带对应标示，参数值为<code>boolean</code>类型 - <code>true</code>。</li>
+<li><code>-d -s</code> 可以简写为 <code>-ds</code>。</li>
+<li><code>$comd-cli --debug</code> 等同于 <code>$comd-cli -d</code>, 一般都使用更短的标示。</li>
+<li>类似 <code>--template-engine</code> 这种命名的名称，会被自动转为驼峰 <code>templateEngine</code>。</li>
+</ul>
+<blockquote>
+<p>后续示例都假定通过 <code>$comd-cli</code> 这个 <code>CLI</code> 执行。</p>
+</blockquote>
+<h2 id="非-boolean-类型参数"><a href="#非-boolean-类型参数" class="headerlink" title="非 boolean 类型参数"></a>非 <code>boolean</code> 类型参数</h2><p>如果希望参数不是一个 <code>boolean</code> 类型，而是具体的 <code>vaue</code>。可以通过增加 <code>&lt;type&gt;</code> 或者 <code>[type]</code> 实现：</p>
+<pre><code class="language-js">const program = require(&#39;commander&#39;);
+
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;)
+  .option(&#39;-s, --size &lt;type&gt;&#39;, &#39;size type&#39;)
+  .option(&#39;-l, --limit [type]&#39;, &#39;file size limit&#39;)
+  .parse(process.argv);
+console.log(program.opts());
+
+//执行日志如下👇
+$ comd-cli -s
+ error option &#39;-s, --size &lt;type&gt;&#39; argument missing
+$ comd-cli -s small
+ { debug: undefined, size: &#39;small&#39;, limit: undefined }
+$ comd-cli -l
+ { debug: undefined, size: &#39;small&#39;, limit: true }
+$ comd-cli -l 1m
+ { debug: undefined, size: &#39;small&#39;, limit: &#39;1m&#39; }</code></pre>
+<ul>
+<li>被 <code>&lt;&gt;</code> 包裹的拓展参数 <code>type</code> 为<strong>必输值</strong>。</li>
+<li>被 <code>[]</code> 包裹的拓展参数 <code>type</code> 为<strong>非必输</strong>，默认值为 <code>true</code>。</li>
+<li><code>type</code> 是由用户自主命名。</li>
+</ul>
+<h2 id="自定义默认值"><a href="#自定义默认值" class="headerlink" title="自定义默认值"></a>自定义默认值</h2><p>如前所述，参数的默认值都为 <code>true</code>。你可以在 <code>options()</code> 方法中添加<strong>第三个参数</strong>作为默认值</p>
+<pre><code class="language-js">const program  = require(&#39;commander&#39;);
+
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;, &#39;&#39;)
+  .option(&#39;-s, --size &lt;type&gt;&#39;, &#39;size type&#39;, &#39;smal&#39;)
+  .option(&#39;-l, --limit [type]&#39;, &#39;file size limit&#39;, &#39;1M&#39;)
+  .parse(process.argv);
+console.log(program.opts());
+
+//执行日志如下👇
+$ comd-cli 
+ { debug: undefined, size: &#39;small&#39;, limit: &#39;1M&#39; }
+$ comd-cli -s large
+ { debug: undefined, size: &#39;large&#39;, limit: &#39;1M&#39; }</code></pre>
+<ul>
+<li>对于带拓展 <code>type</code> 的参数，如上例的 <code>size</code> 和 <code>limit</code>，可设置默认值。</li>
+<li>无拓展 <code>type</code> 的参数，如上例的 <code>debug</code>，设置默认值无效。</li>
+<li>默认值可以是对象，数组等。</li>
+</ul>
+<h2 id="变更默认值"><a href="#变更默认值" class="headerlink" title="变更默认值"></a>变更默认值</h2><p>可以通过 <code>--no-name</code> 达到修改 <code>name</code> 参数的默认值的效果。</p>
+<pre><code class="language-js">const program  = require(&#39;commander&#39;);
+
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;)
+  .option(&#39;-s, --size &lt;type&gt;&#39;, &#39;size type&#39;, &#39;small&#39;)
+  .option(&#39;--no-debug&#39;, &#39;change debug&#39;)
+  .option(&#39;--no-size&#39;, &#39;Remove size&#39;)
+  .parse(process.argv);
+console.log(program.opts());
+//执行日志如下👇
+$ comd-cli 
+ { debug: true, size: true}
+$ comd-cli -d
+ { debug: false, size: true}
+$ comd-cli -s big
+ { debug: false, size: &#39;big&#39;}
+$ comd-cli --no-debug
+ { debug: false, size: true}
+$ comd-cli --no-size
+ { debug: false, size: undefined}</code></pre>
+<ul>
+<li><code>--no-name</code> 参数会把 <code>name</code> 命名的参数的默认值变为 <code>true</code>，不管它是 <code>boolean</code> 还是 <code>value</code>。</li>
+<li>命令带 <code>--no-name</code> 参数执行，<code>boolean</code> 类型的 <code>name</code> 会变成 <code>false</code>，<code>value</code> 值会变成<code>undefined</code>。</li>
+</ul>
+<h2 id="自定义option处理"><a href="#自定义option处理" class="headerlink" title="自定义option处理"></a>自定义option处理</h2><p>当 <code>option()</code> 方法的第三个参数是一个函数（回调函数）的时候，该函数会自动对参数值做处理。</p>
+<pre><code class="language-js">const program  = require(&#39;commander&#39;);
+
+const func = (dummyValue, previous) =&gt; {
+  console.log(`dummyValue: ${dummyValue} ; previous: ${previous}`);
+  return dummyValue.split(&#39;,&#39;)
+}
+
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;)
+  .option(&#39;-s, --size [type]&#39;, &#39;size type&#39;,func,[&#39;1&#39;])
+  .parse(process.argv);
+console.log(program.opts());
+
+//执行日志如下👇
+$ comd-cli -s 2,3,4
+  dummyValue: 2,3,4 ; previous: 1
+  { debug: undefined, size: [ &#39;2&#39;, &#39;3&#39;, &#39;4&#39; ] }
+</code></pre>
+<ul>
+<li>这个时候，默认值可做为 <code>option()</code> 方法的第四个参数。</li>
+<li>回调函数参数：<code>dummyValue</code> 用户指定的值; <code>previous</code>: 当前值，上述示例是默认值。</li>
+<li>回调函数返回值作为 <code>option</code> 最新值。</li>
+</ul>
+<h2 id="必需参数"><a href="#必需参数" class="headerlink" title="必需参数"></a>必需参数</h2><p>如果一个命令行必须有某个参数才可以执行，可以通过 <code>requiredOption()</code> 方法处理。</p>
+<pre><code class="language-js">const { program } = require(&#39;commander&#39;);
+
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;)
+  .requiredOption(&#39;-s, --size &lt;type&gt;&#39;, &#39;size type&#39;);
+  .parse(process.argv);
+
+//执行日志如下👇
+$ comd-cli
+  error: required option &#39;-s, --size &lt;type&gt;&#39; not specified </code></pre>
+<h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><p>你可以使用 <code>--</code> 来表示选项的结束，剩余的参数将被使用而不会被解释。这对于将选项传递给另一条命令特别有用。</p>
+<pre><code class="language-js">const program  = require(&#39;commander&#39;);
+console.log(process.argv);
+program
+  .option(&#39;-d, --debug &#39;, &#39;if debugging&#39;)
+  .option(&#39;-s, --size [type]&#39;, &#39;size type&#39;,&#39;small&#39;)
+  .parse(process.argv);
+console.log(program.opts());
+console.log(program.args);
+
+//执行日志如下👇
+$ comd-cli -d -- -s big git react 
+ { debug: true, size: &#39;small&#39; }
+ [ &#39;-s&#39;, &#39;big&#39;, &#39;git&#39;, &#39;react&#39; ]</code></pre>
+<ul>
+<li>注意，<code>--</code> 后面的 <code>-s big</code> 便不会被 <code>option</code> 处理。</li>
+<li>一般，我们通过 <code>parse(process.argv)</code> 方法把其他没有被 <code>options</code> 处理的参数变为 <code>program.args</code> 对象使用。</li>
+</ul>
+<h1 id="Commands"><a href="#Commands" class="headerlink" title="Commands"></a>Commands</h1><p><code>Commander</code> 提供了两种用于添加命令的方式，分别对应一下两个 <code>API</code>:</p>
+<ul>
+<li><code>command()</code>: 通过用户自己定义命令名称，和一些命令参数来添加一个命令。</li>
+<li><code>addCommand()</code>: 用于添加一个已经初始化好的子命令。复杂场景下，往往会定义一个方法来生成命令，就需要使用该方式。</li>
+</ul>
+<p>其实，用 <code>addCommand()</code> 添加的子命令，也是通过 <code>command()</code> 方式初始化的。</p>
+<blockquote>
+<p><code>addCommand()</code> 方式是在 <code>5.0.0</code> 版本才引入的。</p>
+</blockquote>
+<p>命令的执行也有两种方式:</p>
+<ul>
+<li>给命令添加一个 <code>action</code> 事件处理程序。需要<code>5.0.0</code>及以上版本</li>
+<li>通过一个单独的可执行文件。</li>
+</ul>
+<p>下面，我们通过以下三种情况来了解：</p>
+<ul>
+<li><code>command()</code>+ <code>action handler</code></li>
+<li><code>command()</code>+ 可执行文件</li>
+<li><code>addCommand()</code> 使用示例</li>
+</ul>
+<h2 id="command-action-handler"><a href="#command-action-handler" class="headerlink" title="command()+ action handler"></a><code>command()</code>+ <code>action handler</code></h2><p>一定注意，<code>5.0.0</code>及以上版本才支持的方式：</p>
+<pre><code class="language-js">program
+  .command(&#39;clone &lt;required&gt; [optional]&#39;)
+  .alise(&#39;c&#39;)
+  .useage(&#39;&lt;command&gt; &lt;fileName&gt;&#39;)
+  .desciption(&#39;clone command descption&#39;)
+  .action((required, optional) =&gt; {
+    console.log(&#39;command called&#39;)
+  })
+
+//执行日志如下👇
+$ comd-cli clone fileName
+  command called
+</code></pre>
+<ul>
+<li><code>clone</code>:  命令名称。</li>
+<li><code>required</code>: 必须参数。</li>
+<li><code>optional</code>: 其他可选参数。</li>
+<li><code>alise(&#39;c&#39;)</code>: 给命令一个简短的别名 <code>c</code>。</li>
+<li><code>usage()</code>: 命令的使用格式。使用 <code>--help</code> 会显示。</li>
+<li><code>desciption()</code>: 设置命令描述信息。</li>
+<li><code>action(handler)</code>: 命令执行程序，<code>handler</code> 是一个回调函数，可以获取到命令参数。</li>
+</ul>
+<h2 id="command-可执行文件"><a href="#command-可执行文件" class="headerlink" title="command()+ 可执行文件"></a><code>command()</code>+ 可执行文件</h2><p>这种方式是早期版本便一直支持的方式：</p>
+<pre><code class="language-js">// 假设该入口脚本文件目录为：example/comdCli.js
+program
+  .command(&#39;clone &lt;required&gt; [optional]&#39;,&#39;clone command descption&#39;)
+  .alise(&#39;c&#39;)
+
+//执行日志如下👇
+$ comdCli clone fileA
+  Error: &#39;comdCli-clone&#39; does not exist
+</code></pre>
+<ul>
+<li>命令描述作为 <code>command()</code> 方法的第二个参数。这个时候就会通过可执行文件执行命令。</li>
+<li><code>Commander</code> 会自动使用 <code>program-subCommand</code>（上例中是 <code>comdCli-clone</code> ） 的名字搜索入口脚本文件目录下的可执行文件来执行子命令。</li>
+<li>不需要 <code>description</code> 和 <code>action</code>。<code>usage</code> 和 <code>alise</code>同上。</li>
+</ul>
+<h1 id="addCommand-使用示例"><a href="#addCommand-使用示例" class="headerlink" title="addCommand() 使用示例"></a><code>addCommand()</code> 使用示例</h1><p><code>addCommand()</code> 只是 <code>5.0.0</code> 版本增加的一个用于增加一个已经初始化好的子命令到 <code>program</code> 的方法：</p>
+<pre><code class="language-js">const Command  = require(&#39;commander&#39;);
+const program = new Command();
+program
+  .command(&#39;tea&#39;)
+  .action(() =&gt; {
+    console.log(&#39;brew tea&#39;);
+  });
+function makeHeatCommand() {
+  const heat = new Command();
+  heat
+    .command(&#39;jug&#39;)
+    .action(() =&gt; {
+      console.log(&#39;heat jug&#39;);
+    });
+  return heat;
+}
+// 看这里
+program.addCommand(makeHeatCommand());
+program.parse(process.argv);
+</code></pre>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/tj/commander.js/" target="_blank" rel="noopener">gitHub-commander</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/09/%E6%8B%A5%E6%8A%B1React-Hooks%EF%BC%88%E4%BA%94%EF%BC%89-useReducer/" rel="next" title="拥抱React-Hooks (五) - useReducer">
+                <i class="fa fa-chevron-left"></i> 拥抱React-Hooks (五) - useReducer
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/24/React-Hooks-%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="prev" title="React Hooks 原理与应用">
+                React Hooks 原理与应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Commander安装"><span class="nav-number">1.</span> <span class="nav-text">Commander安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#版本"><span class="nav-number">3.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#options"><span class="nav-number">4.</span> <span class="nav-text">options</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本API："><span class="nav-number">4.1.</span> <span class="nav-text">基本API：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非-boolean-类型参数"><span class="nav-number">4.2.</span> <span class="nav-text">非 boolean 类型参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义默认值"><span class="nav-number">4.3.</span> <span class="nav-text">自定义默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变更默认值"><span class="nav-number">4.4.</span> <span class="nav-text">变更默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义option处理"><span class="nav-number">4.5.</span> <span class="nav-text">自定义option处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必需参数"><span class="nav-number">4.6.</span> <span class="nav-text">必需参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数传递"><span class="nav-number">4.7.</span> <span class="nav-text">参数传递</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Commands"><span class="nav-number">5.</span> <span class="nav-text">Commands</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#command-action-handler"><span class="nav-number">5.1.</span> <span class="nav-text">command()+ action handler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#command-可执行文件"><span class="nav-number">5.2.</span> <span class="nav-text">command()+ 可执行文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#addCommand-使用示例"><span class="nav-number">6.</span> <span class="nav-text">addCommand() 使用示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是防抖 防抖 (debounce)，顾名思义就是防止抖动。一些高频触发的事件（ 如：resize、scroll、mousemove…… ）会导致事件处理函数高频执行。如果事件处理函数还操作DOM，那就意味着会引发高频的渲染重绘或回流。极端情况下，就会看到明显的页面&#x2F;元素抖动。 所以，防抖就是防止高频的 DOM 操作导致页面频繁的渲染。 现代浏览器内核针对这种情况，内部进行了优化：会设置一个时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS之防抖节流">
+<meta property="og:url" content="http://www.mala520.life/2021/03/30/JS%E4%B9%8B%E9%98%B2%E6%8A%96%E8%8A%82%E6%B5%81/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="什么是防抖 防抖 (debounce)，顾名思义就是防止抖动。一些高频触发的事件（ 如：resize、scroll、mousemove…… ）会导致事件处理函数高频执行。如果事件处理函数还操作DOM，那就意味着会引发高频的渲染重绘或回流。极端情况下，就会看到明显的页面&#x2F;元素抖动。 所以，防抖就是防止高频的 DOM 操作导致页面频繁的渲染。 现代浏览器内核针对这种情况，内部进行了优化：会设置一个时间">
+<meta property="article:published_time" content="2021-03-30T10:11:45.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.955Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/03/30/JS之防抖节流/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>JS之防抖节流 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/03/30/JS%E4%B9%8B%E9%98%B2%E6%8A%96%E8%8A%82%E6%B5%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS之防抖节流</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-30T18:11:45+08:00">
+                2021-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是防抖"><a href="#什么是防抖" class="headerlink" title="什么是防抖"></a>什么是防抖</h1><hr>
+<p><strong>防抖</strong> (<code>debounce</code>)，顾名思义就是防止抖动。一些高频触发的事件（ 如：<code>resize</code>、<code>scroll</code>、<code>mousemove</code>…… ）会导致事件处理函数高频执行。如果事件处理函数还操作<code>DOM</code>，那就意味着会引发高频的渲染重绘或回流。极端情况下，就会看到明显的页面/元素抖动。</p>
+<p>所以，防抖就是防止高频的 <code>DOM</code> 操作导致页面频繁的渲染。</p>
+<p>现代浏览器内核针对这种情况，内部进行了优化：会设置一个时间阀值，把这个时间内的 <code>DOM</code> 改变合并渲染。即便如此，我们在实际的项目中也要做好防抖，尽量为内核减负。</p>
+<h1 id="什么是节流"><a href="#什么是节流" class="headerlink" title="什么是节流"></a>什么是节流</h1><hr>
+<p><strong>节流</strong> (<code>throttle</code>)，顾名思义就是节约流量（流量是网络世界宝贵的资源，<code>web</code> 又是流量的主要入口之一）。广义上也可以衍生为节约资源，这里的资源主要包括我们宝贵的浏览器内核资源。</p>
+<p>所以，节流就是要避免不必要的网络请求，避免不必要的 <code>js</code>执行和页面渲染。</p>
+<p>明显，广义上的节流是包含防抖的，只是，防抖和节流在具体实现上是有差异的。</p>
+<h1 id="防抖和节流的区别"><a href="#防抖和节流的区别" class="headerlink" title="防抖和节流的区别"></a>防抖和节流的区别</h1><hr>
+<p>防抖和节流都需要设置一个<code>时长</code>。</p>
+<ul>
+<li><p>防抖：延时执行，并且<code>时长</code>内没有重复触发才会执行，否则重新计时。所以，最后（最新）一次事件必定响应。典型场景有：</p>
+<ul>
+<li>页面缩放（ <code>resize</code> ）: 页面缩放的时候，动态调整某些元素的大小。典型的防抖场景。</li>
+<li>搜索框联想（ <code>change</code> ）: 连续输入，触发多次搜索。一方面浪费资源，另一方面，如果先联想的结果后返回，那么显示就不是最新匹配的。</li>
+<li>文本编辑器（ <code>change</code> ）: 实时保存的文本编辑器。问题同上。</li>
+</ul>
+</li>
+<li><p>节流：高频事件在 <code>时长</code> 内处理一次即可，一般是这段时间的第一次。典型场景有：</p>
+<ul>
+<li>元素拖拽/缩放（ <code>mousedown/mousemove</code> ）: 需要实时显示元素的位置/大小，但是频率也无需和事件触发频率一致。</li>
+<li>提交按钮（ <code>click</code> ）: 会发起网络请求的点击按钮。遇到暴力点击，不光有重复提交的问题，还会导致流量和浏览器内部资源大大浪费。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>根据实际场景的需求来选择 防抖 还是 节流 。比如 <strong>元素拖拽/缩放</strong>，如果需求不要求过程只追求结果，就应该选择 防抖。</p>
+</blockquote>
+<p>明显，我们可以通过<strong>时间戳</strong>，<strong>定时器</strong>来控制。下面，我们来看看防抖节流如何具体实现。</p>
+<h1 id="防抖函数"><a href="#防抖函数" class="headerlink" title="防抖函数"></a>防抖函数</h1><hr>
+<p>防抖的关键在于<strong>延迟执行</strong>，所以推荐使用<strong>定时器</strong>。</p>
+<ul>
+<li><strong>基础版</strong>: 延迟 <code>ms</code> 毫秒执行，在这期间的其他重复请求不执行。</li>
+</ul>
+<pre><code class="language-js">function debounce(func, ms) {
+  let timeout;
+  return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout)
+      timeout = setTimeout(function(){
+        func.apply(context, args)
+      }, ms);
+  }
+}
+window.onmousemove = debouce(()=&gt; console.log(1), 1000);</code></pre>
+<ul>
+<li><strong>进阶版</strong>：+ 首次请求立即执行。</li>
+</ul>
+<pre><code class="language-js">function debounce(func, ms, immediate) {
+  let timeout;
+  return function () {
+    const context = this;
+    const args = arguments;
+    if (timeout) clearTimeout(timeout);
+    if (immediate) {
+      const callNow = !timeout;
+      timeout = setTimeout(function () {
+        timeout = null;
+      }, ms)
+      if (callNow) func.apply(context, args)
+    } else {
+      timeout = setTimeout(function () {
+        func.apply(context, args)
+      }, ms);
+    }
+  }
+}</code></pre>
+<h1 id="节流函数"><a href="#节流函数" class="headerlink" title="节流函数"></a>节流函数</h1><hr>
+<p>节流的关键在于控制一段时间内只执行一次，所以时间戳和定时器都可以。区别是时间戳版触发是在时间段内开始的时候，而定时器版触发是在时间段内结束的时候。</p>
+<ul>
+<li><strong>定时器版</strong>：每<code>ms</code> 毫秒只执行一次。</li>
+</ul>
+<pre><code class="language-js">
+function throttle(func, wait) {
+  let timeout;
+  return function () {
+    const context = this;
+    const args = arguments;
+    if (!timeout) {
+      timeout = setTimeout(function () {
+        timeout = null;
+        func.apply(context, args)
+      }, wait)
+    }
+
+  }
+}
+</code></pre>
+<ul>
+<li><strong>时间戳版</strong>：每<code>ms</code> 毫秒只执行一次。</li>
+</ul>
+<pre><code class="language-js">
+function throttle(func, wait) {
+    var previous = 0;
+    return function () {
+      var now = Date.now();
+      var context = this;
+      var args = arguments;
+      if (now - previous &gt; wait) {
+        func.apply(context, args);
+        previous = now;
+      }
+    }
+}
+</code></pre>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
+<p><a href="https://www.jianshu.com/p/566c66aafa22" target="_blank" rel="noopener">节流（throttle）与防抖（debounce）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/19/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/" rel="next" title="浏览器渲染原理">
+                <i class="fa fa-chevron-left"></i> 浏览器渲染原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/04/07/HeadlessCMS%E5%92%8CJamstack/" rel="prev" title="Headless CMS & JAMStack">
+                Headless CMS & JAMStack <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是防抖"><span class="nav-number">1.</span> <span class="nav-text">什么是防抖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是节流"><span class="nav-number">2.</span> <span class="nav-text">什么是节流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#防抖和节流的区别"><span class="nav-number">3.</span> <span class="nav-text">防抖和节流的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#防抖函数"><span class="nav-number">4.</span> <span class="nav-text">防抖函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#节流函数"><span class="nav-number">5.</span> <span class="nav-text">节流函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="进程  我们知道，应用程序能够运行，是需要占用计算机资源的。  为了稳定的并行多个应用程序，计算机必须得做好资源的合理分配和管理，这是操作系统的基本职责。  进程 便是操作系统进行 资源分配 的 基本单位，是 应用程序 的载体。   一个应用程序，又可以是 多进程 设计， 比如 现代浏览器。   现代浏览器是多进程的 在应用程序中，为了满足功能的需要，主进程会创新新的辅助进程来处理其他任务。这些辅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器渲染原理">
+<meta property="og:url" content="http://www.mala520.life/2021/03/19/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="进程  我们知道，应用程序能够运行，是需要占用计算机资源的。  为了稳定的并行多个应用程序，计算机必须得做好资源的合理分配和管理，这是操作系统的基本职责。  进程 便是操作系统进行 资源分配 的 基本单位，是 应用程序 的载体。   一个应用程序，又可以是 多进程 设计， 比如 现代浏览器。   现代浏览器是多进程的 在应用程序中，为了满足功能的需要，主进程会创新新的辅助进程来处理其他任务。这些辅">
+<meta property="article:published_time" content="2021-03-19T09:24:34.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.976Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/03/19/浏览器渲染原理/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>浏览器渲染原理 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/03/19/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浏览器渲染原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-19T17:24:34+08:00">
+                2021-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h1><hr>
+<ul>
+<li><p>我们知道，<code>应用程序</code>能够运行，是需要占用<code>计算机资源</code>的。</p>
+</li>
+<li><p>为了稳定的<code>并行</code>多个应用程序，计算机必须得做好资源的合理分配和管理，这是<code>操作系统</code>的基本职责。</p>
+</li>
+<li><p><code>进程</code> 便是操作系统进行 <code>资源分配</code> 的 <code>基本单位</code>，是 应用程序 的载体。 </p>
+</li>
+<li><p>一个应用程序，又可以是 <code>多进程</code> 设计， 比如 <code>现代浏览器</code>。</p>
+</li>
+</ul>
+<h1 id="现代浏览器是多进程的"><a href="#现代浏览器是多进程的" class="headerlink" title="现代浏览器是多进程的"></a>现代浏览器是多进程的</h1><hr>
+<p>在应用程序中，为了满足功能的需要，主进程会创新新的辅助进程来处理其他任务。这些辅助进程拥有全新的独立的内存空间。如果一个应用程序的这些进程需要通信，可以通过<code>IPC (Inter process Communication )</code>机制来进行。</p>
+<p>我们都知道，<code>现代浏览器</code> 都支持多 <code>tab</code> ，一个 <code>tab</code> 对应一个 网页，其实也对应一个网页进程。进程之间互相独立的这种<strong>互不影响性</strong> 就保证了一个网页的奔溃，不会影响其他网页。当然，如果主进程奔溃，就会影响所有网页了。</p>
+<p>不同的浏览器使用不同的架构，下面主要以<code>Chrome</code>为例，主要有 4 个进程：</p>
+<p><strong>浏览器主进程(<code>Browser Process</code>)</strong>： 负责协调、主控，有且只有一个。</p>
+<ul>
+<li>负责 浏览器界面与用户交互。如前进，后退等;</li>
+<li>负责各个<code>tab</code>页面的管理，创建和销毁;</li>
+<li>网络资源下载，文件访问等。</li>
+</ul>
+<p><strong>渲染进程(<code>Render Process</code>)</strong>：也称 <strong>渲染引擎</strong>，也是我们常说的 <strong>浏览器内核</strong>。</p>
+<ul>
+<li>负责 页面渲染，脚本执行，事件处理等</li>
+<li>它是 <code>多线程</code>的。</li>
+</ul>
+<p><strong>插件进程(<code>Plugin Process</code>)</strong>：负责控制网页使用到的插件。</p>
+<ul>
+<li>每种插件对应一个进程，仅当使用该插件时才创建。</li>
+</ul>
+<p><strong>GPU进程(<code>GPU process</code>)</strong>：负责所有显示任务。</p>
+<ul>
+<li>最多一个，用于 <code>3D</code> 绘制和硬件加速。</li>
+</ul>
+<h1 id="多进程架构的好处"><a href="#多进程架构的好处" class="headerlink" title="多进程架构的好处"></a>多进程架构的好处</h1><hr>
+<p>更高的容错性</p>
+<ul>
+<li>现代 <code>Web</code>(<code>Html</code> <code>Js</code> <code>Css</code>) 的复杂性已经越来越高，代码出现 <code>Bug</code> 可能直接导致 渲染引擎 奔溃。</li>
+<li>多个 <code>tab</code> 页面会开多个 渲染进程，一个页面的崩溃不会影响其他页面的正常运行。</li>
+</ul>
+<p>更高的安全性和沙盒性(<code>sanboxing</code>)</p>
+<ul>
+<li>网络上一直以来，都充斥着各种恶意代码攻击，甚至会利用一些漏洞安装恶意软件和插件。</li>
+<li>浏览器多进程的设计，通过对不同进程设置不同的权限，创造 沙盒式 运行环境，使其更安全可靠。</li>
+</ul>
+<p>更高的相应速度</p>
+<ul>
+<li>进程是操作系统进行资源分配的基本单位。</li>
+<li>单进程设计就意味着，进程中的各个任务会相互竞争，抢夺<code>CPU</code>资源。而多进程架构正好改善了这一点，提升了响应速度。</li>
+</ul>
+<p>多进程虽然有诸多好处，但是缺点也很明显，那就是 <strong>费内存</strong>。</p>
+<p>为了节约内存，<code>Chorme</code>浏览器设计和提供了四种 <strong>进程模式</strong>（<code>Process Models</code>）</p>
+<ul>
+<li><code>Process-per-site-instance</code> : 默认；同一个<code>site-instance</code>使用一个进程。</li>
+<li><code>Process-per-site</code>: 同一个 <code>site</code> 使用一个进程。</li>
+<li><code>Process-per-tab</code>: 每个<code>tab</code>使用一个进程。</li>
+<li><code>Single process</code>: 所有<code>tab</code>公用一个进程。</li>
+</ul>
+<p>那么，<code>site</code> 和 <code>site-instance</code> 的区别是什么呢？</p>
+<ul>
+<li><code>site</code>: 协议和主域名一致则为 同<code>site</code> (和 <strong>同源策略</strong> 不同，不需要 <strong>子域名</strong> 和 <strong>端口号</strong> 一致)。</li>
+<li><code>site-instance</code>: connected pages from the same site。包括 同 <code>site</code> 页面，还包括由这些页面打开的新页面。即通过<code>&lt;a target=&#39;_blank&#39;&gt;&lt;/a&gt;</code> 和 <code>window.open</code> 打开的页面。</li>
+</ul>
+<p><code>Chorme</code>浏览器默认选择<code>Process-per-site-instance</code>模式，兼容了性能和易用性，是一种中庸的选择之道。</p>
+<h1 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h1><hr>
+<p>前面提到，渲染进程又是 多线程 设计，那 线程 又是什么由来呢？ </p>
+<ul>
+<li><p>应用程序越来越多，功能迭代使得应用程序对 资源的消耗 也越来越大。</p>
+</li>
+<li><p>为了提升进程的效率，避免计算机资源的浪费，一个进程又可以有多个 <code>线程</code>。 </p>
+</li>
+<li><p><code>线程</code> 是CPU进行任务调度的基本单位。可以理解为进程的一个控制单元。</p>
+</li>
+<li><p>一个进程至少有一个线程。所有线程可共享进程所拥有的全部资源。</p>
+</li>
+</ul>
+<h1 id="浏览器内核是多线程的"><a href="#浏览器内核是多线程的" class="headerlink" title="浏览器内核是多线程的"></a>浏览器内核是多线程的</h1><hr>
+<p><code>浏览器内核</code> 主要有以下几个 线程：</p>
+<p><code>GUI线程</code></p>
+<ul>
+<li><code>DOM</code>解析， <code>CSS</code>解析，生成 <code>渲染树</code>。</li>
+<li>当<code>RenderObject</code>树需要 <code>更新样式</code> 属性时，即发生<code>重绘（Repaint）</code>。</li>
+<li>当<code>RenderObject</code>树中元素 <code>尺寸</code>，<code>布局</code>，<code>显示隐藏</code>等发生变化，即发生<code>回流（reflow）</code>。</li>
+<li>在发生 <code>重绘</code> 和 <code>回流</code>时，会形成 <code>GUI更新队列</code>。</li>
+<li><code>GUI线程</code>和<code>JS引擎线程</code>互斥。当<code>JS引擎</code>执行时，<code>GUI线程</code>会被<code>挂起</code>。<code>GUI更新队列</code> 只能等到 <code>JS引擎</code> 空闲时被执行。</li>
+</ul>
+<p><code>JS引擎线程</code>（比如 <code>V8</code>）</p>
+<ul>
+<li>也称<code>JS内核</code>，负责解析<code>Javascript</code>脚本，运行代码。</li>
+<li><code>GUI渲染线程</code>与<code>JS引擎线程</code>是<code>互斥</code>的。所以如果<code>JS</code>执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞。</li>
+</ul>
+<p><code>事件触发线程</code></p>
+<ul>
+<li>用来控制事件循环（<code>Event Loop</code>）。</li>
+<li>配合<code>JS引擎</code>处理 <code>异步代码</code>。<code>JS</code> 异步代码的 <code>回调函数</code> 会形成一个 <code>任务队列</code> ，等待 <code>JS引擎</code> 空闲时被调用。</li>
+</ul>
+<p><code>定时触发器线程</code></p>
+<ul>
+<li><code>setInterval</code>与<code>setTimeout</code>所在线程（因为<code>JS引擎</code>是 <code>单线程</code> 的, 如果处于 <code>阻塞线程</code> 状态就会影响记计时的准确）。</li>
+<li><code>定时器事件</code> 会在计时完毕后，添加到 <code>事件队列</code> 中，等待 <code>JS引擎</code> 空闲后执行。</li>
+</ul>
+<p><code>异步http请求线程</code></p>
+<ul>
+<li>在<code>XMLHttpRequest</code> 在 <code>连接</code> 后是通过浏览器新开一个 <code>异步http请求线程</code> 来请求。</li>
+<li>将检测到状态变更时，如果设置有回调函数，异步线程就产生 <code>状态变更事件</code>，将这个回调再放入<code>事件队列</code>中。等待 <code>JS引擎</code> 空闲后执行。</li>
+</ul>
+<h1 id="浏览器渲染流程"><a href="#浏览器渲染流程" class="headerlink" title="浏览器渲染流程"></a>浏览器渲染流程</h1><hr>
+<h2 id="主要任务"><a href="#主要任务" class="headerlink" title="主要任务"></a>主要任务</h2><p>浏览器渲染流程的主要任务如下（不一定按顺序）：</p>
+<p><code>html</code>文档解析</p>
+<ul>
+<li>遇到<code>JS</code>脚本，会加载并执行。</li>
+<li>遇到<code>CSS</code>代码，同步进行解析。</li>
+<li>过程中可能会被<code>CSS</code>和<code>JS</code>的加载而执行阻塞</li>
+<li>解析完成，生成<code>Dom</code>树。</li>
+<li>在控制台<code>console</code>里面输入<code>document</code>可查看<code>Dom</code>树.</li>
+</ul>
+<p><code>CSS</code>解析</p>
+<ul>
+<li><p><code>html</code>解析过程中，会对遇到的<code>CSS</code>同步进行解析：</p>
+<ul>
+<li><code>CSS</code>包括： 标签自带样式；通过<code>link/@import</code>引用的样式文件；<code>style</code>标签内的样式；元素内嵌的样式。</li>
+<li>转换样式表中的属性值，使其标准化，比如<code>em</code>转<code>px</code>，<code>bold</code>转换成一个具体的数值，<code>red</code>转换城<code>rgb(255,0,0)</code>等。</li>
+<li>计算每个<code>DOM</code>的具体样式。</li>
+<li><code>CSS</code>继承。</li>
+</ul>
+</li>
+<li><p>不会阻塞<code>html</code>解析流程。</p>
+</li>
+<li><p>解析完成，生成 <code>CSSOM（CSS Object Model）</code>。</p>
+</li>
+<li><p>在控制台<code>console</code>里面输入<code>document.styleSheets</code>可查看 <code>CSSOM</code>。</p>
+</li>
+</ul>
+<p><code>JS</code>脚本执行</p>
+<ul>
+<li><code>html</code>解析过程中，会对遇到的<code>JS</code>脚本进行加载并执行。</li>
+<li><code>CSS</code>解析与<code>JS</code>脚本的执行互斥（<code>JS</code>可能会等待<code>CSSOM</code>生成以后执行）。</li>
+<li><code>Webkit</code>内核中进行了<code>JS</code>执行优化，只有在<code>JS</code>访问<code>CSS</code>时才会发生互斥。</li>
+</ul>
+<p><code>Dom树</code> 和 <code>CSSOM</code> 结合生成 渲染树（<code>Rendering Tree</code>）</p>
+<ul>
+<li>和<code>Dom树</code>节点不是完全对应的。</li>
+<li>比如<code>head</code>标签下的所有内容，<code>display:one</code> 的元素就不会被添加到渲染树中。</li>
+<li><code>visibility: hidden</code>的元素在渲染树中。</li>
+<li>渲染树是一系列将被渲染的对象。</li>
+</ul>
+<p>布局（<code>layout</code>）: </p>
+<ul>
+<li><p>计算渲染树各节点元素的尺寸、位置等。</p>
+</li>
+<li><p>这里的计算实际上是“三维”的计算，分层布局（这里涉及<code>复合图层</code>和<code>硬件加速</code>的概念）。</p>
+</li>
+<li><p>布局阶段的输出就是我们常说的盒子模型，它会精确地捕获每个元素在屏幕内的确切位置与大小。</p>
+</li>
+<li><p>打开<code>Chrome</code>控制台，输入<code>command+shift+p</code>，选择 <code>show Rendering</code>， 选择<code>Layer borders</code>中看到，黄色的就是复合图层。</p>
+</li>
+</ul>
+<p>绘制（<code>paint</code>）：绘制页面像素信息。</p>
+<ul>
+<li>浏览器会遍历渲染树，调用渲染器的<code>paint()</code>方法在屏幕上显示其内容。</li>
+<li>渲染树的绘制工作是浏览器通过将各层的信息发送给<code>GPU</code>，<code>GPU</code>会进行合成（<code>composite</code>），显示在屏幕上。</li>
+<li>打开<code>chrome</code>控制台，输入<code>command+shift+p</code>，选择<code>show Layers</code>，可以查看图层。</li>
+</ul>
+<h2 id="回流-和-重绘"><a href="#回流-和-重绘" class="headerlink" title="回流 和 重绘"></a>回流 和 重绘</h2><p><code>回流(Reflow)</code>: 基于渲染树的页面布局，是一种流式布局。当页面元素修改，引起布局的变化，浏览器就会从<code>html</code> 这个 <code>root</code> 根结点 自上而下遍历，进行重新计算渲染。引发布局变化的操作主要有：</p>
+<ul>
+<li>页面第一次渲染（初始化）</li>
+<li><code>DOM</code>树变化（如：增删节点）</li>
+<li><code>Render</code>树变化（如：显示隐藏，位置，大小等修改）</li>
+<li>浏览器窗口<code>resize</code></li>
+</ul>
+<p><code>重绘(Repaint)</code>: 页面元素改变的时候，浏览器会对涉及内容进行重画。</p>
+<ul>
+<li>回流必定引起重绘。</li>
+<li>仅元素样式改变，不影响布局的情况下，重绘可单独触发。</li>
+</ul>
+<h2 id="相关事件"><a href="#相关事件" class="headerlink" title="相关事件"></a>相关事件</h2><p><code>domContentLoaded</code>：当<code>html</code>解析完成，生成<code>Dom树</code>后触发。</p>
+<ul>
+<li>此时 <code>Dom</code> 元素可以被访问。</li>
+<li>此时 <code>document.readystate</code> 从 <code>loading</code> 变成 <code>interactive</code></li>
+</ul>
+<p><code>onload</code>事件触发: 页面资源全部已加载完成后触发。</p>
+<ul>
+<li>此时 页面上所有的<code>DOM</code>，样式表，脚本，图片都已经加载完成。</li>
+<li>此时 <code>document.readystate</code> 从 <code>interactive</code> 变成 <code>completed</code></li>
+</ul>
+<h2 id="异步脚本-和-延迟脚本"><a href="#异步脚本-和-延迟脚本" class="headerlink" title="异步脚本 和 延迟脚本"></a>异步脚本 和 延迟脚本</h2><p>异步脚本: 带<code>async</code>的脚本</p>
+<ul>
+<li><code>HTML</code> 还没有被解析完的时候，<code>async</code>脚本已经加载完了，那么 <code>HTML</code> 停止解析，去执行脚本，脚本执行完毕后触发<code>DOMContentLoaded</code>事件。</li>
+<li><code>HTML</code> 解析完了之后，<code>async</code>脚本才加载完，然后再执行脚本，那么在<code>HTML</code>解析完毕、<code>async</code>脚本还没加载完的时候就触发<code>DOMContentLoaded</code>事件。</li>
+<li>一定会在 <code>load</code> 事件之前执行。</li>
+</ul>
+<p>延迟脚本: 带 <code>defer</code>的脚本</p>
+<ul>
+<li>不会影响 <code>HTML</code> 文档的解析，而是等到 <code>HTML</code> 解析完成后才会执行。</li>
+<li>肯定在 <code>defer</code> 脚本执行结束后，<code>DOMContentLoaded</code> 才会被触发。</li>
+</ul>
+<h2 id="渲染阻塞"><a href="#渲染阻塞" class="headerlink" title="渲染阻塞"></a>渲染阻塞</h2><p><code>JS阻塞页面</code>: <code>JS</code>可能操作和修改<code>DOM</code>，也可能操作<code>CSSOM</code>来修改节点样式，所以浏览器在遇到<code>&lt;script&gt;</code>标签时，<code>DOM</code>构建将暂停，直至脚本完成执行(外部脚本还要先下载完成再执行)，然后继续构建<code>DOM</code>。浏览器甚至会延迟脚本执行和构建<code>DOM</code>，直至完成其<code>CSSOM</code>的下载和构建。这就是所谓的<code>JS</code>阻塞页面。</p>
+<ul>
+<li>现在可以在<code>script</code>标签上增加属性<code>defer</code>或者<code>async</code>来改善。</li>
+<li>浏览器会将脚本中改变<code>DOM</code>和<code>CSS</code>的地方分别解析出来，追加到<code>DOM</code>树和<code>CSSOM</code>规则树上。</li>
+<li>所以，<code>script</code>标签的位置很重要。</li>
+</ul>
+<p><code>CSS阻塞渲染</code>: 页面是通过渲染树绘制的，渲染树的生成又必须等所有的<code>CSS</code>（内联、内部和外部）都已经下载完，并解析完生成<code>CSSDOM</code>。这就是<code>CSS</code>阻塞渲染。</p>
+<ul>
+<li><code>CSS</code>阻塞渲染意味着，在<code>CSSOM</code>完备前，页面将一直处理白屏状态，这就是为什么样式放在<code>head</code>中，仅仅是为了更早的解析<code>CSS</code>，保证更快的首次渲染。</li>
+<li>需要注意的是，即便你没有给页面任何的样式声明，<code>CSSOM</code>依然会生成，默认生成的<code>CSSOM</code>自带浏览器默认样式。</li>
+</ul>
+<h1 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h1><hr>
+<p>关键是要深入理解浏览器渲染流程，合法的书写 <code>HTML</code> ，<code>CSS</code>，<code>JS</code>。</p>
+<p>减少<code>JS</code>阻塞</p>
+<ul>
+<li>合理运用<code>defer</code>或者<code>async</code>。</li>
+<li>在<code>domContentLoaded</code>或者<code>onload</code>事件触发时，通过动态创建<code>script</code>标签的方式引入<code>js</code>文件。</li>
+<li>合理运用缓存策略。</li>
+<li>要避免过多<code>JS</code>请求，也要避免单个<code>JS</code>过大。</li>
+</ul>
+<p>减少<code>CSS</code>阻塞</p>
+<ul>
+<li>样式尽量前置（放 <code>head</code>标签），尽早解析生成 <code>CSSDOM</code>。</li>
+<li>样式精简，嵌套层级最小化。</li>
+</ul>
+<p>减少重绘</p>
+<ul>
+<li>合法，合理书写<code>Html</code>布局是基础，避免无用的深层嵌套。</li>
+<li>减少 或者 合并 <code>Dom</code> 操作，读/写操作尽量放一起。</li>
+<li>通过<code>document</code>对象的 <code>createDocumentFragment()``cloneNode()</code>方法创建离线<code>Dom</code>，完成操作后再用于真实 <code>Dom</code>。</li>
+<li><code>window.requestAnimationFrame()</code>进行动画优化。</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><hr>
+<p><a href="https://segmentfault.com/a/1190000012925872#item-1" target="_blank" rel="noopener">从浏览器多进程到JS单线程</a><br><a href="https://cloud.tencent.com/developer/article/1663347" target="_blank" rel="noopener">setTimeout和requestAnimationFrame</a><br><a href="https://www.imooc.com/article/40004" target="_blank" rel="noopener">浏览器渲染原理与过程</a><br><a href="https://blog.csdn.net/liubangbo/article/details/86298859" target="_blank" rel="noopener">DOMContentLoaded 与 load事件</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/16/JS%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" rel="next" title="浅谈 JS Event Loop 机制">
+                <i class="fa fa-chevron-left"></i> 浅谈 JS Event Loop 机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/30/JS%E4%B9%8B%E9%98%B2%E6%8A%96%E8%8A%82%E6%B5%81/" rel="prev" title="JS之防抖节流">
+                JS之防抖节流 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程"><span class="nav-number">1.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#现代浏览器是多进程的"><span class="nav-number">2.</span> <span class="nav-text">现代浏览器是多进程的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多进程架构的好处"><span class="nav-number">3.</span> <span class="nav-text">多进程架构的好处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程"><span class="nav-number">4.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器内核是多线程的"><span class="nav-number">5.</span> <span class="nav-text">浏览器内核是多线程的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器渲染流程"><span class="nav-number">6.</span> <span class="nav-text">浏览器渲染流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要任务"><span class="nav-number">6.1.</span> <span class="nav-text">主要任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回流-和-重绘"><span class="nav-number">6.2.</span> <span class="nav-text">回流 和 重绘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关事件"><span class="nav-number">6.3.</span> <span class="nav-text">相关事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步脚本-和-延迟脚本"><span class="nav-number">6.4.</span> <span class="nav-text">异步脚本 和 延迟脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渲染阻塞"><span class="nav-number">6.5.</span> <span class="nav-text">渲染阻塞</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化建议"><span class="nav-number">7.</span> <span class="nav-text">优化建议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

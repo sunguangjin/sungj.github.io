@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概述 作者对来源于世界各地的 4500 位前端开发进行了问卷调查。根据采集到的数据进行了一系列有趣的图表统计。 报告分 11 个章节，分别邀请了相关权威的技术人士根据调查结果进行分析，并运用他们令人钦佩的专业知识和大局观进行了总结。    本想完整翻译这份报告，但是发现 github 上已经有团队在讨论翻译中。这里，我主要就报告核心内容进行一些精炼和总结，外加那些有趣的图表。  开发者（dev">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《2020前端现状调查报告》学习">
+<meta property="og:url" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="概述 作者对来源于世界各地的 4500 位前端开发进行了问卷调查。根据采集到的数据进行了一系列有趣的图表统计。 报告分 11 个章节，分别邀请了相关权威的技术人士根据调查结果进行分析，并运用他们令人钦佩的专业知识和大局观进行了总结。    本想完整翻译这份报告，但是发现 github 上已经有团队在讨论翻译中。这里，我主要就报告核心内容进行一些精炼和总结，外加那些有趣的图表。  开发者（dev">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/head.jpeg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/dev_from.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/1-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/1-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/1-3.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-3.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-4.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-5.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/2-6.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/3-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/3-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/3-3.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/3-4.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/3-5.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/4-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/4-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/5-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/5-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/6-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/6-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/7-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/7-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/8-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/8-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/9-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/9-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/10-1.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/10-2.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/10-3.jpg">
+<meta property="og:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/11-1.jpg">
+<meta property="article:published_time" content="2021-03-05T09:56:03.000Z">
+<meta property="article:modified_time" content="2021-10-25T01:58:57.913Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/head.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2021/03/05/2020前端现状调查报告/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>《2020前端现状调查报告》学习 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2021/03/05/2020%E5%89%8D%E7%AB%AF%E7%8E%B0%E7%8A%B6%E8%B0%83%E6%9F%A5%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《2020前端现状调查报告》学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-05T17:56:03+08:00">
+                2021-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="../2020前端现状调查报告/head.jpeg" width="100%" style="border: none"/>
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><hr>
+<p>作者对来源于世界各地的 <code>4500</code> 位前端开发进行了问卷调查。根据采集到的数据进行了一系列有趣的图表统计。</p>
+<p>报告分 <code>11</code> 个章节，分别邀请了相关权威的技术人士根据调查结果进行分析，并运用他们令人钦佩的专业知识和大局观进行了总结。</p>
+<img src="../2020前端现状调查报告/dev_from.jpg" width="100%"/>
+
+<blockquote>
+<p>本想完整翻译这份报告，但是发现 <a href="https://github.com/xitu/Annual-Survey/pull/5" target="_blank" rel="noopener">github</a> 上已经有团队在讨论翻译中。这里，我主要就报告核心内容进行一些精炼和总结，外加那些有趣的图表。</p>
+</blockquote>
+<h1 id="开发者（developers）"><a href="#开发者（developers）" class="headerlink" title="开发者（developers）"></a>开发者（developers）</h1><hr>
+<p>大多数参与调查的开发者都是从事前端开发 <code>3</code> 年以上的 <code>高级+</code> 前端。</p>
+<img src="../2020前端现状调查报告/1-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/1-2.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/1-3.jpg" width="100%"/>
+
+<h1 id="框架（Frameworks）"><a href="#框架（Frameworks）" class="headerlink" title="框架（Frameworks）"></a>框架（Frameworks）</h1><hr>
+<p><strong>现状</strong>：</p>
+<p><code>React</code> 绝对王者。有 <code>74.2%</code> 的调查对象在使用 <code>React</code> ，超过 <code>Angular</code> 和 <code>Vue</code> 用户的总和。</p>
+<p>大家对 <code>Angular</code> 的相对兴趣有所下降，对 <code>Vue</code> 的兴趣增长也有些停滞。更新较慢是部分原因。</p>
+<p>有趣的一点是：<code>jQuery</code> 虽然很少被提及，但它仍然是网络上部署最广泛的 <code>JavaScript</code> 库。</p>
+<p>在状态管理方面，使用 <code>React Context API</code> 和 <code>hooks</code>（<code>49.6%</code>）的人比使用 <code>Redux</code> （<code>48.2%</code>）的人更多。</p>
+<p><strong>趋势</strong>：</p>
+<p>新一代响应式框架（<code>Reactive Frameworks</code>）快速崛起, 或将成为 <code>React</code> 生态的可替代品。这和 <code>TypeScript</code> 的流行也有很大关系。</p>
+<p>大家对新一代响应式框架也产生了浓厚的兴趣，比如 <code>Svelte</code> ，它致力于在普通 <code>DOM</code> 结构之上提供响应式。</p>
+<p>另一个竞争者是 <code>Stencil.js</code>, 一个专注于网络组件（<code>web component</code>）的框架，和 <code>Svelte</code> 一样，专注于高效的编译。</p>
+<p>多数人更喜欢 <code>TypeScript</code>，<code>77.2%</code> 的受访者已经在使用 <code>TypeScript</code> 。因此，很多现有框架正在改善对 <code>TypeScript</code> 的支持，而且许多框架开始在内部使用 <code>TypeScript</code>。</p>
+<blockquote>
+<p>一点争议：目前，新一代框架可能非常适合小型应用，但在构建大型应用时需要更多的工作。的确，因为它们没有像框架那样需要支持过去几年的功能的遗留问题，所以默认的包很小。但是，它们也非常符合现代标准和语言特性。</p>
+</blockquote>
+<img src="../2020前端现状调查报告/2-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/2-2.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/2-3.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/2-4.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/2-5.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/2-6.jpg" width="100%"/>
+
+<h1 id="托管（Hosting）"><a href="#托管（Hosting）" class="headerlink" title="托管（Hosting）"></a>托管（Hosting）</h1><hr>
+<p><code>44.3%</code> 的受访者仍在将他们的应用部署到自己的 <code>Web</code> 服务器上。这提醒我们，传统DC仍有巨大的市场，公有云仍有很多发展机会。</p>
+<p>在云服务提供商中，亚马逊云计算服务 <code>AWS（Amazon Web Services）</code>最受欢迎（<code>38.7%</code>）。</p>
+<p><code>Netlify</code> 拥有很高的渗透率 (<code>23.3%</code>)，高于 <code>GCP（Google Cloud Platform）</code> 和 <code>Microsoft Azure</code>。这是其自身优质能力的体现。</p>
+<p>前端开发的未来需要 <code>Netlify</code> 和 <code>Vercel</code> 这样的平台，它们专注于为前端团队提供易于使用且功能强大的后端基础设施的抽象。自成一派，并不断成长。</p>
+<img src="../2020前端现状调查报告/3-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/3-2.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/3-3.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/3-4.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/3-5.jpg" width="100%"/>
+
+
+<h1 id="JAMstack"><a href="#JAMstack" class="headerlink" title="JAMstack"></a>JAMstack</h1><hr>
+<p>近<code>1/3</code>的受访者最近建立了一个 <code>Jamstack</code>（<code>JavaScript、API、Markup</code>）网站。另外，让我个人感到高兴的是，其中超过一半的人使用了 <code>Next.js</code> –我们在 <code>Vercel</code> 为 <code>Jamstack</code> 创建的 <code>React</code> 框架。预计在接下来的几个月里，建设 <code>Jamstack</code> 网站的前端开发者的比例会更大。</p>
+<p>对我来说，<code>Jamstack</code> 的魅力在于它让我们做得更少，完成得更多。有了 <code>Jamstack</code> ，你不需要在每次请求时渲染一个页面（<code>SSR</code>服务器端渲染），而是在请求时间之前预渲染一个页面（静态生成）。这可以被 <code>CDN</code> 上的所有边缘节点共享，以获得最佳性能、更高的可用性、更低的成本和零维护开销。</p>
+<p>此外，<code>Jamstack</code> 框架也在不断发展，超越静态，采用动态的灵活性。例如，<code>Next.js</code> 允许你在生产构建后静态生成额外的页面或重新生成现有的页面（增量静态生成）。即使你的应用程序有数百万个页面，初始构建也会立即完成，因为这些页面可以增量生成。</p>
+<p>可重用的 <code>API（Jamstack中的 &quot;A&quot;）</code>也在崛起。现在市场上有很多无头内容管理系统 <code>（Handless CMS）</code>、无头电商(<code>headless e-commerce</code>)、无头身份(<code>headless identity</code>) 等供应商。难怪框架也在随着这些趋势发展。经验之谈: <code>Next.js</code> 有预览模式功能，当你在 <code>Handless CMS</code> 上预览页面时，可以有条件地绕过静态生成。</p>
+<p>受访者正在使用各种各样的 <code>Jamstack</code> 解决方案，正在尝试不同的想法。这也推动了<code>Jamstack</code>社区的发展，使其成为一个更简单、更高性能的网络。</p>
+<blockquote>
+<p><code>Edge CDN</code> 的 <code>Anycast</code> 网络可以缓存边缘的静态内容，通过尽可能接近访问者的资源来减少延迟，从而提高用户访问速度。</p>
+</blockquote>
+<blockquote>
+<p><code>Handless CMS</code>: <code>Handless content management system</code>,是一种没有前端组件的系统，内容可以通过<code>API</code>发布到任何地放的方式展示给最终用户。</p>
+</blockquote>
+<img src="../2020前端现状调查报告/4-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/4-2.jpg" width="100%"/>
+
+<h1 id="微前端（Micro-frontends）"><a href="#微前端（Micro-frontends）" class="headerlink" title="微前端（Micro frontends）"></a>微前端（Micro frontends）</h1><hr>
+<p>已经有 <code>1/4</code> 的前端开发开始构建自己的微前端项目。</p>
+<p>网络组件（<code>Web component</code>）是很好的，入门级的 微前端 解决方案。</p>
+<p>有不少新的微前端框架，既支持后端渲染又具备前端构造（比如<code>Holocron</code>, <code>Podium</code>,<a href="https://ara-framework.github.io/website/" target="_blank" rel="noopener">Ara Framework</a>。这些框架是对微前端社区的巨大补充，但切记谨慎挑选–始终要契合你的应用环境。</p>
+<p>只有<code>20%</code>的调查者认为微前端可能会在未来三年内消失。<code>Luca Mezzalira</code>认为，微前端现在还处于早期，有很多经验教训需要学习，但他相信微前端会不断发展并达到成熟–就像微服务一样。</p>
+<p><code>TC39/Realms</code>提案已经进入<code>stage 2</code>阶段, <code>Luca Mezzalira</code>认为这将为微前端打开新的局面。</p>
+<p>微前端并不是万能的，但绝对是对其他架构（比如 <code>SSR</code>、<code>JamStack</code> 和 <code>SPA</code> ）的一个很好的补充。 只要在合适的场景应用，将事半功倍。</p>
+<blockquote>
+<p><code>Luca Mezzalira</code>: <code>DAZN</code>架构副总裁, <code>&quot;Building Micro-Frontends&quot;</code>作者。</p>
+</blockquote>
+<blockquote>
+<p><code>TC39</code> 是 <code>Ecma International</code> 标准化组织旗下的技术委员会的一员，它负责管理 <code>ECMAScript</code> 语言和标准化 <code>API</code>。</p>
+</blockquote>
+<blockquote>
+<p><code>Realms</code>提案提供了一种新的机制，用于在一个新的全局对象和一组<code>JavaScript</code>内置的上下文中执行<code>JavaScript</code>代码。</p>
+</blockquote>
+<img src="../2020前端现状调查报告/5-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/5-2.jpg" width="100%"/>
+
+<h1 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h1><hr>
+<p>搜索引擎优化（<code>Search Engine Optimization</code>）- <code>SEO</code> 对任何在线业务都至关重要。</p>
+<p>高达 <code>52%</code> 的调查者并不关心 <code>SEO</code> ，可能许多调查者开发的是受密码权限控制的应用。</p>
+<p>做好 <code>SEO</code> ，首先应该确保搜索引擎能够正确地在你的网站上渲染 <code>JavaScript</code>。不小心在 <code>robots.txt</code> 中屏蔽了一些脚本，或者使用了搜索引擎抓取工具（比如 <code>Googlebot</code> 百度蜘蛛）不支持的 <code>JavaScript</code> 功能，都会影响 <code>SEO</code>。</p>
+<p>渲染只是 <code>SEO</code> 众多方面中的一个。你必须把注意力放在使用正确的 <code>HTML</code> 标签和设计一个合理的网站结构上。就像你在服务器端渲染、客户端渲染和动态渲染之间选择一样。关键是要理解搜索引擎的工作原理。</p>
+<blockquote>
+<p><code>robots.txt</code> 是一个协议，而不是一个命令。<code>robots.txt</code> 是搜索引擎中访问网站的时候要查看的第一个文件。<code>robots.txt</code> 文件告诉蜘蛛程序在服务器上什么文件是可以被查看的。建议当您的网站包含不希望被搜索引擎收录的内容时，才需要使用 <code>robots.txt</code> 文件。如果希望搜索引擎收录网站上所有内容，请勿建立 <code>robots.txt</code> 文件。</p>
+</blockquote>
+<img src="../2020前端现状调查报告/6-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/6-2.jpg" width="100%"/>
+
+<h1 id="应用程序可访问性（Application-accessibility）"><a href="#应用程序可访问性（Application-accessibility）" class="headerlink" title="应用程序可访问性（Application accessibility）"></a>应用程序可访问性（Application accessibility）</h1><hr>
+<p>这是一个关乎用户体验的话题，对于非常接近用户的前端开发来说，是非常重要的。</p>
+<p>作为前端开发人员，我们经常是这项工作流中最后一个提升可访问性的人。要摆脱这种模式，我们需要转变思维。我们必须努力成为同行的好老师，做好规范，榜样，保证可访问性不会取决于我们开发者的时候，网站才能为每个人服务。</p>
+<p>关心无障碍的开发人员似乎大多数都熟悉《web内容无障碍指南》（<code>WCAG</code>）的基础。在未来，我们也应该尝试了解有多少人测试无障碍性。现在自动测试无障碍性的工具越来越多。</p>
+<img src="../2020前端现状调查报告/7-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/7-2.jpg" width="100%"/>
+
+<h1 id="开发团队"><a href="#开发团队" class="headerlink" title="开发团队"></a>开发团队</h1><hr>
+<p><code>92%</code> 的受访者表示他们在过去一年中曾作为开发团队的一员工作过。</p>
+<p>前端架构和部署基础设施的最新趋势已经影响了前端开发人员与团队成员协作的方式。</p>
+<p>随着新的前端架构(如 <code>Jamstack</code> )的兴起，前端开发人员可以独立于后端部署前端。他们不再需要等待完整的后端测试套件的运行，从而导致更快的迭代。</p>
+<p>现成的后端 <code>API</code> ( 如 <code>headless CMS</code>、<code>IDP</code> 等) 越来越多，可以很容易地插入到你的前端。这使得后端开发人员能够更加专注于开发业务特有的 <code>API</code>。</p>
+<p>我们开始与设计师和产品负责人更多的打交道。因为 <code>Jamstack</code> 应用程序可以快速、廉价地部署到 <code>CDN edge</code> 上，所以可以为每个分支和每个提交分配一个唯一的“预览” <code>URL</code>。我们已经在 <code>Vercel</code> 做到了这一点——现在，设计人员和产品所有者只需点击预览 <code>URL</code>，就可以立即查看前端开发人员所做的更改是否符合预期。这比分享截图和 <code>gif</code> 更有效。</p>
+<p>最后看软件测试。随着 <code>puppeteer</code> 的引入，<code>Chrome</code> 的无头 <code>web</code> 浏览器，结合无服务器计算，端到端测试变的快速和廉价。例如，您可以让运行 <code>Checkly</code> + <code>puppeteer</code> 测试案例(由QA专家编写) 这样的服务和预览 <code>URL</code> 对应起来。此外，随着 <code>Vercel</code> 和其他前端部署平台的崛起，<code>DevOps</code> 工程师可以花更少的时间来支持前端开发人员。</p>
+<blockquote>
+<p><code>IDP</code> : (<code>identity provider</code>）身份提供者，是一个系统组件，它能够向终端用户或连接到互联网的设备提供一组登录凭据，以确保实体是谁或它所说的是什么，跨越多个平台、应用程序和网络。例如，当第三方网站提示终端用户使用微信帐户登录时，微信登录就是身份提供者。</p>
+</blockquote>
+<blockquote>
+<p><code>Puppeteer</code>: 一个控制 <code>headless Chrome</code> 的 <code>Node.js API</code> 。它是一个 <code>Node.js</code> 库，通过 <code>DevTools</code> 协议提供了一个高级的 <code>API</code> 来控制 <code>headless Chrome</code>。</p>
+</blockquote>
+<blockquote>
+<p><code>Checkly</code> 是一款验证 <code>API</code> 端点正确性和浏览器点击流的监控工具。<code>Checkly</code> 可以使用 <code>Puppeteer</code> 框架进行自动化浏览器操作。</p>
+</blockquote>
+<img src="../2020前端现状调查报告/8-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/8-2.jpg" width="100%"/>
+
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><hr>
+<p>让设计师与开发者紧密合作不再是一种时尚，而是一种标准。我们已经有了非常好的工具让这种合作变得更好。</p>
+<p>软件开发公司有两种设计人员——以用户为中心的<code>UX/UI</code>设计人员和以业务为中心的产品设计人员——已经成为一种标准。</p>
+<blockquote>
+<p>随着产品设计师的加入，软件公司越来越多地关注于创建与客户业务目标相匹配的战略和产品。</p>
+</blockquote>
+<p>产品设计师的出现这意味着，作为软件公司，我们越来越多地关注客户的真实需求，致力于创建与他们的业务目标相匹配的战略和产品。</p>
+<p>为了使这种合作富有成效，我们需要更好的工具，比如 <code>Figma</code>, <code>InVision</code>, <code>Sketch</code>和<code>Zeplin</code>。<code>71.7%</code>的开发团队已经使用了这类工具。</p>
+<img src="../2020前端现状调查报告/9-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/9-2.jpg" width="100%"/>
+
+<h1 id="质量保证"><a href="#质量保证" class="headerlink" title="质量保证"></a>质量保证</h1><hr>
+<p>如今，越来越多的数字产品的功能是在客户端实现的。这使得软件工程师和QA专家必须将测试作为开发、维护和扩展<code>JavaScript</code>应用程序的工作流程的一部分。可喜的是，<code>80%</code>的前端开发者已经开始进行软件测试，而且这一数字在过去几年里还在不断增长。</p>
+<blockquote>
+<p>软件测试与现代前端开发是密不可分的。</p>
+</blockquote>
+<p>软件测试是对数字产品稳定性的必要投资，最终提高了我们整个工作流程的生产力。我们相信<code>Capybara</code>、<code>RSpec</code>、<code>Ember CLI</code>和<code>QUnit</code>等工具可以进行单元测试、集成测试和端到端测试。当然，还有更多的解决方案供你选择。</p>
+<p>在<code>.cult</code>，我们相信测试工具生态系统的持续增长将很快允许我们通过自动化覆盖产品开发工作流的更大一部分。</p>
+<img src="../2020前端现状调查报告/10-1.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/10-2.jpg" width="100%"/>
+<img src="../2020前端现状调查报告/10-3.jpg" width="100%"/>
+
+<h1 id="前端未来趋势"><a href="#前端未来趋势" class="headerlink" title="前端未来趋势"></a>前端未来趋势</h1><hr>
+<p>我们对调查结果和最近前端<code>web</code>开发的变化无不惊讶。所以预测前端的未来不是一件容易的事。</p>
+<p>然而，在前端开发社区，爱与恨之间的界限很窄。一两年前，<code>Redux</code>是配合<code>React</code>进行状态管理的普遍选择。但前端开发人员现在厌倦了<code>Redux</code> 所带来的问题，并迅速加入 <code>React hooks</code> 的行列。现在使用 <code>hooks</code> 的用户已经超过了 <code>Redux</code> ，有 <code>34%</code> 的前端开发者认为 <code>Redux</code> 将在 <code>3</code> 年后消失。</p>
+<p>同时，前端开发的世界也变得越来越复杂。同样，一两年前，像<strong>持续集成</strong>和<strong>容器化</strong>这样的解决方案更多地被认为是后端事物。前端开发人员现在意识到，他们也可以从这些解决方案中受益。现在，<code>77%</code> 的前端开发者使用 <code>CI</code> , <code>62%</code> 使用容器。它们已经成为前端开发的新标准。</p>
+<p>那么，在接下来的 <code>12</code> 个月里，前端会发生怎样的变化呢? <code>Svelte</code> 会成为3个最流行的框架之一吗? 微前端会成熟吗? 没有人能确定，但在我看来，有一件事是确定的: 我们会对一些变化的发生速度感到惊讶。让我们期待《2021年前沿状态》报告。</p>
+<img src="../2020前端现状调查报告/11-1.jpg" width="100%"/>
+
+<h1 id="原文-amp-拓展文档"><a href="#原文-amp-拓展文档" class="headerlink" title="原文&amp;拓展文档"></a>原文&amp;拓展文档</h1><hr>
+<p><a href="https://tsh.io/state-of-frontend/" target="_blank" rel="noopener">报告原文</a><br><a href="https://www.netlify.com/" target="_blank" rel="noopener">Netlity官网</a><br><a href="https://jamstack.com/" target="_blank" rel="noopener">Jamstack网</a><br>[GatsbyJs中文网] (<a href="https://www.gatsbyjs.cn/" target="_blank" rel="noopener">https://www.gatsbyjs.cn/</a>)<br><a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener">WCAG</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/08/MongoDb%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="next" title="MongoDb安装配置">
+                <i class="fa fa-chevron-left"></i> MongoDb安装配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/10/%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%9D%E8%80%83/" rel="prev" title="数据平均分组算法的一点思考">
+                数据平均分组算法的一点思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发者（developers）"><span class="nav-number">2.</span> <span class="nav-text">开发者（developers）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#框架（Frameworks）"><span class="nav-number">3.</span> <span class="nav-text">框架（Frameworks）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#托管（Hosting）"><span class="nav-number">4.</span> <span class="nav-text">托管（Hosting）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAMstack"><span class="nav-number">5.</span> <span class="nav-text">JAMstack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微前端（Micro-frontends）"><span class="nav-number">6.</span> <span class="nav-text">微前端（Micro frontends）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SEO"><span class="nav-number">7.</span> <span class="nav-text">SEO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用程序可访问性（Application-accessibility）"><span class="nav-number">8.</span> <span class="nav-text">应用程序可访问性（Application accessibility）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发团队"><span class="nav-number">9.</span> <span class="nav-text">开发团队</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计"><span class="nav-number">10.</span> <span class="nav-text">设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#质量保证"><span class="nav-number">11.</span> <span class="nav-text">质量保证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前端未来趋势"><span class="nav-number">12.</span> <span class="nav-text">前端未来趋势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原文-amp-拓展文档"><span class="nav-number">13.</span> <span class="nav-text">原文&amp;拓展文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>
