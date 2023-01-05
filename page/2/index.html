@@ -2227,7 +2227,8 @@ function reducer(state, action) {
 </code></pre>
 <p>这样改写的原因是，随着组件复杂度提升，<code>state</code> 对象会扩展其他属性，而不仅有 <code>count</code>。</p>
 <hr>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html" target="_blank" rel="noopener">Redux 入门教程（一）</a><br><a href="https://cn.redux.js.org" target="_blank" rel="noopener">Redux 中文网</a><br><a href="https://www.robinwieruch.de/javascript-reducer" target="_blank" rel="noopener">What is a Reducer in JavaScript/React/Redux?</a><br><a href="https://www.robinwieruch.de/react-usereducer-hook" target="_blank" rel="noopener">How to useReducer in React</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><hr>
+<p><a href="http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html" target="_blank" rel="noopener">Redux 入门教程（一）</a><br><a href="https://cn.redux.js.org" target="_blank" rel="noopener">Redux 中文网</a><br><a href="https://www.robinwieruch.de/javascript-reducer" target="_blank" rel="noopener">What is a Reducer in JavaScript/React/Redux?</a><br><a href="https://www.robinwieruch.de/react-usereducer-hook" target="_blank" rel="noopener">How to useReducer in React</a></p>
 
           
         
@@ -2751,14 +2752,17 @@ export default function UseMemoPage() {
 <li><p>保险起见，先编写在没有 <code>useMemo</code> 的情况下也可以执行的代码。之后再在你的代码中添加 <code>useMemo</code>，以达到优化性能的目的。</p>
 </li>
 </ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><hr>
+<ul>
 <li><code>shouldComponentUpdate</code>生命周期 和 <code>React.PurComponent</code> 用于类组件优化 <code>reRender</code>。</li>
 <li><code>React.memo</code> 和 <code>useCallback</code> 用于函数组件优化 <code>reRender</code>性能问题。适用于组件树中父组件交互频繁，而自身 <code>props</code> 较少修改而渲染消耗较大的子组件。</li>
 <li><code>useMemo</code>用于局部包含复杂计算逻辑方法优化，相对其他<code>API</code>，更灵活，更放心。</li>
 <li>以上 <code>API</code> 本身存在额外性能消耗。所以很多时候，<code>reRender</code> 问题不一定要优化。</li>
 <li>别不小心阻止了必要<code>reRender</code>的情况。</li>
 </ul>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zh-hans.reactjs.org/docs/react-api.html#reactpurecomponent" target="_blank" rel="noopener">官网-purecomponent</a><br><a href="https://juejin.im/post/5c9472085188252d6a08731a" target="_blank" rel="noopener">React 渲染优化</a><br><a href="https://www.robinwieruch.de/react-prevent-rerender-component/" target="_blank" rel="noopener">React rerender component</a></p>
+<hr>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><hr>
+<p><a href="https://zh-hans.reactjs.org/docs/react-api.html#reactpurecomponent" target="_blank" rel="noopener">官网-purecomponent</a><br><a href="https://juejin.im/post/5c9472085188252d6a08731a" target="_blank" rel="noopener">React 渲染优化</a><br><a href="https://www.robinwieruch.de/react-prevent-rerender-component/" target="_blank" rel="noopener">React rerender component</a></p>
 
           
         
@@ -3155,7 +3159,8 @@ const D = () =&gt; (
 );</code></pre>
 <p>可读性更高了，还可很方便的消费多个 <code>context</code>，这是 <code>class组件</code> 的 <code>contextType</code> 所不能的。</p>
 <hr>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zh-hans.reactjs.org/docs/context.html" target="_blank" rel="noopener">官网-Context</a><br><a href="https://www.robinwieruch.de/react-context" target="_blank" rel="noopener">React Context</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><hr>
+<p><a href="https://zh-hans.reactjs.org/docs/context.html" target="_blank" rel="noopener">官网-Context</a><br><a href="https://www.robinwieruch.de/react-context" target="_blank" rel="noopener">React Context</a></p>
 
           
         
@@ -3828,7 +3833,7 @@ function App() {
 export default App;</code></pre>
 <ul>
 <li>可变对象的改变，不会触发组件的重新渲染。所以示例增加调用了 <code>setChange({})</code> 来触发组件重新渲染，来展示可变对象的变化。</li>
-<li>点击 <code>+</code> 号，你会发现 <code>refValue</code> 会不断递增，而 <code>normalValue</code> 始终为0.</li>
+<li>点击 <code>+</code> 号，你会发现 <code>refValue</code> 会不断递增，而 <code>normalValue</code> 始终为 <code>0</code>.</li>
 <li>这是一个有趣的功能，暂时还不知道会在哪些场景会用到它。了解一下即可。</li>
 </ul>
 <h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><p>所谓的最佳实践，也就是对一些规则的总结：</p>
@@ -3839,8 +3844,8 @@ export default App;</code></pre>
 <li>函数组件中：为性能考虑，建议都使用 <code>useRef</code> 这个 <code>hook</code>。即便它无状态，无副作用。</li>
 <li>对于 <code>refs</code> 在父子组件间传递的情况，慎用但该用还得用，然后首推 <code>refs转发</code>，其次 <code>props传递</code>。</li>
 </ul>
-<hr>
-<p><strong>参考资料</strong><br><a href="https://zh-hans.reactjs.org/docs/refs-and-the-dom.html" target="_blank" rel="noopener">官网-refs</a><br><a href="https://zh-hans.reactjs.org/docs/forwarding-refs.html" target="_blank" rel="noopener">官网-refs转发</a><br><a href="https://zh-hans.reactjs.org/docs/lifting-state-up.html" target="_blank" rel="noopener">官网-状态提升</a><br><a href="https://www.robinwieruch.de/react-function-component" target="_blank" rel="noopener">React Function Components</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><hr>
+<p><a href="https://zh-hans.reactjs.org/docs/refs-and-the-dom.html" target="_blank" rel="noopener">官网-refs</a><br><a href="https://zh-hans.reactjs.org/docs/forwarding-refs.html" target="_blank" rel="noopener">官网-refs转发</a><br><a href="https://zh-hans.reactjs.org/docs/lifting-state-up.html" target="_blank" rel="noopener">官网-状态提升</a><br><a href="https://www.robinwieruch.de/react-function-component" target="_blank" rel="noopener">React Function Components</a></p>
 
           
         
@@ -6370,7 +6375,8 @@ $ Git stash  // 备份暂存当前分支修改
 $ Git log
 $ Git rebase // 修改commit信息，对多个 commit 进行合并处理等
 $ Git revert // 替换某次提交
-$ Git reset // 撤销 某次操作</code></pre>
+$ Git reset // 撤销 某次操作
+$ Git rm &lt;file&gt;  // ignore已经add的文件  </code></pre>
 <h1 id="Npm"><a href="#Npm" class="headerlink" title="Npm"></a>Npm</h1><pre><code class="language-bash">$ npm init
 $ npm install &lt;package&gt;
 $ npm config list
@@ -6385,7 +6391,8 @@ $ npm publish
 $ npm owner ls &lt;projectName&gt;  // 已经在项目目录下 可省略projectName 下面一样
 $ npm owner add &lt;userName&gt; demo
 $ npm owner rm &lt;userName&gt; demo
-$ npm version patch | minor | major 更改版本号</code></pre>
+$ npm version patch | minor | major 更改版本号
+$ npm view &lt;package&gt; version 查看包所有版本</code></pre>
 <h1 id="Yarn"><a href="#Yarn" class="headerlink" title="Yarn"></a>Yarn</h1><pre><code class="language-bash">$ Yarn &lt; install &gt;
 $ Yarn add
 $ Yarn global add
@@ -6398,6 +6405,14 @@ $ Yarn cache clean
 $ yarn cache list —pattern vue
 $ yarn login
 $ yarn publish</code></pre>
+<h1 id="tree"><a href="#tree" class="headerlink" title="tree"></a>tree</h1><pre><code class="language-bash">$ brew install tree 安装tree
+
+$ tree --help
+$ $ tree -a        # 显示所有
+$ tree -d        # 只显示文件夹
+$ tree -L n    # 按层级显示项目数，n表示层级
+$ tree -I file    # 用于过滤不想要显示的文档或文件夹
+$ tree &gt; xxx.md     # 将目录树输出到 xxx.md 这个文档</code></pre>
 
           
         
@@ -7641,7 +7656,7 @@ function App(props) {
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
