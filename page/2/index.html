@@ -240,6 +240,841 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/08/21/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95%E7%BB%83%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/21/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95%E7%BB%83%E4%B9%A0/" itemprop="url">一些编程/算法题练习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-21T17:19:15+08:00">
+                2020-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="温馨提示"><a href="#温馨提示" class="headerlink" title="温馨提示"></a>温馨提示</h1><p><strong>以下纯属自我练习，可能不是最优解，甚至可能存在一些问题</strong></p>
+<h1 id="写一个-mySetInterVal-fn-a-b-每次间隔-a-a-b-a-2b-的时间，然后写一个-myClear，停止上面的-mySetInterVal"><a href="#写一个-mySetInterVal-fn-a-b-每次间隔-a-a-b-a-2b-的时间，然后写一个-myClear，停止上面的-mySetInterVal" class="headerlink" title="写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal"></a>写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal</h1><pre><code class="language-js">function mySetInterVal(fn, a, b) {
+  let index = 0;
+  let timmer;
+  const loop = () =&gt; {
+    timmer = setTimeout( ()=&gt; {
+      fn();
+      index++;
+      loop();
+    }, a + index*b );
+  };
+  loop();
+  return () =&gt; {
+    clearTimeout(timmer);
+  }
+}
+let testMyInt = mySetInterVal( () =&gt; { console.log(&#39;acc&#39;)}, 1000, 2000);</code></pre>
+<h1 id="斐波那契额数列"><a href="#斐波那契额数列" class="headerlink" title="斐波那契额数列"></a>斐波那契额数列</h1><pre><code class="language-js">// 斐波那契额数列的公式表示
+F(0) = 0;
+F(1) = 1;
+F(n) = F(n - 1) + F(n - 2);
+
+// 递归实现
+function fib(n) {
+  if(n &lt; 0) throw new Error(&#39;输入的数字不能小于0&#39;);
+  if (n &lt; 2) {
+    return n;
+  }
+  return fib(n - 1) + fib(n - 2);
+}</code></pre>
+<h1 id="字符串出现的不重复最长长度"><a href="#字符串出现的不重复最长长度" class="headerlink" title="字符串出现的不重复最长长度"></a>字符串出现的不重复最长长度</h1><pre><code class="language-js">function lengthOfLongestSubstring(str) {
+  let result = &#39;&#39;;
+  const strArr = str.split(&#39;&#39;);
+  for(let index = 0; index &lt; str.length -1 ; index ++) {
+    let temp = strArr [index];
+    for(let cursor = index + 1 ; cursor &lt; str.length; cursor++ ) {
+      if (temp.indexOf(strArr[cursor]) &gt; -1 ) {
+        break;
+      } else {
+        temp += strArr[cursor]
+      }
+    }
+    if (temp.length &gt; result.length ) {
+      result = temp;
+    }
+  }
+  return result;
+}
+lengthOfLongestSubstring(&quot;adfafwefffdasdcx&quot;);</code></pre>
+<h1 id="lodash-get-实现"><a href="#lodash-get-实现" class="headerlink" title="lodash._get 实现"></a>lodash._get 实现</h1><pre><code class="language-js">function get(source, path, defaultValue = undefined) {
+  // a[3].b -&gt; a.3.b -&gt; [a,3,b]
+ // path 中也可能是数组的路径，全部转化成 . 运算符并组成数组
+  const paths = path.replace(/\[(\d+)\]/g, &quot;.$1&quot;).split(&quot;.&quot;);
+  let result = source;
+  for (const p of paths) {
+    // 注意 null 与 undefined 取属性会报错，所以使用 Object 包装一下。
+    result = Object(result)[p];
+    if (result == undefined) {
+      return defaultValue;
+    }
+  }
+  return result;
+}
+// 测试用例
+console.log(get({ a: null }, &quot;a.b.c&quot;, 3)); // output: 3
+console.log(get({ a: undefined }, &quot;a&quot;, 3)); // output: 3
+console.log(get({ a: null }, &quot;a&quot;, 3)); // output: 3
+console.log(get({ a: [{ b: 1 }] }, &quot;a[0].b&quot;, 3)); // output: 1
+
+// 不考虑数组的情况
+
+const _get = (object, keys, val) =&gt; {
+  return keys.split(/\./).reduce(
+   (o, j)=&gt;( (o || {})[j] ), 
+   object
+  ) || val
+ }
+ console.log(get({ a: null }, &quot;a.b.c&quot;, 3)); // output: 3
+ console.log(get({ a: undefined }, &quot;a&quot;, 3)); // output: 3
+ console.log(get({ a: null }, &quot;a&quot;, 3)); // output: 3
+ console.log(get({ a: { b: 1 } }, &quot;a.b&quot;, 3)); // output: 1</code></pre>
+<h1 id="实现-add-1-2-3"><a href="#实现-add-1-2-3" class="headerlink" title="实现 add(1)(2)(3)"></a>实现 add(1)(2)(3)</h1><pre><code class="language-js"> function add (a) {
+   return (b) =&gt; {
+     return (c) =&gt; {
+       return a + b + c
+     }
+   }
+ }
+ add(1)(2)(3)
+
+ // 扩展 ：多参数
+ function addMore (...a) {
+  let arr = a
+  return (...b) =&gt; {
+    arr = arr.concat(b)
+    return (...c) =&gt; {
+      arr = arr.concat(c)
+      return arr.reduce((i,j) =&gt; i+j)
+    }
+  }
+}
+addMore(1)(2,3)(4,5)</code></pre>
+<h1 id="Promiss实现"><a href="#Promiss实现" class="headerlink" title="Promiss实现"></a>Promiss实现</h1><pre><code class="language-js">// 参数：一个含有异步操作的功能函数。
+// 状态管理： Promiss是有三个状态的
+// 三要素： resolve，reject，then，
+// 链式调用： return this
+// 串行
+const PENDING = &#39;pending&#39;
+const FULFILLED = &#39;fulfilled&#39;
+const REJECTED = &#39;rejected&#39;
+
+function MyPromise(execute){
+
+  let state = PENDING,
+      resHandlers = [],
+      rejHandlers = [],
+      value = null,
+      reason = &#39;&#39;
+
+  function resolve(val) {
+    value = val;
+    state = FULFILLED;
+    setTimeout(() =&gt; {
+      resHandlers.forEach((headler) =&gt; {
+        headler(val);
+      })
+    }, 0);
+  }
+
+  function reject( err ) {
+    reason = err || &#39;&#39;;
+    state = REJECTED;
+    setTimeout(() =&gt; {
+      rejHandlers.forEach((headler) =&gt; {
+        headler(reason);
+      })
+    }, 0);
+  }
+
+  this.then = ( onFulfilled, onRejected ) =&gt; {
+    if (state === FULFILLED) {
+      typeof onFulfilled === &#39;function&#39; &amp;&amp; onFulfilled(value)
+    } else if (this.state === REJECTED) {
+      typeof onRejected === &#39;function&#39; &amp;&amp; onRejected(reason)
+    } else {
+      typeof onFulfilled === &#39;function&#39; &amp;&amp; resHandlers.push(onFulfilled)
+      typeof onRejected === &#39;function&#39; &amp;&amp; rejHandlers.push(onRejected)
+    } 
+    return this;
+  }
+
+  execute ( resolve, reject );
+}
+
+new MyPromise((resolve) =&gt; {
+  setTimeout(()=&gt;  {
+    resolve(&#39;1&#39;)
+  },3000)
+}).then((res)=&gt; {
+  console.log(&quot;1&quot;,res);
+}).then((res)=&gt; {
+  console.log(&quot;2&quot;,res);
+})
+
+MyPromise.prototype.all = (promisess) =&gt; {
+  return new MyPromise(( resolve, reject ) =&gt; {
+    let resultErr = [],
+        count = 0;
+
+    promisess.forEach((promise,i) =&gt; {
+      promise.then((res) =&gt; {
+        resultErr[i] = res;
+        if ( ++count === promisess.length ) {
+          resolve(resultErr)
+        }
+      }, (reason) =&gt; {
+        reject(reason)
+      })
+    })
+  })
+}</code></pre>
+<h1 id="手写-发布订阅-（观察者模式）"><a href="#手写-发布订阅-（观察者模式）" class="headerlink" title="手写 发布订阅 （观察者模式）"></a>手写 发布订阅 （观察者模式）</h1><pre><code class="language-js">function MyEventEmiter () {
+  let eList = [],
+      index = 0
+
+  this.on = (eName, headler) =&gt; {
+    eName &amp;&amp; typeof headler === &#39;function&#39; &amp;&amp; eList.push({ index, eName, headler })
+    index ++;
+    return this;
+  }
+
+  this.off = (_index) =&gt; {
+    for(var i = 0; i &lt; eList.length ; i++) {
+      if (eList[i].index === _index) {
+        eList.splice(i,1);
+        break;
+      }
+    }
+  }
+
+  this.once = (eName, headler) =&gt; {
+    const _index = index;
+    const _this = this;
+    eName &amp;&amp; typeof headler === &#39;function&#39; &amp;&amp; 
+    eList.push({
+      index, 
+      eName, 
+      headler: (data) =&gt; { 
+        headler(data);
+        _this.off(_index);
+      }
+    })
+    index ++;
+    return this;
+  }
+
+  this.emit = (eName, data) =&gt; {
+    eList.forEach((event) =&gt; {
+      event.eName === eName &amp;&amp; event.headler(data);
+    })
+  }
+}
+
+var myEvent = new MyEventEmiter();
+myEvent.once(&#39;click&#39;, (data) =&gt; {
+  console.log(&#39;do click only once&#39;, data)
+}).on(&#39;click&#39;, (data) =&gt; {
+  console.log(&#39;do click&#39;, data)
+})
+setTimeout(() =&gt; { myEvent.emit(&#39;click&#39;,&#39;first&#39;); },100 )
+setTimeout(() =&gt; { myEvent.emit(&#39;click&#39;,&#39;second&#39;); },100 )
+setTimeout(() =&gt; { myEvent.emit(&#39;click&#39;,&#39;third&#39;); },100 )</code></pre>
+<h1 id="数组转树"><a href="#数组转树" class="headerlink" title="数组转树"></a>数组转树</h1><pre><code class="language-js">function arrToTree (arrDate) {
+  arrDate.forEach((item1) =&gt; {
+    item1.children = arrDate.filter((item2)=&gt;{ return item2.parentId === item1.id})
+  })
+  const result = arrDate.filter((a) =&gt; { return !a.parentId })
+  console.log(arrDate)
+  return result
+}
+// 网友++转对象，只需遍历一次。
+function convert(list) {
+  const map = list.reduce((acc, item) =&gt; {
+    acc[item.id] = item
+    return acc
+  }, {})
+  const result = []
+  for (const key in map) {
+    const item = map[key]
+    if (item.parentId === 0) {
+      result.push(item)
+    } else {
+      const parent = map[item.parentId]
+      if (parent) {
+        parent.children = parent.children || []
+        parent.children.push(item)
+      }
+    }
+  }
+  return result
+}
+
+arrToTree([
+  {id:1, parentId: null, name: &#39;a&#39;},
+  {id:2, parentId: null, name: &#39;b&#39;},
+  {id:3, parentId: 1, name: &#39;c&#39;},
+  {id:4, parentId: 2, name: &#39;d&#39;},
+  {id:5, parentId: 1, name: &#39;e&#39;},
+  {id:6, parentId: 3, name: &#39;f&#39;},
+  {id:7, parentId: 4, name: &#39;g&#39;},
+  {id:8, parentId: 7, name: &#39;h&#39;},
+]);</code></pre>
+<pre><code class="language-js">/*有10个篮子，分别装有1，2，4，8，16，32，64，128，256，512 个苹果，篮子编号为 0 ~ 9，请问如果正好想取 825 个苹果， 需要的篮子编号为多少？例如取 5 个苹果，需要 0，2 号篮子（1 + 4 个）。*/
+
+function getAppleBoxIndex(arr,num) {
+  const len = arr.length
+  let res = [];
+  let cur = 0;
+  for(let i = len -1; i &gt; -1 ; i--) {
+    if (cur + arr[i] === num) {
+      res.push(i);
+      break;
+    } else if (cur + arr[i] &lt; num) {
+      cur += arr[i];
+      res.push(i);
+    }
+  }
+  return res;
+}
+
+getAppleBoxIndex([1,2,4,8,16,32,64,128,256,512],825)
+</code></pre>
+<h1 id="Promise-串行"><a href="#Promise-串行" class="headerlink" title="Promise 串行"></a>Promise 串行</h1><pre><code class="language-js">/**
+ * 多个Promise 链式依次执行  
+ * 后面promise依赖前面返回的数据
+*/
+
+function myCompose(...args){
+  let prmLink = Promise.resolve();
+  args.forEach((prm) =&gt; {
+    prmLink = prmLink.then(prm);
+  })
+  return prmLink
+}
+
+let promA = function() { console.log(&#39;promA:acc&#39;); return Promise.resolve(1) };
+let promB = function(val) { console.log(&#39;promB:acc&#39;, val); return Promise.resolve(++val) };
+let promC = function(val) { console.log(&#39;promC:acc&#39;, val); return Promise.resolve(++val) };
+let promD = function(val) { console.log(&#39;promD:acc&#39;, val); return Promise.resolve(++val)  };
+
+myCompose(promA,promB,promC,promD).then((val) =&gt; {console.log(&#39;finally result:&#39;, val);});
+
+// promA:acc
+// promB:acc 1
+// promC:acc 2
+// promD:acc 3
+// inally result: 4
+// Promise {&lt;fulfilled&gt;: undefined}</code></pre>
+<h1 id="控制promise并行数量"><a href="#控制promise并行数量" class="headerlink" title="控制promise并行数量"></a>控制promise并行数量</h1><pre><code class="language-js">/**
+ * 控制多个 Promise 异步fetch 同时只能并行执行 limit 个任务
+*/
+function doFetchList(list, limit) {
+  const len = list.length;
+  let result = [];
+  let count = 0;
+  return new Promise((resolve, reject)=&gt;{
+    while(current &lt; limit) {
+      next();
+    }
+    function next() {
+      let current = count++;
+      if (current &gt; len) {
+        resolve(result);
+      }
+      fetch(list[current]).then((res) =&gt; {
+        result[current] = res;
+        if (current &lt; len) next();
+      },(err) =&gt; {
+        result[current] = err;
+        if (current &lt; len) next();
+      })
+    }
+  }) 
+}</code></pre>
+<h1 id="异步请求失败重试"><a href="#异步请求失败重试" class="headerlink" title="异步请求失败重试"></a>异步请求失败重试</h1><pre><code class="language-js">function promiseRetry(asyncFn, maxCount) {
+    let currentCount = maxCount;
+    return new Promise((resolve,reject) =&gt; {
+      function run () {
+        asyncFn().then((res) =&gt; {
+          resolve(res);
+        },(reason) =&gt; {
+          if (--currentCount) {
+            run();
+          } else {
+            reject(reason)
+          }
+        })
+      }
+      run();
+    })
+}
+
+//测试用例:
+function fn() {
+  return new Promise((resolve,reject) =&gt; {
+    console.log(&#39;running:&#39;, new Date());
+    setTimeout(()=&gt; {
+      reject(&#39;err&#39;)
+    },1000)
+  })
+}
+
+promiseRetry(fn,3).then(() =&gt; {
+  console.log(&#39;success&#39;);
+},(reason) =&gt; {
+  console.log(&#39;err:&#39; + reason);
+})</code></pre>
+<h1 id="使用闭包实现每隔-1-秒打印-1-500"><a href="#使用闭包实现每隔-1-秒打印-1-500" class="headerlink" title="使用闭包实现每隔 1 秒打印 1-500"></a>使用闭包实现每隔 1 秒打印 1-500</h1><pre><code class="language-js">// 不用promise
+function printNum(maxNum) {
+  let i = 1
+  while(i &lt;= maxNum) {
+    ((num) =&gt; {
+      setTimeout(() =&gt; {
+        console.log(num);
+      }, 1000 * num)
+    })(i++)
+  }
+}
+printNum(500);
+
+// v2：
+function printNum(maxNum) {
+  for(let i = 1; i &lt;= maxNum; ++i) {
+    ((i) =&gt; {
+      setTimeout(() =&gt; {
+        console.log(i);
+      }, 1000 * i)
+    })(i)
+  }
+}
+printNum(500);
+
+
+//使用promise
+
+var sleep = function (time, i) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve(i);
+    }, time);
+  })
+};
+
+
+var start = async function () {
+  for (let i = 0; i &lt; 6; i++) {
+    let result = await sleep(1000, i);
+    console.log(result);
+  }
+};
+start();
+</code></pre>
+<h1 id="返回一个字符串中出现次数最多的字符。"><a href="#返回一个字符串中出现次数最多的字符。" class="headerlink" title="返回一个字符串中出现次数最多的字符。"></a>返回一个字符串中出现次数最多的字符。</h1><pre><code class="language-js">function getMaxlen(str) {
+  if (!str) return &#39;&#39;;
+  const len = str.length;
+  if (len &lt;= 1) return str;
+  let strMap = new Map();
+  let maxSize = 0;
+  let result = [];
+  for (let i = 0; i &lt; len; i++) {
+    if (strMap.has(str[i])) {
+      strMap.set(str[i], strMap.get(str[i]) + 1);
+      maxSize = Math.max(maxSize, strMap.get(str[i]) )
+    } else {
+      strMap.set(str[i],1);
+    }
+  }
+  strMap.forEach((value,key) =&gt; {
+    if (value === maxSize) {
+      result.push(key)
+    }
+  })
+  return result;
+
+}
+
+getMaxlen(&#39;abcdccbdb58575&#39;) // [&quot;b&quot;, &quot;c&quot;, &quot;5&quot;]</code></pre>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/08/21/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/21/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" itemprop="url">前端工程化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-21T17:12:53+08:00">
+                2020-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什么是前端工程化"><a href="#什么是前端工程化" class="headerlink" title="什么是前端工程化"></a>什么是前端工程化</h1><hr>
+<p>我们都知道，当代前端工程已经从 <code>Page</code> 级别 上升到 <code>App</code> 级别了。并且<code>Web</code> 业务的 复杂化 和 多元化 还在日益提升当中。</p>
+<p>这个时候，前端便会面临以下问题：</p>
+<ul>
+<li>大体量：多功能、多页面、多状态、多系统；</li>
+<li>大规模：多人甚至多团队合作开发；</li>
+<li>高性能：<code>CDN</code>部署、缓存控制、请求合并、按需加载、同步/异步加载、移动端首屏<code>CSS</code>内嵌、<code>HTTP2</code>服务端资源推送。</li>
+</ul>
+<p>如果没有 科学 的 管理方法 和 技术手段 的约束。时间，成本会不断上升，代码质量 会不断下降。最后变得难以维护，引发 软件危机 。而 软件工程 便是为了应对 软件危机。</p>
+<p>因此，我们也必须以 <strong>软件工程</strong> 的角度来对待前端开发。来思考以下几个问题：</p>
+<ul>
+<li><p>如何高效的多人协作？</p>
+</li>
+<li><p>如何提供开发效率？</p>
+</li>
+<li><p>如何提升开发质量？</p>
+</li>
+<li><p>如何提升项目可维护性？</p>
+</li>
+<li><p>如何降低项目生产问题？</p>
+</li>
+</ul>
+<p>软件工程(<code>Software Engineering</code>)，简称<code>SE</code>。旨在将系统化的、严格约束的、可量化的方法应用于软件的开发、运行和维护，即将工程化应用于软件。</p>
+<p>那么，前端工程化便是运用 软件工程 的 技术 和 方法，让前端开发流程、技术、工具、经验等更加 规范化、标准化。主要目的是为了提高开发效率，提升代码质量，并在项目不断迭代过程中保证 良好的可维护性 和稳定性。</p>
+<h1 id="软件工程核心思想"><a href="#软件工程核心思想" class="headerlink" title="软件工程核心思想"></a>软件工程核心思想</h1><hr>
+<p>有这样一个公式：<code>SE = 过程 + 方法 + 工具</code></p>
+<ul>
+<li><p>过程: 解决 <strong>软件开发周期</strong> 中的 <strong>混乱</strong> 问题，构建高质量软件。</p>
+<ul>
+<li>软件开发周期：设计，需求分析，开发，联调，测试，部署，维护，不断迭代。</li>
+<li>形成 和 规范 开发流程。因地制宜，制定和不断修正，形成适合自己团队的开发流程规范。</li>
+</ul>
+</li>
+<li><p>方法 : 是指在整个过程中，如何构建系统的方法学。主要手段：</p>
+<ul>
+<li><p>复用：在一个新系统中，大部分的内容是成熟的，只有小部分内容是全新的；复用已有的功能模块，既可以提高开发效率，也可以改善新开发过程中带来的质量问题。</p>
+</li>
+<li><p>分治：将复杂问题分解为若干可独立解决的简单子问题，并分别独立求解，以降低复杂性；然后再将各子问题的解综合起来，形成最初复杂问题的解。</p>
+<ul>
+<li>核心问题：怎样的分解策略可以使得软件更容易理解、开发和维护？</li>
+</ul>
+</li>
+<li><p>折中：不同的需求之间往往存在矛盾与冲突，需要通过折中来作出的合理的取舍，找到使双方均满意的点。</p>
+<ul>
+<li>核心问题：如何调和矛盾(需求之间、人与人之间、供需双方之间，等等)</li>
+</ul>
+</li>
+<li><p>演化：软件系统在其生命周期中面临各种变化。要游刃有余的应对这种变化。</p>
+<ul>
+<li>核心问题：在设计软件的初期，就要充分考虑到未来可能的变化，并采用恰当的设计决策，使软件具有适应变化的能力。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>工具: 我们需要工具来辅助方法的执行，提高效率。</p>
+<ul>
+<li>通过工具，可以把一些手动的工作自动化，比如自动化测试工具，自动构建部署工具；</li>
+<li>通过工具，可以帮助把一些流程规范起来，比如 <code>Bug</code> 跟踪、源代码管理；</li>
+<li>通过工具，帮助提高编码效率，比如各种编辑器<code>IDE</code>、插件等。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>任何简单机械的重复劳动都应该让机器去完成。</p>
+</blockquote>
+<h1 id="前端工程化实践"><a href="#前端工程化实践" class="headerlink" title="前端工程化实践"></a>前端工程化实践</h1><hr>
+<p>假设一个前端工程要从 <code>0</code> 开始，我们可以把前端工程化实践分为3个阶段：</p>
+<ul>
+<li>准备阶段：技术选型；架构设计；业务分治。</li>
+<li>开发&amp;迭代阶段：如何高效，高质量的进行需求开发，功能迭代。并保证良好的可维护性。</li>
+<li>部署&amp;维护阶段：自动化打包部署；<code>CI/CD</code>；生产问题定位；性能优化；</li>
+</ul>
+<blockquote>
+<p>前端是一种技术问题较少、工程问题较多的软件开发领域。</p>
+</blockquote>
+<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><p>该阶段有三个主要任务：</p>
+<ul>
+<li><p>技术选型：业务场景，公司情况，团队情况三者相结合，选择合适的主框架（比如，<code>React</code>，<code>Vue</code>），衍生库（如 <code>NextJS</code>，<code>AntDesign</code>）以及各类管理工具选择。</p>
+<ul>
+<li>比如，该业务是定制化较强的，面向 <code>C</code> 端用户的 <code>H5</code> 页面；团队成员技术栈以 <code>React</code> 为主。那么可以选择 <code>React</code> 主框架，然后规划自己的 <code>UI</code> 库，工具库，业务组件库等。</li>
+<li>比如，该业务是 <code>BE</code> 后台管理系统，面向内部运营人员。那么可以直接选择阿里开源的 <code>AntDesign</code> 或者 <code>IceWork</code>。自带成熟物料，<code>UI</code> 组件库等，可以大大降低开发和维护成本。</li>
+<li>比如，你的BE后台存在大量的<code>Form</code>表单操作，可以使用开源的 <code>form-render</code> 配置化方案来提升开发效率。</li>
+<li>工具选择：比如代码管理工具，一般是 <code>Git</code>，要制定和严格执行 分支管理策略；包管理器，你可以直接使用 <code>npm</code>，推荐 <code>yarn</code>。开发工具，主流是<code>VScode</code>，可以选装一系列辅助插件，也可以diy插件。</li>
+</ul>
+</li>
+<li><p>架构设计：结合自身业务场景和环境，全面考虑，进行合理的架构设计，即使你使用 <code>IceWork</code> 这种自身生态全面的框架。</p>
+<ul>
+<li>比如，对架构进行分层管理，比如设置共享层（ 底层UI组件库，公共业务组件库，util工具库等 ），定制层（ 功能页面等 ）。</li>
+</ul>
+</li>
+<li><p>业务分治：业务分类，划分子系统；通过单独的 <code>Git</code> 仓库进行子系统管理。</p>
+<ul>
+<li>最好建立自己的脚手架工具，子系统通过脚手架统一初始化。</li>
+<li>权限管理，责任到人。</li>
+</ul>
+</li>
+</ul>
+<h2 id="开发-amp-迭代阶段"><a href="#开发-amp-迭代阶段" class="headerlink" title="开发&amp;迭代阶段"></a>开发&amp;迭代阶段</h2><p>前面有提到，这个阶段的主要任务是如何高效，高质量的进行需求开发，功能迭代。并保证良好的可维护性。</p>
+<p>目前，我们主要通过以下几个几个方面来进行约束：</p>
+<ul>
+<li>模块化</li>
+<li>组件化</li>
+<li>规范化</li>
+</ul>
+<h3 id="模块化："><a href="#模块化：" class="headerlink" title="模块化："></a>模块化：</h3><p>前端的模块化已经由来已久，已经形成了成熟的进行技术体系。</p>
+<p><code>JS</code> 模块化: 从之前的 <code>RequireJS</code>（<code>AMD</code>）、<code>SeaJS</code> (<code>CMD</code>) 到现在的 <code>CommonJS</code>、<code>ES6 Module</code>。</p>
+<p><code>CSS</code>模块化: 我们还可以使用  <code>Less</code>、<code>Sass</code>、<code>Stylus</code> 等预处理器，对 <code>CSS</code> 进行模块化管理。</p>
+<p>资源模块化: <code>Webpack</code> 更是把模块化推向极致，其核心思想是：一切皆模块，除了 <code>JS</code> 和 <code>CSS</code>，还包括  <code>imgage</code>，<code>iconFont</code> 等静态资源。</p>
+<h3 id="组件化："><a href="#组件化：" class="headerlink" title="组件化："></a>组件化：</h3><p>组件化应用了 分治 和 复用 的思想。通过组件化，我们的所有页面都像是通过积木（组件）组合而成。</p>
+<p>组件不只包括 <code>UI</code> 组件，还可以是不含 <code>UI</code> 的功能性组件。</p>
+<p>组件化追求 小而美。问题是我们在抽象组件的时候，如何达到 小 和 美 的平衡，并不是拆分的越细越好。还有考虑 组件 的 复用性 和 可拓展性。</p>
+<h3 id="规范化："><a href="#规范化：" class="headerlink" title="规范化："></a>规范化：</h3><p>形成一系列规范，并不断完善。严格执行，做好过程管理。</p>
+<ul>
+<li><p>编码规范</p>
+</li>
+<li><p>组件规范</p>
+</li>
+<li><p>接口规范</p>
+</li>
+<li><p>文档规范</p>
+</li>
+</ul>
+<p>规范重要，更重要的规范的执行力度。自觉可能是最重要的，但又是最不可靠的。还是需要一些干预措施：</p>
+<ul>
+<li><p>实行 <code>codeReview</code>。</p>
+</li>
+<li><p>使用 <code>ESlint</code>，<code>Husky</code>，<code>Git hooks</code> 等工具约束。</p>
+</li>
+</ul>
+<h2 id="部署-amp-维护阶段"><a href="#部署-amp-维护阶段" class="headerlink" title="部署&amp;维护阶段"></a>部署&amp;维护阶段</h2><p>该阶段的核心是 <strong>自动化</strong>。</p>
+<p>首先，前端需要本地 <code>Dev</code> 调试 和 生产打包构建。可以使用 <code>Gulp</code>, <code>Webpack</code>, <code>Babel</code> 等工具库，添加配置文件，编写打包脚本来实现。</p>
+<ul>
+<li><p><code>Gulp</code> 是基于 <code>Nodejs</code> 的自动任务运行器，它能自动化地完成 <code>javascript/sass/less/html/image/css</code> 等文件的的测试、检查、合并、压缩、格式化、浏览器自动刷新、部署文件生成，并监听文件在改动后重复指定的这些步骤。优势是利用流的方式进行文件的处理，使用管道（<code>pipe</code>）思想，前一级的输出，直接变成后一级的输入，通过管道将多个任务和操作连接起来，因此只有一次<code>I/O</code>的过程，流程更清晰，更纯粹。<code>Gulp</code>去除了中间文件，只将最后的输出写入磁盘，整个过程因此变得更快。</p>
+</li>
+<li><p><code>Webpack</code> 是一个模块打包工具，它的作用是把 互相依赖 的 模块 处理成 静态资源。其核心思想是一切皆模块。</p>
+</li>
+<li><p><code>Babel</code> 是一个 <code>JavaScript</code> 编译器。负责把浏览器不认识的语法，编译成浏览器认识的语法。<code>Webpack</code> 中可以通过 <code>babel-loader</code> 使用 <code>babel</code>。</p>
+</li>
+</ul>
+<p>可以通过一些 平台 实现 自动化部署 以及 <code>CI/CD</code>。比如 <code>Jenkins</code>，广泛使用的开源<code>CI / CD</code>工具之一。它基于<code>Java</code>，可以自动执行与软件的构建，测试，部署和交付相关的任务。可在<code>Windows</code>，<code>macOS</code>和其他<code>Unix</code>版本上使用。</p>
+<p>这些 <code>CI/CD</code> 平台都会用到 <strong>容器技术</strong>，我们也可以了解一下：</p>
+<ul>
+<li><code>Docker</code>：<code>Docker</code>是一个开源的应用容器引擎，开发者可以打包他们的应用及依赖到一个可移植的容器中，发布到流行的<code>Linux</code>机器上，也可实现虚拟化。</li>
+<li><code>kubernetes</code>： 简称 <code>k8s</code> , 是一个开源的容器集群管理系统，可以实现容器集群的自动化部署、自动扩缩容、维护等功能。</li>
+</ul>
+<blockquote>
+<p>我们可以用 <code>k8s</code> 去管理 <code>Docker</code> 集群，即可以将 <code>Docker</code> 看成 <code>k8s</code> 内部使用的低级别组件。另外，<code>k8s</code> 不仅仅支持 <code>Docker</code>，还支持 <code>Rocket</code>，这是另一种容器技术。</p>
+</blockquote>
+<h1 id="参考-amp-拓展文档"><a href="#参考-amp-拓展文档" class="headerlink" title="参考&amp;拓展文档"></a>参考&amp;拓展文档</h1><hr>
+<p><a href="https://www.jianshu.com/p/88ed70476adb" target="_blank" rel="noopener">前端工程化的理解</a><br><a href="https://www.cnblogs.com/onebox/p/9570518.html" target="_blank" rel="noopener">浅谈前端工程化</a><br><a href="https://www.cnblogs.com/qcloud1001/p/9273549.html" target="_blank" rel="noopener">什么是容器技术</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/08/21/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -6376,7 +7211,14 @@ $ Git log
 $ Git rebase // 修改commit信息，对多个 commit 进行合并处理等
 $ Git revert // 替换某次提交
 $ Git reset // 撤销 某次操作
-$ Git rm &lt;file&gt;  // ignore已经add的文件  </code></pre>
+$ Git rm &lt;file&gt;  // ignore已经add的文件  
+
+$ Git config --global core.ignorecase false 全局设置 大小写敏感
+$ git mv -f [你想要删掉的文件] [你想要留下的文件] 
+$ git mv -f a.js A.js 
+等同于： 
+$ git rm a.js 
+$ git add A.js</code></pre>
 <h1 id="Npm"><a href="#Npm" class="headerlink" title="Npm"></a>Npm</h1><pre><code class="language-bash">$ npm init
 $ npm install &lt;package&gt;
 $ npm config list
@@ -6985,543 +7827,11 @@ module.exports = () =&gt; {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/01/19/micro-service/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁连">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/sgj.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Live and learn">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/01/19/micro-service/" itemprop="url">微前端入门Micro-frontends</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-19T16:59:37+08:00">
-                2020-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index">
-                    <span itemprop="name">架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="微前端资料"><a href="#微前端资料" class="headerlink" title="微前端资料"></a>微前端资料</h2><p>我认为比较好的<strong>微前端</strong>思想技术体系文献资料:<br>参考资料：<a href="https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md" target="_blank" rel="noopener">https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md</a><br>原文资料：<a href="https://martinfowler.com/articles/micro-frontends.html" target="_blank" rel="noopener">https://martinfowler.com/articles/micro-frontends.html</a><br>文章大量引用了上述文献资料的第一部分，对许多翻译生硬的地方加以润色，难理解的点增加注释，并穿插加入一些个人观点。</p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>众所周知，前端的世界瞬息万变。新的语言，框架库，思想层出不穷，让人应接不暇。其中许多了解一下即可，但是对去现在比较火热的“微前端（MircroFrontends）”,还是值得去了解和研究一下的。大家对于前端的不断探索研究甚至创造，我觉得无非两个目的。一是尝试拓展前端的边界（创造更多可能）；二是前端已有领域的不断优化（效率，维护性，质量，管理成本）。很明显，微前端是后者。那接下来，我们了解一下什么是微前端，探讨一下它如何解决和优化前端领域一些问题的。</p>
-<h2 id="什么是微前端"><a href="#什么是微前端" class="headerlink" title="什么是微前端"></a>什么是微前端</h2><p>微前端首先是一种（管理）思想。将前端整体<strong>分解</strong>为小而简单模块的一种模式。这些块可以独立开发、测试和部署。<br>与此同时，我们仍然需要把模块<strong>聚合</strong>为一个产品出现在客户面前。我们将这种技术也称为微前端。<br>所以微前端是一种管理思想和集成技术结合的产物，我们将其定义为：</p>
-<blockquote>
-<p>一种将多个可独立交付的小型前端应用聚合为一个整体的架构风格</p>
-</blockquote>
-<p>简而言之，微前端都是将巨大的东西分成更小、更易于管理的小部分，然后明确它们之间的依赖关系。我们的技术选择、代码库、团队以及发布流程都应该能够彼此独立地运行和开发，不需要过多的协调。我认为好的微前端要做好两件事情（微前端也分两步）：</p>
-<ul>
-<li>分解（业务层面）：保证业务的合理拆分，并理清它们直接的依赖交互关系。</li>
-<li>聚合（技术层面）：架构层面，要在技术上做到很好的聚合，保证彼此独立，不相互污染，又能合理通信。</li>
-</ul>
-<p>使用场景主要有：</p>
-<ul>
-<li>拆分巨型应用，使应用变得更加可维护。</li>
-<li>兼容历史应用，实现增量开发。</li>
-</ul>
-<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
-<li>体积小、易拼合且易于维护的代码库</li>
-<li>更具扩展性的互相解耦且独立的团队</li>
-<li>和以前相比能采用增量的方式，更易于对前端的某些部分进行升级、更新甚至重写</li>
-</ul>
-<h3 id="增量升级，逐步翻新。"><a href="#增量升级，逐步翻新。" class="headerlink" title="增量升级，逐步翻新。"></a>增量升级，逐步翻新。</h3><p>  很多公司都普遍存在一个历史问题：过时的技术栈，赶工完成的代码质量，五花八门的代码风格。随着员工的更迭，新功能的不断堆积，后人维<br>护起来，看不懂，改不动，只想重写的情况日益严重。这个时候，你才明白，长江后浪推前浪，前浪原来是被后浪咒死在沙滩上的。如果这个时候，你发现这居然还是一个巨石应用……后浪也想在沙滩上自杀了。<br>  当然了，喜欢折腾的前端没那么脆弱，当然还是要解决这个问题。我相信，这个时候就已经诞生了微前端，或者说应用了微前端的管理思想-细<br>分：随着新的功能，将业务逐步在多个新应用中重构翻新。当然，也有在原应用中或者在一个新应用中想办法逐步翻新，这基本上是重蹈覆辙。</p>
-<h3 id="简单、解耦的代码库"><a href="#简单、解耦的代码库" class="headerlink" title="简单、解耦的代码库"></a>简单、解耦的代码库</h3><p>每个单独的微前端项目的源代码库，会远远小于一个单体前端项目的源代码库。这些小的代码库将会更易于开发。更值得一提的是，我们避免了不相关联的组件之间无意造成的不适当的耦合。通过增强应用程序的<a href="https://martinfowler.com/bliki/BoundedContext.html" target="_blank" rel="noopener">边界</a>来减少这种意外耦合的情况的出现（领域驱动设计(DDD)中抽象的限界上下文（BoundedContext）概念，不懂也不用太纠结）。</p>
-<p>当然了，一个独立的、高级的架构方式（例如微前端），不是用来取代规范整洁的优秀老代码的。我们不是想要逃避代码优化和代码质量提升。相反，我们降低做出错误决策的可能，增加正确决策的几率，从而使我们Falling Into The Pit of Success<a href="https://blog.codinghorror.com/falling-into-the-pit-of-success/" target="_blank" rel="noopener">进入成功之坑</a>（该思想大致的意思是说设计者要通过精心设计的系统或者API，让用户做正确的事变的容易，而不过于为容易犯错而苦恼。用户犯错，那就是设计者的错）。微前端会促使您明确并慎重地了解数据和事件如何在应用程序的不同部分之间传递（跨应用通信），这本是我们（微前端架构设计师）早就应该开始做的事情！</p>
-<h3 id="独立部署"><a href="#独立部署" class="headerlink" title="独立部署"></a>独立部署</h3><p>与微服务一样，微前端的独立可部署性是关键。它减少了部署的范围，从而降低了相关风险。无论您的前端代码在何处托管，每个微前端都应该有自己的连续交付通道，该通道可以构建、测试并将其一直部署到生产环境中。我们应当能够在不考虑其他代码库或者是通道的情况下来部署每个微服务。<br>做到即使原来的单体项目是固定的按照季度手动发布版本，或者其他团队提交了未完成的或者是有问题的代码到他们的主分支上，也不会对当前项目产生影响。如果一个微前端项目已准备好投入生产，它应该具备这种能力，而决定权就在构建并且维护它的团队手中。</p>
-<p><img src="https://martinfowler.com/articles/micro-frontends/deployment.png" alt="图示：三个彼此独立的应用从源代码控制开始，经过构建、测试直至部署到生产环境"></p>
-<p>图 2 : 每个微前端都独立的部署到生产环境上</p>
-<h3 id="自主的团队"><a href="#自主的团队" class="headerlink" title="自主的团队"></a>自主的团队</h3><p>将我们的代码库和发布周期分离的更高阶的好处，是使我们拥有了完全独立的团队，可以参与到自己产品的构思、生产及后续的过程。每个团队都拥有为客户提供价值所需的全部资源，这就使得他们可以快速且有效地行动。为了达到这个目的，我们的团队需要<strong>根据业务功能纵向地划分，而不是根据技术种类</strong>。一种简单的方法是根据最终用户将看到的内容来分割产品，因此每个微前端都封装了应用程序的单个页面，并由一个团队全权负责。与根据技术种类或“横向”关注点（如样式、表单或验证）来组成团队相比，这会使得团队工作更有凝聚力。</p>
-<p><img src="https://martinfowler.com/articles/micro-frontends/horizontal.png" alt="图示：根据三个应用构成三个团队，提醒大家不要根据“样式”分队"></p>
-<p>图 3：每个应用都由一个团队负责</p>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><h3 id="负载体积"><a href="#负载体积" class="headerlink" title="负载体积"></a>负载体积</h3><p>独立构建，会造成公共依赖的重复，增加了用户所需下载依赖的体积。<br>一种解决方案是将我们编译后代码的常见依赖外置(如下代码)。一旦我们沿着这条路走下去，我们将重新引入一些微前端之间构建过程的耦合。现在它们之间有着一个隐含的合约：“我们都必须使用这些依赖的明确版本”。如果其中一个依赖产生重大改动，我们可能最终需要一个大的协调升级工作以及一次性的同步发版。这是我们使用微前端最初想要避免的一切。</p>
-<p>但并不全是坏消息。首先，即便我们对于重复的依赖不采取任何措施，每个单独页面仍可能比我们构建整个前端更快地加载。原因是通过独立编译每个页面，我们有效地以我们自己的形式实现了代码分割。在传统的前端中，应用中的任何页面加载完成时，我们通常会一次性下载所有页面的源码和依赖。通过独立构建，任何单独的页面加载将只会下载那个页面的源码和依赖。这可能导致更快的首页加载，但随后的导航速度会变慢，因为用户必须在每个页面上重新下载相同的依赖。如果我们严格地不用不必要的依赖使我们的微前端膨胀，或者我们知道用户在应用中通常访问的一两个页面，即便有重复依赖，我们也很可能在性能方面达到净增益。</p>
-<p>在前一段有很多“可能”和“也许”，表明了每个应用通常都有它们自己独特的性能特征。如果你想确切地知道特定的变化会造成什么性能影响，只能靠实际测量，而且最好是在生产环境中。我们见过很多团队仅仅为了下载数兆大小的高清图像或者对一个运行非常慢的数据库进行昂贵的查询额外多写几千字节的 JavaScript 代码。因此，尽管考虑每个架构决策的性能影响很重要，但请确保你知道真正的瓶颈在哪里。</p>
-<pre><code class="language-javascript">  &lt;body&gt;
-    &lt;noscript&gt;
-      You need to enable JavaScript to run this app.
-    &lt;/noscript&gt;
-    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
-    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react-dom.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
-  &lt;/body&gt;</code></pre>
-<h3 id="环境差异"><a href="#环境差异" class="headerlink" title="环境差异"></a>环境差异</h3><p>我们应该能够开发一个单一的微前端，而无需考虑其他团队正在开发的所有其它微前端。我们可能甚至应该在“独立”模式下，在空白页面上运行我们的微前端，而不是运行在将在生产环境中承载微前端的容器应用内部。这可以使开发变得更加简单，特别是当真正的容器是一个复杂的遗留代码库的时候，而通常情况下我们使用微前端来逐步从旧世界迁移到新世界。但是，在与生产环境完全不同的环境中开发存在风险。如果我们的开发时容器与生产容器的行为不同，那么我们可能会发现我们的微前端被破坏，或者在我们部署到生产环境时表现不同。特别值得关注的是可能由容器或其他微前端带来的全局样式。</p>
-<p>这里的解决方案与我们不得不担心环境差异的任何其他情况没有什么不同。如果我们在一个与生产环境不同的本地环境开发，我们需要<strong>确保定期将我们的微前端集成和部署到像生产环境的环境中，并且我们应该在这些环境中进行测试（手动以及自动化）以尽早发现集成问题</strong>。这不会完全解决问题，但最终这是一个取舍：简化开发环境的生产力提升是否值得冒集成出问题的风险？答案取决于项目！</p>
-<h3 id="运维复杂度"><a href="#运维复杂度" class="headerlink" title="运维复杂度"></a>运维复杂度</h3><p>最后的缺点是与微服务直接平行的缺点。作为一个更加分散的架构，微前端将不可避免地导致需要管理更多的东西 —— 更多的存储库，更多的工具，更多的构建/部署管道，更多的服务器，更多的域等等。因此，在采用这样的架构之前，你应该考虑几个问题：</p>
-<ul>
-<li>你是否有足够的自动化可行地提供以及管理额外所需的基础设施？</li>
-<li>你的前端开发、测试和发布进程是否会扩展到许多应用中？</li>
-<li>你是否对围绕工具和开发的实践变得更加分散且不易控制的决策感到满意？</li>
-<li>你将如何确保你的多个独立前端代码库中的最低代码质量，一致性或代码管理？<br>我们可能会另写一篇文章讨论这些主题。我们希望提出的主要观点是，当你选择微前端时，根据定义，你选择创建许多小东西而不是一个整体。你应该考虑你是否有采用这种方法所需的技术和组织成熟度，从而不造成混乱。</li>
-</ul>
-<h2 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h2><img src="/2020/01/19/micro-service/%E5%BE%AE%E5%89%8D%E7%AB%AF.png" class="" title="微前端技术栈">
-
-<p>主要难点在于<strong>集成方式</strong>（公共依赖）和<strong>跨应用通信</strong>。有兴趣可以研读文章开始的参考资料2-4章节。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/08/09/React-Hoc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁连">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/sgj.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Live and learn">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/09/React-Hoc/" itemprop="url">React 高阶组件（HOC）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-09T11:28:34+08:00">
-                2019-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/React/" itemprop="url" rel="index">
-                    <span itemprop="name">React</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h1><hr>
-<p>如果一个函数 接受一个或多个函数作为参数或者返回一个函数 就可称之为 高阶函数。</p>
-<pre><code class="language-jsx">// ES5 
-function isSearched(searchTerm) { 
-  return function(item) { 
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase()); 
-  } 
-} 
-
-// ES6 
-const isSearched = searchTerm =&gt; item =&gt; 
-  item.title.toLowerCase().includes(searchTerm.toLowerCase());</code></pre>
-<h1 id="React-HOC"><a href="#React-HOC" class="headerlink" title="React HOC"></a>React HOC</h1><hr>
-<p>在实际项目中，组件总是趋于复杂，会包含很多逻辑。当发现在很多组件都需要处理相同逻辑的时候，就应该想办法抽象复用。在React中，具有复用功能的方式主要有：</p>
-<ul>
-<li>公共组件库</li>
-<li>公共方法库</li>
-<li>类组件：<code>HOC</code> / <code>Render Props</code></li>
-<li>函数组件：<code>Hooks</code></li>
-</ul>
-<p>当你没法把组件中的重复逻辑抽象成公共组件或者公共方法的情况下，在类组件中，就可以考虑引入<code>HOC</code>。<a href="/2020/04/23/React-Render-Props/index.html">Render Props看这里</a>。</p>
-<p>和高阶函数类似，<code>React HOC</code>就是把组件（也可增加一些可选参数）作为输入，然后输出一个新的组件，新组件内部处理一些通用逻辑，并使用输入的组件进行渲染。你可以将其视为参数化容器组件。</p>
-<blockquote>
-<p>我们知道，在React中函数组件本质上就是一个函数。所以高阶函数组件就是一个<code>HOC</code>。</p>
-</blockquote>
-<h1 id="高阶组件应用"><a href="#高阶组件应用" class="headerlink" title="高阶组件应用"></a>高阶组件应用</h1><hr>
-<p>首先，我们先创建<code>HOC</code>容器：</p>
-<pre><code class="language-jsx">// 无状态函数组件
-function HigherOrderComponent(WrappedComponent) {
-    return props =&gt; &lt;WrappedComponent {...props} /&gt;;
-}
-// or
-// 类组件
-function HigherOrderComponent(WrappedComponent) {
-    return class extends React.Component {
-        render() {
-            return &lt;WrappedComponent {...this.props} /&gt;;
-        }
-    };
-}
-// 类组件特有的通过继承的方式使用
-// 也叫 反向继承（Inheritance Inversion）
-function HigherOrderComponent(WrappedComponent) {
-    return class extends WrappedComponent {
-        render() {
-            return super.render();
-        }
-    };
-}</code></pre>
-<blockquote>
-<p>通过继承输入组件形式实现的<code>HOC</code>又称为 <strong>反向继承（Inheritance Inversion）</strong></p>
-</blockquote>
-<p>以上<code>HOC</code>只是一个容器，和直接使用 <code>WrappedComponent</code> 组件无二。那么，我们可以在<code>HOC</code>中做点什么来达到共享复用的目的呢？主要通过以下三种方式：</p>
-<ul>
-<li>操作参数（props / state）</li>
-<li>条件渲染</li>
-<li>组件包装</li>
-</ul>
-<h2 id="操作参数"><a href="#操作参数" class="headerlink" title="操作参数"></a>操作参数</h2><p>我们可以通过<code>HOC</code>对一个通用组件的 <code>props</code> 做一些操作达到复用的目的，而不用去修改这个通用组件。</p>
-<p>举个简单的例子，一个列表展示组件，在新需求中的某些场景只希望展示列表中 <code>status === &#39;1&#39;</code> 的数据，那我们可以封装一个<code>HOC</code>在这些场景使用，其他场景直接使用。</p>
-<pre><code class="language-jsx">
-function HigherOrderComponent(WrappedComponent) {
-    return props =&gt; {
-      let newProps =  props || []
-      if (newProps.length &gt; 0){
-        newProps = newProps.filter((item) =&gt; item.status === &#39;1&#39;)
-      }
-      return &lt;WrappedComponent {...newProps} /&gt;
-    };
-}</code></pre>
-<p>当然，你也可以通过修改这个通用组件来适配新场景。但是一直通过修改通用组件来适配所有场景，一方面存在兼容风险，另一方面适配逻辑太多，组件会变得臃肿，很难维护。</p>
-<p>在举一个常见的应用：很多页面初始化的时候，都需要通过一个接口获取一些初始化数据。我们也可以通过<code>HOC</code>封装，统一获取，然后作为扩展参数传递给页面组件。</p>
-<pre><code class="language-jsx"> function HigherOrderComponent(WrappedComponent) {
-    return props =&gt; {
-      const fetchData = async () =&gt; {
-        const result = await axios(
-          &#39;https://hn.algolia.com/api/v1/search?query=redux&#39;,
-        );
-        return result.data;
-      };
-      const newProps = fetchData();
-      return &lt;WrappedComponent {...props} {...newProps} /&gt;
-    };
-}</code></pre>
-<h2 id="条件渲染"><a href="#条件渲染" class="headerlink" title="条件渲染"></a>条件渲染</h2><p>在实际<code>React</code>项目中，大多采用前端渲染模式。组件的渲染依赖<code>Ajax</code>请求的数据。所以，我们经常会看到（我自己也写过）如下代码：</p>
-<pre><code class="language-javascript">class BadComp extends React.Component {
-    state = {
-      isDateReady: false,
-      dataA: null,
-      dataB: null,
-    }
-    //...
-    render() {
-      if (!isDateReady) return false
-      const { isDateReady, hasDataA, hasDataB }= this.state
-      return (
-        &lt;&gt;
-          { dataA &amp;&amp; &lt;A {...dataA}/&gt; }
-          { dataB &amp;&amp; &lt;B {...dataB}/&gt; }
-        &lt;/&gt;
-      );
-    }
-};
-</code></pre>
-<p>上述代码并不是一无是处，至少是严谨的，规避了无数据或者数据异常导致页面奔溃的情况。但是上述组件有两个问题：</p>
-<ul>
-<li>通过 <code>isDateReady</code> 阻断页面渲染，接口返回慢的话，白屏时间会很长。</li>
-<li>页面充斥着太多类似 <code>{ dataB &amp;&amp; &lt;B {...dataB}/&gt; }</code> 这种逻辑，不优雅，影响可读性。</li>
-</ul>
-<p>解决上述问题，我们一般是通过增加 <code>loading</code> 和 <code>占位</code> 来优化。在页面主接口返回数据之前，增加 <code>loading</code> 效果。需要数据才能渲染的组件模块可以先显示 <code>占位框</code>（<code>css</code>），取得数据以后再重新渲染。很明显，这个解决方案比较通用，最好做成可复用的。这个时候，我们就可以通过<code>HOC</code>的条件渲染来实现：</p>
-<p>页面<code>loading</code>效果的高阶组件，通过 <strong>反向继承 + 条件渲染</strong> 实现：</p>
-<pre><code class="language-jsx">
-const withLoadingComponent = (WrappedComponent) =&gt; {
-  return (props) =&gt;  {
-    render() {
-        if(this.state.isLoading) {
-          return &lt;Loading /&gt;;
-        } else {
-          return super.render();
-        }
-    }
-  };
-}
-</code></pre>
-<p>组件占位效果的<code>HOC</code>。额外的 <code>options</code> 参数可以决定占位组件 <code>Placeholder</code> 的高度等信息。</p>
-<pre><code class="language-jsx">const withPlaceholderComponent = (WrappedComponent, options) =&gt; {
-  return (props) =&gt;  {
-    return props ? &lt;WrappedComponent {...props}&gt; : &lt;Placeholder {...options}&gt;
-  };
-}</code></pre>
-<h2 id="组件包装"><a href="#组件包装" class="headerlink" title="组件包装"></a>组件包装</h2><p>如果你总是和相同的元素包裹使用一个通用组件，那么你可以通过抽象一个<code>HOC</code>来复用。比如下面的<code>HOC</code>在组件外面包裹一层背景色为 <code>#fafafa</code> 的 <code>div</code> 元素：</p>
-<pre><code class="language-jsx">const withOtherComponent = (WrappedComponent) =&gt; {
-  return (props) =&gt;  {
-    return (
-      &lt;div style={{ backgroundColor: '#fafafa' }}&gt;
-          &lt;WrappedComponent {...this.props} {...newProps} /&gt;
-      &lt;/div&gt;
-    )
-  };
-}</code></pre>
-<p>这里只是举了一个简单的例子，实际项目中，也可以通过其他组件来包裹，或是组合使用。</p>
-<h1 id="Recompose-库"><a href="#Recompose-库" class="headerlink" title="Recompose 库"></a>Recompose 库</h1><hr>
-<p><code>Recompose</code> 是一个为函数式组件和高阶组件开发的 <code>React</code> 工具库。可以看作是 <code>React</code> 的 <code>Lodash</code>。</p>
-<p>复杂场景下，会存在多个 <code>HOC</code> 层层嵌套的情况：</p>
-<pre><code class="language-jsx">const TodoListWithConditionalRendering = withLoadingIndicator(
-  withTodosNull(
-    withTodosEmpty(TodoList)
-  )
-);</code></pre>
-<p>可以使用 <code>recompose</code> 库的 <code>compost</code> 方法优化：</p>
-<pre><code class="language-jsx">import { compose } from &#39;recompose&#39;;
-const withTodosNull = (Component) =&gt; (props) =&gt;
-  ...
-const withTodosEmpty = (Component) =&gt; (props) =&gt;
-  ...
-const withLoadingIndicator = (Component) =&gt; ({ isLoadingTodos, ...others }) =&gt;
-  ...
-function TodoList({ todos }) {
-  ...
-}
-const withConditionalRenderings = compose(
-  withLoadingIndicator,
-  withTodosNull,
-  withTodosEmpty
-);
-const TodoListWithConditionalRendering = withConditionalRenderings(TodoList);
-function App(props) {
-  return (
-    &lt;TodoListWithConditionalRendering
-      todos={props.todos}
-      isLoadingTodos={props.isLoadingTodos}
-    /&gt;
-  );
-}</code></pre>
-<p><code>compose</code> 方法用于组合多个高阶组件。注意， props 流向是自上而下的。</p>
-<p>另外，<code>recompose</code> 库的 <code>pure</code> 高阶组件，用于控制只在需要的时候重新呈现组件，即除非 <code>props</code> 发生了更改才重新重现组件。 <code>withStateHandler</code>高阶组件，用于将组件状态和组件本身隔离开来……<a href="https://github.com/acdlite/recompose" target="_blank" rel="noopener">了解更多</a></p>
-<h1 id="Hoc问题"><a href="#Hoc问题" class="headerlink" title="Hoc问题"></a>Hoc问题</h1><hr>
-<h2 id="抽象地狱"><a href="#抽象地狱" class="headerlink" title="抽象地狱"></a>抽象地狱</h2><p>也叫包装地狱。过多使用<code>HOC</code>层层嵌套，会导致层级冗余，逻辑难追踪，很难维护。所以要避免Hoc滥用，充分考虑引入<code>HOC</code>的必要性，尤其<code>HOC</code>多层封装的情况。对于复杂的嵌套结构，最好增加充分的注释。</p>
-<h2 id="不要在render中使用-HOC。"><a href="#不要在render中使用-HOC。" class="headerlink" title="不要在render中使用 HOC。"></a>不要在<code>render</code>中使用 <code>HOC</code>。</h2><p>每次<code>render</code>渲染都会创建新的 <code>HOC</code>。diff算法会对新旧子树进行 <code>====</code> 比较。如果不相等，子树会进行卸载，和重新挂载的操作。而每次重新渲染创建的 <code>HOC</code> 前后是 <code>!==</code> 的。</p>
-<pre><code class="language-jsx">render() {
-  // 每次调用 render 函数都会创建一个新的 EnhancedComponent
-  // EnhancedComponent1 !== EnhancedComponent2
-  const EnhancedComponent = enhance(MyComponent);
-  // 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！
-  return &lt;EnhancedComponent /&gt;;
-}</code></pre>
-<h2 id="Refs-不会被传递。"><a href="#Refs-不会被传递。" class="headerlink" title="Refs 不会被传递。"></a><code>Refs</code> 不会被传递。</h2><p>虽然<code>HOC</code>的约定是将所有 <code>props</code> 传递给被包装组件，但这对于 <code>refs</code> 并不适用。那是因为 <code>ref</code> 实际上并不是一个 <code>prop</code>- 就像 key 一样，它是由 React 专门处理的。如果将 ref 添加到 HOC 的返回组件中，则 ref 引用指向容器组件，而不是被包装组件。</p>
-<p>这个问题的解决方案是通过使用 <code>React.forwardRef</code>（<code>React 16.3</code> 中引入）。想要了解更多，可以阅览我的另一篇博文<a href="/2020/03/30/拥抱React-Hooks（二）-Refs/index.html">拥抱React-Hooks（二）-Refs</a></p>
-<h2 id="静态方法丢失。"><a href="#静态方法丢失。" class="headerlink" title="静态方法丢失。"></a>静态方法丢失。</h2><p>因为原始组件被包裹在一个容器组件内，也就意味着新组件会没有原始组件的任何静态方法。为了解决这个问题，你可以在返回之前把这些方法拷贝到容器组件上：</p>
-<pre><code class="language-jsx">function enhance(WrappedComponent) {
-  class Enhance extends React.Component {/*...*/}
-  // 必须准确知道应该拷贝哪些方法 :(
-  Enhance.staticMethod = WrappedComponent.staticMethod;
-  return Enhance;
-}</code></pre>
-<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
-<p><a href="https://zh-hans.reactjs.org/docs/higher-order-components.html" target="_blank" rel="noopener">官网-HOC</a><br><a href="https://www.robinwieruch.de/react-higher-order-components" target="_blank" rel="noopener">React Higher-order Component</a><br><a href="https://juejin.im/post/5c72b97de51d4545c66f75d5" target="_blank" rel="noopener">React 中的高阶组件及其应用场景</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -7571,7 +7881,7 @@ function App(props) {
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -7656,7 +7966,7 @@ function App(props) {
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

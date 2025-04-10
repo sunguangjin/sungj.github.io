@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="工具准备 科学上网。 注册 MidJourney 账号。 注册 Discord 账号。 购买适合自己的 MidJourney 会员，我是使用平安信用卡成功支付的，支付宝百试不灵。 使用和登录 Discord 网页版或者 App 版本后，创建一个服务器，添加 MidJourney Bot后以聊天的形式交互使用。  网上教程很多，这里就不过多赘述。 Prompt基础命令&#x2F;imagine prompt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MidJourney入门">
+<meta property="og:url" content="http://www.mala520.life/2024/06/05/MidJourney%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Live and learn">
+<meta property="og:description" content="工具准备 科学上网。 注册 MidJourney 账号。 注册 Discord 账号。 购买适合自己的 MidJourney 会员，我是使用平安信用卡成功支付的，支付宝百试不灵。 使用和登录 Discord 网页版或者 App 版本后，创建一个服务器，添加 MidJourney Bot后以聊天的形式交互使用。  网上教程很多，这里就不过多赘述。 Prompt基础命令&#x2F;imagine prompt">
+<meta property="article:published_time" content="2024-06-05T14:04:06.000Z">
+<meta property="article:modified_time" content="2024-08-02T01:56:47.168Z">
+<meta property="article:author" content="祁连">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.mala520.life/2024/06/05/MidJourney入门/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/js/prism/prism.css">
+
+  <title>MidJourney入门 | Live and learn</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Live and learn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2024/06/05/MidJourney%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MidJourney入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-05T22:04:06+08:00">
+                2024-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h1><ul>
+<li>科学上网。</li>
+<li>注册 MidJourney 账号。</li>
+<li>注册 Discord 账号。</li>
+<li>购买适合自己的 MidJourney 会员，我是使用平安信用卡成功支付的，支付宝百试不灵。</li>
+<li>使用和登录 Discord 网页版或者 App 版本后，创建一个服务器，添加 MidJourney Bot后以聊天的形式交互使用。</li>
+</ul>
+<p>网上教程很多，这里就不过多赘述。</p>
+<h1 id="Prompt基础命令"><a href="#Prompt基础命令" class="headerlink" title="Prompt基础命令"></a>Prompt基础命令</h1><p><code>/imagine prompt {Image url prompt} {Text propmt} {Parameters}</code></p>
+<ul>
+<li><code>Image url prompt</code>: 喂图/垫图，图片的url地址，多个逗号隔开。</li>
+<li><code>Text propmt</code>: 图片的系列描述，关键字，逗号隔开。</li>
+<li><code>Parameters</code>: 一系列参数，控制图片的生成方式，宽高比，模型等。一般 <code>--</code> 开头，多个空格隔开。</li>
+</ul>
+<h2 id="Image-url-prompt"><a href="#Image-url-prompt" class="headerlink" title="Image url prompt"></a>Image url prompt</h2><p>如果想基于一张或者多张图片进行生成，则先在 Discord 聊天窗口上传文件后发送。点击发送后的图片选择浏览器打开即可获取图片的url。快捷方式是可以拖拽发送后的图片到聊天框就可粘贴图片url。</p>
+<p>多张图片url要增加空格，最后一张图片和后面的文字提示词之间也需要空格。</p>
+<p><strong>也可以使用 <code>/blend</code> 命令将两张图片合成</strong>。</p>
+<h2 id="Text-propmt"><a href="#Text-propmt" class="headerlink" title="Text propmt"></a>Text propmt</h2><p>关键词的语法顺序基本为：</p>
+<ol>
+<li>主题：人、动物、人物、地点、物体等。</li>
+<li>媒介：照片、绘画、插图、雕塑、涂鸦、挂毯等。</li>
+<li>环境：室内、室外、月球上、纳尼亚、水下、翡翠城等。</li>
+<li>照明：柔和、环境、阴天、霓虹灯、工作室灯等</li>
+<li>颜色：充满活力、柔和、明亮、单色、彩色、黑白、柔和等。</li>
+<li>情绪：稳重、平静、喧闹、精力充沛等。</li>
+<li>构图：人像、爆头、特写、鸟瞰图等。</li>
+</ol>
+<p>举个栗子：</p>
+<ol>
+<li>主题：a woman wearing streetwear（一个穿着街头服饰的女人）</li>
+<li>媒介：Vintage 90’s anime style（90 年代的复古动漫风格）</li>
+<li>环境：cluttered 7/11 interior（凌乱的 7/11 室内）</li>
+<li>照明：neon lights（霓虹灯）</li>
+<li>颜色：sci-fi colors（科幻色彩）</li>
+<li>情绪：noisy（喧闹）</li>
+<li>构图：close up（近距离）</li>
+</ol>
+<p>完整关键词：<br>a woman wearing streetwear, Vintage 90’s anime style, cluttered 7/11 interior, neon lights, sci-fi colors, noisy, close up</p>
+<h3 id="设置权重"><a href="#设置权重" class="headerlink" title="设置权重"></a>设置权重</h3><ul>
+<li><code>::</code>作为分隔符, 会将两个词的概念分开考虑，比如 <code>hot:: dog</code> 就不会是热狗🌭，而是温暖的狗。</li>
+<li><code>::</code>分隔符可以允许您为提示的各个部分分配相对重要性。比如 <code>hot::2 dog</code>: <code>hot</code>一词的重要性是<code>dog</code>一词的两倍，从而产生了一只非常热的狗。</li>
+<li>可以使用负权重以删除不需要的元素。比如 <code>flowers:: red::-0.5</code> 图片就不太可能出现红色。</li>
+</ul>
+<h3 id="一些常用风格"><a href="#一些常用风格" class="headerlink" title="一些常用风格"></a>一些常用风格</h3><ul>
+<li><p>儿童插画：a childrens illustration picture</p>
+</li>
+<li><p>美妆摄影风格:  in the style of beauty photography</p>
+</li>
+<li><p>专业调色风格：in the style of a professional with color grading</p>
+</li>
+<li><p>简约绘画风格：in the style of minimalistic drawings</p>
+</li>
+<li><p>高清细节:  high definition details</p>
+</li>
+<li><p>自然光： in natural light</p>
+</li>
+<li><p>阴影柔和： soft shadows</p>
+</li>
+<li><p>3d人物： 3D character,</p>
+</li>
+<li><p>毛茸茸的：a little hairy, </p>
+</li>
+<li><p>卡通风格：cartoon style, </p>
+</li>
+<li><p>极简主义：minimalism</p>
+</li>
+<li><p>幼儿园艺术：nursery art</p>
+</li>
+<li><p>有机的形式，乔恩-克拉森的风格： organic forms, in the style of Jon Klassen,</p>
+</li>
+<li><p>半透明纹理风格 semi-transparenttexture style, </p>
+</li>
+<li><p>贴纸剪贴画风格  in the style of a sticker clip art </p>
+</li>
+<li><p>电影风格：cinematic still</p>
+</li>
+<li><p>三段式构图：composed in a three-part composition</p>
+</li>
+<li><p>8 位像素插画8-bit pixel illustration,</p>
+</li>
+<li><p>辛烷值渲染 Octane Render: 在 AI 绘画中的应用可以带来出色的渲染效果，它可以模拟真实世界中的光照和材质，使绘画更加逼真，更加生动。</p>
+</li>
+</ul>
+<h2 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h2><ul>
+<li>–aspect(–ar): 高宽比；默认 –ar 1:1；常见的有 ( 7:4，4:7，16:9 )。</li>
+<li>–iw: 图像提示权重(相对于文本)；默认 –iw 0.25；取值为 <code>0-3</code>(V5版本) ，值越高越保证图片风格。</li>
+<li>–quality(–q): 图片质量；默认 –q 1; 0.5 为一般质量，2 为高质量。更高的 –quality 设置并不总是更好。有时较低的设置可以产生更好的结果——这取决于您尝试创建的图像。较低的设置可能最适合抽象外观。较高的值可以改善受益于许多细节的建筑图像的外观。</li>
+<li>–no: 负面提示词，一般在提示词后面，可以让画面中不出现某些内容。</li>
+<li>–seed: 指定种子编号；“Seed” 种子编号是为每个图像随机生成的；–seed 接受整数 0–4294967295。可以通过把一张图片发邮件，可以获取种子编号。</li>
+<li>–sameseed: 在对某张图片调整的时候，增加该参数将产生相似的新图像。初始生成时使用该参数，4张图片也会非常相似。</li>
+<li>–stop: 在流程中途完成作业，接受值为 10–100，默认为100，和不加此参数一样。值越低会产生更抽象模糊、更不详细的结果。</li>
+<li>–tile: 生成可用作重复拼贴的图像，以创建织物、壁纸和纹理的无缝图案。</li>
+<li>–chaos(–c): 混乱，范围值 0–100，默认为 0。值越高将产生更不寻常和意想不到的结果和组合。较低的值具有更可靠、可重复的结果。</li>
+<li>–stylize(-s): 风格化, 范围值 0 - 1000，默认为 100。值较低生成的图像与提示非常匹配，但艺术性较差。值较高创建的图像非常具有艺术性，但与提示的联系较少。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/01/30/%E8%B8%A9%E5%9D%91%E5%9B%9E%E5%BF%86%E5%BD%95/" rel="next" title="踩坑回忆录">
+                <i class="fa fa-chevron-left"></i> 踩坑回忆录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sgj.jpeg"
+                alt="祁连" />
+            
+              <p class="site-author-name" itemprop="name">祁连</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                大牛👇
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://overreacted.io/zh-hans/" title="Dan Abramov" target="_blank">Dan Abramov</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://qianduan.group/" title="寸志" target="_blank">寸志</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.robinwieruch.de/blog" title="Robin Wieruch" target="_blank">Robin Wieruch</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工具准备"><span class="nav-number">1.</span> <span class="nav-text">工具准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prompt基础命令"><span class="nav-number">2.</span> <span class="nav-text">Prompt基础命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Image-url-prompt"><span class="nav-number">2.1.</span> <span class="nav-text">Image url prompt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Text-propmt"><span class="nav-number">2.2.</span> <span class="nav-text">Text propmt</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置权重"><span class="nav-number">2.2.1.</span> <span class="nav-text">设置权重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些常用风格"><span class="nav-number">2.2.2.</span> <span class="nav-text">一些常用风格</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parameters"><span class="nav-number">2.3.</span> <span class="nav-text">Parameters</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁连</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<script src="/js/prism/prism.js" async></script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false});</script></body>
+</html>

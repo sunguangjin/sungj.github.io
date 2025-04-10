@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Live and learn">
 <meta property="og:description" content="单行&#x2F;多行文本溢出省略号 &#x2F;* 单行 *&#x2F; .oneLine {   overflow:hidden;   text-overflow:ellipsis;   white-space:nowrap }  &#x2F;* 👇 仅适用于WebKit浏览器或移动端的页面 *&#x2F;  .twoLine {   &#x2F;* 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 *&#x2F;   display: -webkit-box;">
 <meta property="article:published_time" content="2018-06-28T11:36:26.000Z">
-<meta property="article:modified_time" content="2021-10-25T01:58:57.954Z">
+<meta property="article:modified_time" content="2024-02-22T09:11:13.740Z">
 <meta property="article:author" content="祁连">
 <meta name="twitter:card" content="summary">
 
@@ -377,6 +377,21 @@ blur(radius):函数将高斯模糊应用于输入图像。
 </blockquote>
 <h1 id="css-新特性-contain"><a href="#css-新特性-contain" class="headerlink" title="css 新特性 contain"></a>css 新特性 contain</h1><p>CSS contain 属性允许开发者声明当前元素和它的内容尽可能的独立于 DOM 树的其他部分。这使得浏览器在重新计算布局、样式、绘图、大小或这四项的组合时，只影响到有限的 DOM 区域，而不是整个页面，可以有效改善性能。</p>
 <p>使用参考： <a href="https://juejin.cn/post/6958990366888607757" target="_blank" rel="noopener">CSS新特性contain，控制页面的重绘与重排</a></p>
+<h1 id="margin-inline，inset"><a href="#margin-inline，inset" class="headerlink" title="margin-inline，inset"></a>margin-inline，inset</h1><p><code>margin-inline</code> will set both <code>margin-left</code> and <code>margin-right</code> to the same value (<code>auto</code>). It has <strong>very good browser support</strong>.<br>setting <code>inset: 0px</code>, which is a shorthand that sets <code>top, left, right</code>, and <code>bottom</code> all to the same value, <code>0px</code>.</p>
+<pre><code class="language-css">.element {
+  max-width: fit-content;
+  margin-inline: auto;
+}
+
+.element2 {
+  position: fixed;
+  inset: 0px;
+  width: 12rem;
+  height: 5rem;
+  max-width: 100vw;
+  max-height: 100dvh;
+  margin: auto;
+}</code></pre>
 <h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
 <p><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/filter" target="_blank" rel="noopener">Moz-filter滤镜</a></p>
 
@@ -496,7 +511,7 @@ blur(radius):函数将高斯模糊应用于输入图像。
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -577,7 +592,7 @@ blur(radius):函数将高斯模糊应用于输入图像。
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#单行-多行文本溢出省略号"><span class="nav-number">1.</span> <span class="nav-text">单行&#x2F;多行文本溢出省略号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#毛玻璃模糊遮罩效果"><span class="nav-number">2.</span> <span class="nav-text">毛玻璃模糊遮罩效果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#position-sticky-实现粘性布局的坑"><span class="nav-number">3.</span> <span class="nav-text">position:sticky 实现粘性布局的坑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#隐藏滚动元素的滚动条"><span class="nav-number">4.</span> <span class="nav-text">隐藏滚动元素的滚动条</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#css-新特性-contain"><span class="nav-number">5.</span> <span class="nav-text">css 新特性 contain</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#单行-多行文本溢出省略号"><span class="nav-number">1.</span> <span class="nav-text">单行&#x2F;多行文本溢出省略号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#毛玻璃模糊遮罩效果"><span class="nav-number">2.</span> <span class="nav-text">毛玻璃模糊遮罩效果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#position-sticky-实现粘性布局的坑"><span class="nav-number">3.</span> <span class="nav-text">position:sticky 实现粘性布局的坑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#隐藏滚动元素的滚动条"><span class="nav-number">4.</span> <span class="nav-text">隐藏滚动元素的滚动条</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#css-新特性-contain"><span class="nav-number">5.</span> <span class="nav-text">css 新特性 contain</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#margin-inline，inset"><span class="nav-number">6.</span> <span class="nav-text">margin-inline，inset</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
             
 
           </div>
@@ -597,7 +612,7 @@ blur(radius):函数将高斯模糊应用于输入图像。
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -240,6 +240,538 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2020/01/19/micro-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/19/micro-service/" itemprop="url">微前端入门Micro-frontends</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-19T16:59:37+08:00">
+                2020-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="微前端资料"><a href="#微前端资料" class="headerlink" title="微前端资料"></a>微前端资料</h2><p>我认为比较好的<strong>微前端</strong>思想技术体系文献资料:<br>参考资料：<a href="https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md" target="_blank" rel="noopener">https://github.com/xitu/gold-miner/blob/master/TODO1/micro-frontends-1.md</a><br>原文资料：<a href="https://martinfowler.com/articles/micro-frontends.html" target="_blank" rel="noopener">https://martinfowler.com/articles/micro-frontends.html</a><br>文章大量引用了上述文献资料的第一部分，对许多翻译生硬的地方加以润色，难理解的点增加注释，并穿插加入一些个人观点。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>众所周知，前端的世界瞬息万变。新的语言，框架库，思想层出不穷，让人应接不暇。其中许多了解一下即可，但是对去现在比较火热的“微前端（MircroFrontends）”,还是值得去了解和研究一下的。大家对于前端的不断探索研究甚至创造，我觉得无非两个目的。一是尝试拓展前端的边界（创造更多可能）；二是前端已有领域的不断优化（效率，维护性，质量，管理成本）。很明显，微前端是后者。那接下来，我们了解一下什么是微前端，探讨一下它如何解决和优化前端领域一些问题的。</p>
+<h2 id="什么是微前端"><a href="#什么是微前端" class="headerlink" title="什么是微前端"></a>什么是微前端</h2><p>微前端首先是一种（管理）思想。将前端整体<strong>分解</strong>为小而简单模块的一种模式。这些块可以独立开发、测试和部署。<br>与此同时，我们仍然需要把模块<strong>聚合</strong>为一个产品出现在客户面前。我们将这种技术也称为微前端。<br>所以微前端是一种管理思想和集成技术结合的产物，我们将其定义为：</p>
+<blockquote>
+<p>一种将多个可独立交付的小型前端应用聚合为一个整体的架构风格</p>
+</blockquote>
+<p>简而言之，微前端都是将巨大的东西分成更小、更易于管理的小部分，然后明确它们之间的依赖关系。我们的技术选择、代码库、团队以及发布流程都应该能够彼此独立地运行和开发，不需要过多的协调。我认为好的微前端要做好两件事情（微前端也分两步）：</p>
+<ul>
+<li>分解（业务层面）：保证业务的合理拆分，并理清它们直接的依赖交互关系。</li>
+<li>聚合（技术层面）：架构层面，要在技术上做到很好的聚合，保证彼此独立，不相互污染，又能合理通信。</li>
+</ul>
+<p>使用场景主要有：</p>
+<ul>
+<li>拆分巨型应用，使应用变得更加可维护。</li>
+<li>兼容历史应用，实现增量开发。</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>体积小、易拼合且易于维护的代码库</li>
+<li>更具扩展性的互相解耦且独立的团队</li>
+<li>和以前相比能采用增量的方式，更易于对前端的某些部分进行升级、更新甚至重写</li>
+</ul>
+<h3 id="增量升级，逐步翻新。"><a href="#增量升级，逐步翻新。" class="headerlink" title="增量升级，逐步翻新。"></a>增量升级，逐步翻新。</h3><p>  很多公司都普遍存在一个历史问题：过时的技术栈，赶工完成的代码质量，五花八门的代码风格。随着员工的更迭，新功能的不断堆积，后人维<br>护起来，看不懂，改不动，只想重写的情况日益严重。这个时候，你才明白，长江后浪推前浪，前浪原来是被后浪咒死在沙滩上的。如果这个时候，你发现这居然还是一个巨石应用……后浪也想在沙滩上自杀了。<br>  当然了，喜欢折腾的前端没那么脆弱，当然还是要解决这个问题。我相信，这个时候就已经诞生了微前端，或者说应用了微前端的管理思想-细<br>分：随着新的功能，将业务逐步在多个新应用中重构翻新。当然，也有在原应用中或者在一个新应用中想办法逐步翻新，这基本上是重蹈覆辙。</p>
+<h3 id="简单、解耦的代码库"><a href="#简单、解耦的代码库" class="headerlink" title="简单、解耦的代码库"></a>简单、解耦的代码库</h3><p>每个单独的微前端项目的源代码库，会远远小于一个单体前端项目的源代码库。这些小的代码库将会更易于开发。更值得一提的是，我们避免了不相关联的组件之间无意造成的不适当的耦合。通过增强应用程序的<a href="https://martinfowler.com/bliki/BoundedContext.html" target="_blank" rel="noopener">边界</a>来减少这种意外耦合的情况的出现（领域驱动设计(DDD)中抽象的限界上下文（BoundedContext）概念，不懂也不用太纠结）。</p>
+<p>当然了，一个独立的、高级的架构方式（例如微前端），不是用来取代规范整洁的优秀老代码的。我们不是想要逃避代码优化和代码质量提升。相反，我们降低做出错误决策的可能，增加正确决策的几率，从而使我们Falling Into The Pit of Success<a href="https://blog.codinghorror.com/falling-into-the-pit-of-success/" target="_blank" rel="noopener">进入成功之坑</a>（该思想大致的意思是说设计者要通过精心设计的系统或者API，让用户做正确的事变的容易，而不过于为容易犯错而苦恼。用户犯错，那就是设计者的错）。微前端会促使您明确并慎重地了解数据和事件如何在应用程序的不同部分之间传递（跨应用通信），这本是我们（微前端架构设计师）早就应该开始做的事情！</p>
+<h3 id="独立部署"><a href="#独立部署" class="headerlink" title="独立部署"></a>独立部署</h3><p>与微服务一样，微前端的独立可部署性是关键。它减少了部署的范围，从而降低了相关风险。无论您的前端代码在何处托管，每个微前端都应该有自己的连续交付通道，该通道可以构建、测试并将其一直部署到生产环境中。我们应当能够在不考虑其他代码库或者是通道的情况下来部署每个微服务。<br>做到即使原来的单体项目是固定的按照季度手动发布版本，或者其他团队提交了未完成的或者是有问题的代码到他们的主分支上，也不会对当前项目产生影响。如果一个微前端项目已准备好投入生产，它应该具备这种能力，而决定权就在构建并且维护它的团队手中。</p>
+<p><img src="https://martinfowler.com/articles/micro-frontends/deployment.png" alt="图示：三个彼此独立的应用从源代码控制开始，经过构建、测试直至部署到生产环境"></p>
+<p>图 2 : 每个微前端都独立的部署到生产环境上</p>
+<h3 id="自主的团队"><a href="#自主的团队" class="headerlink" title="自主的团队"></a>自主的团队</h3><p>将我们的代码库和发布周期分离的更高阶的好处，是使我们拥有了完全独立的团队，可以参与到自己产品的构思、生产及后续的过程。每个团队都拥有为客户提供价值所需的全部资源，这就使得他们可以快速且有效地行动。为了达到这个目的，我们的团队需要<strong>根据业务功能纵向地划分，而不是根据技术种类</strong>。一种简单的方法是根据最终用户将看到的内容来分割产品，因此每个微前端都封装了应用程序的单个页面，并由一个团队全权负责。与根据技术种类或“横向”关注点（如样式、表单或验证）来组成团队相比，这会使得团队工作更有凝聚力。</p>
+<p><img src="https://martinfowler.com/articles/micro-frontends/horizontal.png" alt="图示：根据三个应用构成三个团队，提醒大家不要根据“样式”分队"></p>
+<p>图 3：每个应用都由一个团队负责</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><h3 id="负载体积"><a href="#负载体积" class="headerlink" title="负载体积"></a>负载体积</h3><p>独立构建，会造成公共依赖的重复，增加了用户所需下载依赖的体积。<br>一种解决方案是将我们编译后代码的常见依赖外置(如下代码)。一旦我们沿着这条路走下去，我们将重新引入一些微前端之间构建过程的耦合。现在它们之间有着一个隐含的合约：“我们都必须使用这些依赖的明确版本”。如果其中一个依赖产生重大改动，我们可能最终需要一个大的协调升级工作以及一次性的同步发版。这是我们使用微前端最初想要避免的一切。</p>
+<p>但并不全是坏消息。首先，即便我们对于重复的依赖不采取任何措施，每个单独页面仍可能比我们构建整个前端更快地加载。原因是通过独立编译每个页面，我们有效地以我们自己的形式实现了代码分割。在传统的前端中，应用中的任何页面加载完成时，我们通常会一次性下载所有页面的源码和依赖。通过独立构建，任何单独的页面加载将只会下载那个页面的源码和依赖。这可能导致更快的首页加载，但随后的导航速度会变慢，因为用户必须在每个页面上重新下载相同的依赖。如果我们严格地不用不必要的依赖使我们的微前端膨胀，或者我们知道用户在应用中通常访问的一两个页面，即便有重复依赖，我们也很可能在性能方面达到净增益。</p>
+<p>在前一段有很多“可能”和“也许”，表明了每个应用通常都有它们自己独特的性能特征。如果你想确切地知道特定的变化会造成什么性能影响，只能靠实际测量，而且最好是在生产环境中。我们见过很多团队仅仅为了下载数兆大小的高清图像或者对一个运行非常慢的数据库进行昂贵的查询额外多写几千字节的 JavaScript 代码。因此，尽管考虑每个架构决策的性能影响很重要，但请确保你知道真正的瓶颈在哪里。</p>
+<pre><code class="language-javascript">  &lt;body&gt;
+    &lt;noscript&gt;
+      You need to enable JavaScript to run this app.
+    &lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;%REACT_APP_CONTENT_HOST%/react-dom.prod-16.8.6.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;</code></pre>
+<h3 id="环境差异"><a href="#环境差异" class="headerlink" title="环境差异"></a>环境差异</h3><p>我们应该能够开发一个单一的微前端，而无需考虑其他团队正在开发的所有其它微前端。我们可能甚至应该在“独立”模式下，在空白页面上运行我们的微前端，而不是运行在将在生产环境中承载微前端的容器应用内部。这可以使开发变得更加简单，特别是当真正的容器是一个复杂的遗留代码库的时候，而通常情况下我们使用微前端来逐步从旧世界迁移到新世界。但是，在与生产环境完全不同的环境中开发存在风险。如果我们的开发时容器与生产容器的行为不同，那么我们可能会发现我们的微前端被破坏，或者在我们部署到生产环境时表现不同。特别值得关注的是可能由容器或其他微前端带来的全局样式。</p>
+<p>这里的解决方案与我们不得不担心环境差异的任何其他情况没有什么不同。如果我们在一个与生产环境不同的本地环境开发，我们需要<strong>确保定期将我们的微前端集成和部署到像生产环境的环境中，并且我们应该在这些环境中进行测试（手动以及自动化）以尽早发现集成问题</strong>。这不会完全解决问题，但最终这是一个取舍：简化开发环境的生产力提升是否值得冒集成出问题的风险？答案取决于项目！</p>
+<h3 id="运维复杂度"><a href="#运维复杂度" class="headerlink" title="运维复杂度"></a>运维复杂度</h3><p>最后的缺点是与微服务直接平行的缺点。作为一个更加分散的架构，微前端将不可避免地导致需要管理更多的东西 —— 更多的存储库，更多的工具，更多的构建/部署管道，更多的服务器，更多的域等等。因此，在采用这样的架构之前，你应该考虑几个问题：</p>
+<ul>
+<li>你是否有足够的自动化可行地提供以及管理额外所需的基础设施？</li>
+<li>你的前端开发、测试和发布进程是否会扩展到许多应用中？</li>
+<li>你是否对围绕工具和开发的实践变得更加分散且不易控制的决策感到满意？</li>
+<li>你将如何确保你的多个独立前端代码库中的最低代码质量，一致性或代码管理？<br>我们可能会另写一篇文章讨论这些主题。我们希望提出的主要观点是，当你选择微前端时，根据定义，你选择创建许多小东西而不是一个整体。你应该考虑你是否有采用这种方法所需的技术和组织成熟度，从而不造成混乱。</li>
+</ul>
+<h2 id="技术点"><a href="#技术点" class="headerlink" title="技术点"></a>技术点</h2><img src="/2020/01/19/micro-service/%E5%BE%AE%E5%89%8D%E7%AB%AF.png" class="" title="微前端技术栈">
+
+<p>主要难点在于<strong>集成方式</strong>（公共依赖）和<strong>跨应用通信</strong>。有兴趣可以研读文章开始的参考资料2-4章节。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/08/09/React-Hoc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁连">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sgj.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Live and learn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/09/React-Hoc/" itemprop="url">React 高阶组件（HOC）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-09T11:28:34+08:00">
+                2019-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h1><hr>
+<p>如果一个函数 接受一个或多个函数作为参数或者返回一个函数 就可称之为 高阶函数。</p>
+<pre><code class="language-jsx">// ES5 
+function isSearched(searchTerm) { 
+  return function(item) { 
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase()); 
+  } 
+} 
+
+// ES6 
+const isSearched = searchTerm =&gt; item =&gt; 
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());</code></pre>
+<h1 id="React-HOC"><a href="#React-HOC" class="headerlink" title="React HOC"></a>React HOC</h1><hr>
+<p>在实际项目中，组件总是趋于复杂，会包含很多逻辑。当发现在很多组件都需要处理相同逻辑的时候，就应该想办法抽象复用。在React中，具有复用功能的方式主要有：</p>
+<ul>
+<li>公共组件库</li>
+<li>公共方法库</li>
+<li>类组件：<code>HOC</code> / <code>Render Props</code></li>
+<li>函数组件：<code>Hooks</code></li>
+</ul>
+<p>当你没法把组件中的重复逻辑抽象成公共组件或者公共方法的情况下，在类组件中，就可以考虑引入<code>HOC</code>。<a href="/2020/04/23/React-Render-Props/index.html">Render Props看这里</a>。</p>
+<p>和高阶函数类似，<code>React HOC</code>就是把组件（也可增加一些可选参数）作为输入，然后输出一个新的组件，新组件内部处理一些通用逻辑，并使用输入的组件进行渲染。你可以将其视为参数化容器组件。</p>
+<blockquote>
+<p>我们知道，在React中函数组件本质上就是一个函数。所以高阶函数组件就是一个<code>HOC</code>。</p>
+</blockquote>
+<h1 id="高阶组件应用"><a href="#高阶组件应用" class="headerlink" title="高阶组件应用"></a>高阶组件应用</h1><hr>
+<p>首先，我们先创建<code>HOC</code>容器：</p>
+<pre><code class="language-jsx">// 无状态函数组件
+function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; &lt;WrappedComponent {...props} /&gt;;
+}
+// or
+// 类组件
+function HigherOrderComponent(WrappedComponent) {
+    return class extends React.Component {
+        render() {
+            return &lt;WrappedComponent {...this.props} /&gt;;
+        }
+    };
+}
+// 类组件特有的通过继承的方式使用
+// 也叫 反向继承（Inheritance Inversion）
+function HigherOrderComponent(WrappedComponent) {
+    return class extends WrappedComponent {
+        render() {
+            return super.render();
+        }
+    };
+}</code></pre>
+<blockquote>
+<p>通过继承输入组件形式实现的<code>HOC</code>又称为 <strong>反向继承（Inheritance Inversion）</strong></p>
+</blockquote>
+<p>以上<code>HOC</code>只是一个容器，和直接使用 <code>WrappedComponent</code> 组件无二。那么，我们可以在<code>HOC</code>中做点什么来达到共享复用的目的呢？主要通过以下三种方式：</p>
+<ul>
+<li>操作参数（props / state）</li>
+<li>条件渲染</li>
+<li>组件包装</li>
+</ul>
+<h2 id="操作参数"><a href="#操作参数" class="headerlink" title="操作参数"></a>操作参数</h2><p>我们可以通过<code>HOC</code>对一个通用组件的 <code>props</code> 做一些操作达到复用的目的，而不用去修改这个通用组件。</p>
+<p>举个简单的例子，一个列表展示组件，在新需求中的某些场景只希望展示列表中 <code>status === &#39;1&#39;</code> 的数据，那我们可以封装一个<code>HOC</code>在这些场景使用，其他场景直接使用。</p>
+<pre><code class="language-jsx">
+function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; {
+      let newProps =  props || []
+      if (newProps.length &gt; 0){
+        newProps = newProps.filter((item) =&gt; item.status === &#39;1&#39;)
+      }
+      return &lt;WrappedComponent {...newProps} /&gt;
+    };
+}</code></pre>
+<p>当然，你也可以通过修改这个通用组件来适配新场景。但是一直通过修改通用组件来适配所有场景，一方面存在兼容风险，另一方面适配逻辑太多，组件会变得臃肿，很难维护。</p>
+<p>在举一个常见的应用：很多页面初始化的时候，都需要通过一个接口获取一些初始化数据。我们也可以通过<code>HOC</code>封装，统一获取，然后作为扩展参数传递给页面组件。</p>
+<pre><code class="language-jsx"> function HigherOrderComponent(WrappedComponent) {
+    return props =&gt; {
+      const fetchData = async () =&gt; {
+        const result = await axios(
+          &#39;https://hn.algolia.com/api/v1/search?query=redux&#39;,
+        );
+        return result.data;
+      };
+      const newProps = fetchData();
+      return &lt;WrappedComponent {...props} {...newProps} /&gt;
+    };
+}</code></pre>
+<h2 id="条件渲染"><a href="#条件渲染" class="headerlink" title="条件渲染"></a>条件渲染</h2><p>在实际<code>React</code>项目中，大多采用前端渲染模式。组件的渲染依赖<code>Ajax</code>请求的数据。所以，我们经常会看到（我自己也写过）如下代码：</p>
+<pre><code class="language-javascript">class BadComp extends React.Component {
+    state = {
+      isDateReady: false,
+      dataA: null,
+      dataB: null,
+    }
+    //...
+    render() {
+      if (!isDateReady) return false
+      const { isDateReady, hasDataA, hasDataB }= this.state
+      return (
+        &lt;&gt;
+          { dataA &amp;&amp; &lt;A {...dataA}/&gt; }
+          { dataB &amp;&amp; &lt;B {...dataB}/&gt; }
+        &lt;/&gt;
+      );
+    }
+};
+</code></pre>
+<p>上述代码并不是一无是处，至少是严谨的，规避了无数据或者数据异常导致页面奔溃的情况。但是上述组件有两个问题：</p>
+<ul>
+<li>通过 <code>isDateReady</code> 阻断页面渲染，接口返回慢的话，白屏时间会很长。</li>
+<li>页面充斥着太多类似 <code>{ dataB &amp;&amp; &lt;B {...dataB}/&gt; }</code> 这种逻辑，不优雅，影响可读性。</li>
+</ul>
+<p>解决上述问题，我们一般是通过增加 <code>loading</code> 和 <code>占位</code> 来优化。在页面主接口返回数据之前，增加 <code>loading</code> 效果。需要数据才能渲染的组件模块可以先显示 <code>占位框</code>（<code>css</code>），取得数据以后再重新渲染。很明显，这个解决方案比较通用，最好做成可复用的。这个时候，我们就可以通过<code>HOC</code>的条件渲染来实现：</p>
+<p>页面<code>loading</code>效果的高阶组件，通过 <strong>反向继承 + 条件渲染</strong> 实现：</p>
+<pre><code class="language-jsx">
+const withLoadingComponent = (WrappedComponent) =&gt; {
+  return (props) =&gt;  {
+    render() {
+        if(this.state.isLoading) {
+          return &lt;Loading /&gt;;
+        } else {
+          return super.render();
+        }
+    }
+  };
+}
+</code></pre>
+<p>组件占位效果的<code>HOC</code>。额外的 <code>options</code> 参数可以决定占位组件 <code>Placeholder</code> 的高度等信息。</p>
+<pre><code class="language-jsx">const withPlaceholderComponent = (WrappedComponent, options) =&gt; {
+  return (props) =&gt;  {
+    return props ? &lt;WrappedComponent {...props}&gt; : &lt;Placeholder {...options}&gt;
+  };
+}</code></pre>
+<h2 id="组件包装"><a href="#组件包装" class="headerlink" title="组件包装"></a>组件包装</h2><p>如果你总是和相同的元素包裹使用一个通用组件，那么你可以通过抽象一个<code>HOC</code>来复用。比如下面的<code>HOC</code>在组件外面包裹一层背景色为 <code>#fafafa</code> 的 <code>div</code> 元素：</p>
+<pre><code class="language-jsx">const withOtherComponent = (WrappedComponent) =&gt; {
+  return (props) =&gt;  {
+    return (
+      &lt;div style={{ backgroundColor: '#fafafa' }}&gt;
+          &lt;WrappedComponent {...this.props} {...newProps} /&gt;
+      &lt;/div&gt;
+    )
+  };
+}</code></pre>
+<p>这里只是举了一个简单的例子，实际项目中，也可以通过其他组件来包裹，或是组合使用。</p>
+<h1 id="Recompose-库"><a href="#Recompose-库" class="headerlink" title="Recompose 库"></a>Recompose 库</h1><hr>
+<p><code>Recompose</code> 是一个为函数式组件和高阶组件开发的 <code>React</code> 工具库。可以看作是 <code>React</code> 的 <code>Lodash</code>。</p>
+<p>复杂场景下，会存在多个 <code>HOC</code> 层层嵌套的情况：</p>
+<pre><code class="language-jsx">const TodoListWithConditionalRendering = withLoadingIndicator(
+  withTodosNull(
+    withTodosEmpty(TodoList)
+  )
+);</code></pre>
+<p>可以使用 <code>recompose</code> 库的 <code>compost</code> 方法优化：</p>
+<pre><code class="language-jsx">import { compose } from &#39;recompose&#39;;
+const withTodosNull = (Component) =&gt; (props) =&gt;
+  ...
+const withTodosEmpty = (Component) =&gt; (props) =&gt;
+  ...
+const withLoadingIndicator = (Component) =&gt; ({ isLoadingTodos, ...others }) =&gt;
+  ...
+function TodoList({ todos }) {
+  ...
+}
+const withConditionalRenderings = compose(
+  withLoadingIndicator,
+  withTodosNull,
+  withTodosEmpty
+);
+const TodoListWithConditionalRendering = withConditionalRenderings(TodoList);
+function App(props) {
+  return (
+    &lt;TodoListWithConditionalRendering
+      todos={props.todos}
+      isLoadingTodos={props.isLoadingTodos}
+    /&gt;
+  );
+}</code></pre>
+<p><code>compose</code> 方法用于组合多个高阶组件。注意， props 流向是自上而下的。</p>
+<p>另外，<code>recompose</code> 库的 <code>pure</code> 高阶组件，用于控制只在需要的时候重新呈现组件，即除非 <code>props</code> 发生了更改才重新重现组件。 <code>withStateHandler</code>高阶组件，用于将组件状态和组件本身隔离开来……<a href="https://github.com/acdlite/recompose" target="_blank" rel="noopener">了解更多</a></p>
+<h1 id="Hoc问题"><a href="#Hoc问题" class="headerlink" title="Hoc问题"></a>Hoc问题</h1><hr>
+<h2 id="抽象地狱"><a href="#抽象地狱" class="headerlink" title="抽象地狱"></a>抽象地狱</h2><p>也叫包装地狱。过多使用<code>HOC</code>层层嵌套，会导致层级冗余，逻辑难追踪，很难维护。所以要避免Hoc滥用，充分考虑引入<code>HOC</code>的必要性，尤其<code>HOC</code>多层封装的情况。对于复杂的嵌套结构，最好增加充分的注释。</p>
+<h2 id="不要在render中使用-HOC。"><a href="#不要在render中使用-HOC。" class="headerlink" title="不要在render中使用 HOC。"></a>不要在<code>render</code>中使用 <code>HOC</code>。</h2><p>每次<code>render</code>渲染都会创建新的 <code>HOC</code>。diff算法会对新旧子树进行 <code>====</code> 比较。如果不相等，子树会进行卸载，和重新挂载的操作。而每次重新渲染创建的 <code>HOC</code> 前后是 <code>!==</code> 的。</p>
+<pre><code class="language-jsx">render() {
+  // 每次调用 render 函数都会创建一个新的 EnhancedComponent
+  // EnhancedComponent1 !== EnhancedComponent2
+  const EnhancedComponent = enhance(MyComponent);
+  // 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！
+  return &lt;EnhancedComponent /&gt;;
+}</code></pre>
+<h2 id="Refs-不会被传递。"><a href="#Refs-不会被传递。" class="headerlink" title="Refs 不会被传递。"></a><code>Refs</code> 不会被传递。</h2><p>虽然<code>HOC</code>的约定是将所有 <code>props</code> 传递给被包装组件，但这对于 <code>refs</code> 并不适用。那是因为 <code>ref</code> 实际上并不是一个 <code>prop</code>- 就像 key 一样，它是由 React 专门处理的。如果将 ref 添加到 HOC 的返回组件中，则 ref 引用指向容器组件，而不是被包装组件。</p>
+<p>这个问题的解决方案是通过使用 <code>React.forwardRef</code>（<code>React 16.3</code> 中引入）。想要了解更多，可以阅览我的另一篇博文<a href="/2020/03/30/拥抱React-Hooks（二）-Refs/index.html">拥抱React-Hooks（二）-Refs</a></p>
+<h2 id="静态方法丢失。"><a href="#静态方法丢失。" class="headerlink" title="静态方法丢失。"></a>静态方法丢失。</h2><p>因为原始组件被包裹在一个容器组件内，也就意味着新组件会没有原始组件的任何静态方法。为了解决这个问题，你可以在返回之前把这些方法拷贝到容器组件上：</p>
+<pre><code class="language-jsx">function enhance(WrappedComponent) {
+  class Enhance extends React.Component {/*...*/}
+  // 必须准确知道应该拷贝哪些方法 :(
+  Enhance.staticMethod = WrappedComponent.staticMethod;
+  return Enhance;
+}</code></pre>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
+<p><a href="https://zh-hans.reactjs.org/docs/higher-order-components.html" target="_blank" rel="noopener">官网-HOC</a><br><a href="https://www.robinwieruch.de/react-higher-order-components" target="_blank" rel="noopener">React Higher-order Component</a><br><a href="https://juejin.im/post/5c72b97de51d4545c66f75d5" target="_blank" rel="noopener">React 中的高阶组件及其应用场景</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2019/06/13/%E5%85%B3%E4%BA%8Esuper-props/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2026,6 +2558,15 @@ voiceAnnouncements(&#39;你好，今天吃的什么？&#39;)</code></pre>
 <li>当函数作为另一个函数（外层函数）的返回值返回时，其外层函数中的变量已经从调用栈弹出，但是我们必须让内部函数可以访问到它需要的变量，因此运行时的环境和定义时的作用域之间就产生矛盾；</li>
 <li>所以我们把内部环境中需要的变量，打包交给内层函数（闭包函数），它就可以随时访问这些变量了，就形成了闭包。</li>
 </ul>
+<h1 id="moment-时区操作"><a href="#moment-时区操作" class="headerlink" title="moment 时区操作"></a>moment 时区操作</h1><ul>
+<li>时区计算<pre><code class="language-js">import moment from &#39;moment&#39;;
+moment().utcOffset(-8)  // 基于`-8`时区计算。</code></pre>
+</li>
+<li>设置时区<pre><code class="language-js">import moment from &#39;moment-timezone&#39;;
+moment?.tz?.setDefault() //系统默认
+moment?.tz?.setDefault(-8) //设置为-8</code></pre>
+</li>
+</ul>
 
           
         
@@ -2483,6 +3024,21 @@ blur(radius):函数将高斯模糊应用于输入图像。
 </blockquote>
 <h1 id="css-新特性-contain"><a href="#css-新特性-contain" class="headerlink" title="css 新特性 contain"></a>css 新特性 contain</h1><p>CSS contain 属性允许开发者声明当前元素和它的内容尽可能的独立于 DOM 树的其他部分。这使得浏览器在重新计算布局、样式、绘图、大小或这四项的组合时，只影响到有限的 DOM 区域，而不是整个页面，可以有效改善性能。</p>
 <p>使用参考： <a href="https://juejin.cn/post/6958990366888607757" target="_blank" rel="noopener">CSS新特性contain，控制页面的重绘与重排</a></p>
+<h1 id="margin-inline，inset"><a href="#margin-inline，inset" class="headerlink" title="margin-inline，inset"></a>margin-inline，inset</h1><p><code>margin-inline</code> will set both <code>margin-left</code> and <code>margin-right</code> to the same value (<code>auto</code>). It has <strong>very good browser support</strong>.<br>setting <code>inset: 0px</code>, which is a shorthand that sets <code>top, left, right</code>, and <code>bottom</code> all to the same value, <code>0px</code>.</p>
+<pre><code class="language-css">.element {
+  max-width: fit-content;
+  margin-inline: auto;
+}
+
+.element2 {
+  position: fixed;
+  inset: 0px;
+  width: 12rem;
+  height: 5rem;
+  max-width: 100vw;
+  max-height: 100dvh;
+  margin: auto;
+}</code></pre>
 <h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><hr>
 <p><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/filter" target="_blank" rel="noopener">Moz-filter滤镜</a></p>
 
@@ -3473,7 +4029,7 @@ export default AudioBuffer;
       
         
           
-            <p><code>HTTP</code> HyperText Transfer Protocol，超文本传输协议<br><code>HTTPS</code> Hyper Text Transfer Protocol over SecureSocket Layer，是以安全为目标的 HTTP 通道，HTTPS 在HTTP 的基础下加入SSL 层。<br><code>HSTS</code> 全称 HTTP Strict Transport Security，HTTP严格传输安全，是一个Web安全策略机制。<br><code>DNS</code> Domain Name System 域名解析系统<br><code>CDN</code> Content Delivery Network，即内容分发网络<br><code>function</code> 函数<br><code>functional</code> 函数式<br><code>method</code> 方法。js中指对象中定义的函数，赋值给对象属性的函数。<br><code>programme</code> 编程<br><code>FP</code> Functional Programming 函数式编程<br><code>OOP</code> Object-oriented Programming 面向对象编程<br><code>refactor</code> 代码重构。指对软件代码做任何更动以增加可读性或者简化结构而不影响输出结果。名词是<code>refactorings</code>。<br><code>FSC</code>: functional stateless components 无状态组件，来自React，使用函数定义一个组件。<br><code>lifecycle</code>: 生命周期<br><code>side-effects</code>: 副作用<br><code>Browser</code> 浏览器<br><code>API</code> Application Programming Interface，应用程序编程接口<br><code>Abstraction</code> 抽象<br><code>reusability</code> 复用性<br><code>logic</code> 逻辑<br><code>concept</code> 概念 思想<br><code>feature</code> 特性<br><code>backward compatible</code> 向后兼容<br><code>bloated</code> 臃肿<br><code>solutions</code> 解决方案<br><code>boundary</code> 边界<br><code>syntax</code> 语法，句法<br> <code>destructuring</code>  解构<br> <code>Object destructuring</code> 对象解构<br> <code>prevent</code> 阻止 预防<br> <code>ternary operator</code> 三元操作符 ？：<br> <code>spread operator</code> 展开操作符 …<br> <code>pitfall</code> 陷阱<br> <code>theme</code> 主题<br> <code>producer</code> 生产者<br> <code>consumer</code> 消费者<br> <code>crash</code> 使奔溃  crash your application<br> <code>performance issues</code> 性能问题<br> <code>a pseudo function</code> 伪函数<br> <code>IIFE</code> 立即调用函数表达式(<code>Immediately Invoked function Expression</code>)<br> <code>initially</code> 起初<br> <code>execute</code> 执行<br> <code>plain text</code> 纯文本<br> <code>In this aspect</code> 从这个角度看<br> <code>has no relation to</code> 和……无关<br> <code>embed</code> 嵌入的<br> <code>basics</code> 核心 基本原理<br> <code>QR code</code> 二维码<br> <code>unrealistic</code> 不切实际的<br> <code>contender</code> 竞争者<br> <code>giant</code>  巨头 巨人<br> <code>DCS</code>  Distributed Cache Service, 分布式缓存服务<br> <code>WH</code> Website Hosting, 静态网站托管, 是云开发提供的一项服务<br> <code>Hosting</code> 托管<br> <code>appeal</code> 呼吁<br> <code>maintenance overhead</code> 维护成本<br> <code>reimagine</code> 再定义的<br> <code>specific</code> 特定的 明确的；特性<br> <code>situation</code> 情况;处境<br> <code>make sense</code> 讲得通 言之有理<br> <code>syntactic sugar</code> 语法糖<br> <code>GPU</code>  (=Graphic Processing Unit) 浏览器的图形处理器<br> <code>GUI</code>  (Graphical User Interface) 图形用户接口. 浏览器采用图形方式显示的计算机操作用户界面。<br> <code>AWS</code> 亚马逊云计算服务<br> <code>silver bullet</code> 直译成“银弹”，私以为译成“万金油”（褒义）更接地气一些。<br> <code>reference</code> 引用 参考<br> <code>Flame-graph</code> 火焰图<br> <code>patch</code> 补丁</p>
+            <p><code>HTTP</code> HyperText Transfer Protocol，超文本传输协议<br><code>HTTPS</code> Hyper Text Transfer Protocol over SecureSocket Layer，是以安全为目标的 HTTP 通道，HTTPS 在HTTP 的基础下加入SSL 层。<br><code>HSTS</code> 全称 HTTP Strict Transport Security，HTTP严格传输安全，是一个Web安全策略机制。<br><code>DNS</code> Domain Name System 域名解析系统<br><code>CDN</code> Content Delivery Network，即内容分发网络<br><code>function</code> 函数<br><code>functional</code> 函数式<br><code>method</code> 方法。js中指对象中定义的函数，赋值给对象属性的函数。<br><code>programme</code> 编程<br><code>FP</code> Functional Programming 函数式编程<br><code>OOP</code> Object-oriented Programming 面向对象编程<br><code>refactor</code> 代码重构。指对软件代码做任何更动以增加可读性或者简化结构而不影响输出结果。名词是<code>refactorings</code>。<br><code>FSC</code>: functional stateless components 无状态组件，来自React，使用函数定义一个组件。<br><code>lifecycle</code>: 生命周期<br><code>side-effects</code>: 副作用<br><code>Browser</code> 浏览器<br><code>API</code> Application Programming Interface，应用程序编程接口<br><code>Abstraction</code> 抽象<br><code>reusability</code> 复用性<br><code>logic</code> 逻辑<br><code>concept</code> 概念 思想<br><code>feature</code> 特性<br><code>backward compatible</code> 向后兼容<br><code>bloated</code> 臃肿<br><code>solutions</code> 解决方案<br><code>boundary</code> 边界<br><code>syntax</code> 语法，句法<br> <code>destructuring</code>  解构<br> <code>Object destructuring</code> 对象解构<br> <code>prevent</code> 阻止 预防<br> <code>ternary operator</code> 三元操作符 ？：<br> <code>spread operator</code> 展开操作符 …<br> <code>pitfall</code> 陷阱<br> <code>theme</code> 主题<br> <code>producer</code> 生产者<br> <code>consumer</code> 消费者<br> <code>crash</code> 使奔溃  crash your application<br> <code>performance issues</code> 性能问题<br> <code>a pseudo function</code> 伪函数<br> <code>IIFE</code> 立即调用函数表达式(<code>Immediately Invoked function Expression</code>)<br> <code>initially</code> 起初<br> <code>execute</code> 执行<br> <code>plain text</code> 纯文本<br> <code>In this aspect</code> 从这个角度看<br> <code>has no relation to</code> 和……无关<br> <code>embed</code> 嵌入的<br> <code>basics</code> 核心 基本原理<br> <code>QR code</code> 二维码<br> <code>unrealistic</code> 不切实际的<br> <code>contender</code> 竞争者<br> <code>giant</code>  巨头 巨人<br> <code>DCS</code>  Distributed Cache Service, 分布式缓存服务<br> <code>WH</code> Website Hosting, 静态网站托管, 是云开发提供的一项服务<br> <code>Hosting</code> 托管<br> <code>appeal</code> 呼吁<br> <code>maintenance overhead</code> 维护成本<br> <code>reimagine</code> 再定义的<br> <code>specific</code> 特定的 明确的；特性<br> <code>situation</code> 情况;处境<br> <code>make sense</code> 讲得通 言之有理<br> <code>syntactic sugar</code> 语法糖<br> <code>GPU</code>  (=Graphic Processing Unit) 浏览器的图形处理器<br> <code>GUI</code>  (Graphical User Interface) 图形用户接口. 浏览器采用图形方式显示的计算机操作用户界面。<br> <code>AWS</code> 亚马逊云计算服务<br> <code>silver bullet</code> 直译成“银弹”，私以为译成“万金油”（褒义）更接地气一些。<br> <code>reference</code> 引用 参考<br> <code>Flame-graph</code> 火焰图<br> <code>patch</code> 补丁<br> <code>customization</code> 定制<br> <code>significant</code> 重要的<br> <code>Lightweight</code> 轻量的<br> <code>interactions</code> 交流 交互<br> <code>technique</code> 技术 技巧<br> <code>Currying</code> 柯里化<br> <code>kindergarten</code> 幼儿园<br> <code>customize</code> 定制<br> <code>flexibility</code> 灵活性 柔韧性</p>
 
           
         
@@ -4408,139 +4964,11 @@ console.log(sum); //25</code></pre>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.mala520.life/2012/02/28/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁连">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/sgj.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Live and learn">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2012/02/28/hello-world/" itemprop="url">Hello Hexo</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-02-28T15:42:37+08:00">
-                2012-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="language-bash">$ hexo new &quot;My New Post&quot;</code></pre>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="language-bash">$ hexo server</code></pre>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="language-bash">$ hexo generate</code></pre>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="language-bash">$ hexo deploy</code></pre>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -4590,7 +5018,7 @@ console.log(sum); //25</code></pre>
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4675,7 +5103,7 @@ console.log(sum); //25</code></pre>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

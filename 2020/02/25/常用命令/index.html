@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Live and learn">
 <meta property="og:description" content="系统MAC&#x2F;Linux$ cd $ Pwd $ Mkdir $ Rm -rf $ Ls -a $ Chmod 777 *    &#x2F;&#x2F; 文件&#x2F;文件夹权限修改为 777 （可读可写可执行） $ Sudo           &#x2F;&#x2F; 使用管理员权限执行 $ alias          &#x2F;&#x2F; 别名情况 $ curl -v &lt;url&gt;  &#x2F;&#x2F; 模拟get请求 $ lsof           &#x2F;">
 <meta property="article:published_time" content="2020-02-25T10:30:51.000Z">
-<meta property="article:modified_time" content="2022-12-21T06:23:24.407Z">
+<meta property="article:modified_time" content="2023-01-30T03:03:03.403Z">
 <meta property="article:author" content="祁连">
 <meta property="article:tag" content="命令">
 <meta name="twitter:card" content="summary">
@@ -364,7 +364,14 @@ $ Git log
 $ Git rebase // 修改commit信息，对多个 commit 进行合并处理等
 $ Git revert // 替换某次提交
 $ Git reset // 撤销 某次操作
-$ Git rm &lt;file&gt;  // ignore已经add的文件  </code></pre>
+$ Git rm &lt;file&gt;  // ignore已经add的文件  
+
+$ Git config --global core.ignorecase false 全局设置 大小写敏感
+$ git mv -f [你想要删掉的文件] [你想要留下的文件] 
+$ git mv -f a.js A.js 
+等同于： 
+$ git rm a.js 
+$ git add A.js</code></pre>
 <h1 id="Npm"><a href="#Npm" class="headerlink" title="Npm"></a>Npm</h1><pre><code class="language-bash">$ npm init
 $ npm install &lt;package&gt;
 $ npm config list
@@ -524,7 +531,7 @@ $ tree &gt; xxx.md     # 将目录树输出到 xxx.md 这个文档</code></pre>
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -625,7 +632,7 @@ $ tree &gt; xxx.md     # 将目录树输出到 xxx.md 这个文档</code></pre>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
